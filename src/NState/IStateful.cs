@@ -2,7 +2,7 @@
 {
     /// <summary>
     ///   Responsible for defining the interface for types 
-    ///   that may be used inside with the StateMachine type 
+    ///   that may be used inside with a StateMachine  
     ///   (akin to workflow.)
     /// </summary>
     public interface IStateful<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
