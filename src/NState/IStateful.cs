@@ -2,7 +2,7 @@
 {
     /// <summary>
     ///   Responsible for defining the interface for types 
-    ///   that may be used with a StateMachine  
+    ///   that may be used inside with the StateMachine type 
     ///   (akin to workflow.)
     /// </summary>
     public interface IStateful<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
@@ -12,7 +12,13 @@
         where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
+        /// <summary>
+        /// Given a stateful domain object retrieves the state machine relevant to it
+        /// from the parent state composite object.
+        /// </summary>
         IStateMachine<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> 
-            GetStateMachineFromRootComposite(IStateMachine<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> stateMachine);
+            GetStateMachine(IStateMachine<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> stateMachine);
+
+        TState CurrentState { get;set; }
     }
 }

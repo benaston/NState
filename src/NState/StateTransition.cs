@@ -11,6 +11,8 @@
         where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
+        private readonly TStatefulDomainObject _statefulDomainObject;
+
         protected StateTransition(Func<TStatefulDomainObject, TState, TStatefulDomainObject> transitionFunction)
         {
             Ensure.That(transitionFunction != null, "transitionFunction not supplied");

@@ -2,7 +2,7 @@
 {
     public class AccountTab : IStateful<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
     {
-        public IStateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType> GetStateMachineFromRootComposite(
+        public IStateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType> GetStateMachine(
             IStateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType> stateMachine)
         {
             return

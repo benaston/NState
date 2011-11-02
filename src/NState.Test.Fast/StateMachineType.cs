@@ -6,5 +6,6 @@
         HomePanel,
         AccountTab,
         SearchTab,
+        SavedSearch,
     }
 }

@@ -32,10 +32,9 @@
         public StateMachine(
             IEnumerable<IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>> stateTransitions,
             TState startState,
-            Dictionary<TStateMachineTypeEnum, IStateMachine> childStateMachines)
+            Dictionary<TStateMachineTypeEnum, IStateMachine> childStateMachines = null)
         {
             Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
-                //.And(childStateMachines.IsNotNull(), "childStateMachines not supplied.");
 
             StateTransitions = stateTransitions;
             ChildStateMachines = childStateMachines ?? new Dictionary<TStateMachineTypeEnum, IStateMachine>();
@@ -71,10 +70,12 @@
             {
                 //modify to if the state itself has a transition or if any of the enclosing state-composite has a state transition
                 //then follow it
+                //move current state onto the domain object itself
                 var v = StateTransitions.First(t => t.StartState == CurrentState && t.EndState == targetState).
                     Transition
                     (statefulDomainObject, targetState);
                 CurrentState = targetState;
+                //statefulDomainObject.CurrentState = targetState;
                 OnRaiseAfterEveryTransition();
 
                 return v;
