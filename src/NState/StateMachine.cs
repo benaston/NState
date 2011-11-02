@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Serialization;
     using NBasicExtensionMethod;
+    using Newtonsoft.Json;
     using NSure;
     using ArgumentNullException = NHelpfulException.FrameworkExceptions.ArgumentNullException;
 
@@ -18,6 +18,7 @@
     ///   NOTE 1: BA; http://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
     /// </summary>
     /// <typeparam name="TBaseDomainObject">This is the root of the tree of domain objects in the state machine?</typeparam>
+    [Serializable]//LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType
     public class StateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
         IStateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
         where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
@@ -32,12 +33,14 @@
         public StateMachine(
             IEnumerable<IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>> stateTransitions,
             TState startState,
-            Dictionary<TStateMachineTypeEnum, IStateMachine> childStateMachines = null)
+            List<IStateMachine> childStateMachines = null,
+            List<IStateMachine> parentStateMachines = null)
         {
             Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
 
             StateTransitions = stateTransitions;
-            ChildStateMachines = childStateMachines ?? new Dictionary<TStateMachineTypeEnum, IStateMachine>();
+            ChildStateMachines = childStateMachines ?? new List<IStateMachine>();
+            ParentStateMachines = parentStateMachines ?? new List<IStateMachine>();
             StartState = startState;
             CurrentState = startState;
         }
@@ -46,12 +49,14 @@
 
         public TState CurrentState { get; set; }
 
+        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+        public List<IStateMachine> ChildStateMachines { get; set; }
+
+        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+        public List<IStateMachine> ParentStateMachines { get; set; }
+
         public Dictionary<DateTime, IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>>
-            History
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+            History { get; set; }
 
         /// <summary>
         ///   Select transition to invoke, and invoke.
@@ -68,17 +73,19 @@
 
             try
             {
-                //modify to if the state itself has a transition or if any of the enclosing state-composite has a state transition
-                //then follow it
-                //move current state onto the domain object itself
-                var v = StateTransitions.First(t => t.StartState == CurrentState && t.EndState == targetState).
-                    Transition
-                    (statefulDomainObject, targetState);
-                CurrentState = targetState;
-                //statefulDomainObject.CurrentState = targetState;
+                if (CurrentState != targetState) //valid?
+                {
+                    //todo: check parent state machines for valid transitions too
+                    statefulDomainObject = StateTransitions.First(t => t.StartState == CurrentState && t.EndState == targetState).
+                        Transition
+                        (statefulDomainObject, targetState);
+
+                    CurrentState = targetState;
+                    //statefulDomainObject.CurrentState = targetState;
+                }
                 OnRaiseAfterEveryTransition();
 
-                return v;
+                return statefulDomainObject;
             }
             catch (Exception e)
             {
@@ -87,13 +94,6 @@
 
                 throw i;
             }
-        }
-
-        public Dictionary<TStateMachineTypeEnum, IStateMachine> ChildStateMachines { get; set; }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
         }
 
         public event EventHandler RaiseBeforeEveryTransitionEvent;

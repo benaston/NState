@@ -1,5 +1,8 @@
 ﻿namespace NState.Test.Fast
 {
+    using System;
+
+    [Serializable]
     public class SavedSearchState : LucidUIState
     {
         public class Expanded : SavedSearchState

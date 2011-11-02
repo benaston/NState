@@ -2,8 +2,10 @@
 {
     using System;
 
+    [Serializable]
     public class AccountTabTransitions
     {
+        [Serializable]
         public class Expand : StateTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
         {
             public Expand(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}
@@ -20,6 +22,7 @@
             }
         }
 
+        [Serializable]
         public class Collapse : StateTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
         {
             public Collapse(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}

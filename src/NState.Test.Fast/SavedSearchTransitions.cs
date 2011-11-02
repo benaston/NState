@@ -2,8 +2,10 @@
 {
     using System;
 
+    [Serializable]
     public class SavedSearchTransitions
     {
+        [Serializable]
         public class Expand : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
         {
             public Expand(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction) : base(transitionFunction) { }
@@ -20,6 +22,7 @@
             }
         }
 
+        [Serializable]
         public class Collapse : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
         {
             public Collapse(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction) : base(transitionFunction) { }

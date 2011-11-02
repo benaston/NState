@@ -1,27 +1,17 @@
 ﻿namespace NState.Test.Fast
 {
-    public class SavedSearch : IStateful<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
-    {
-        public SavedSearch(LucidUI uiContext)
-        {
-            UiContext = uiContext;
-        }
+    using System;
 
-        public LucidUI UiContext { get; set; }
+    [Serializable]
+    public class SavedSearch : Stateful<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
+    {
+        public SavedSearch(IStateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType> stateMachine, LucidUI uiContext) : base(stateMachine)
+        {
+            UIContext = uiContext;
+        }
 
         public string Id { get; set; }
 
-        /// <summary>
-        /// See comment on iface.
-        /// </summary>
-        public IStateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType> GetStateMachine(
-            IStateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType> stateMachine)
-        {
-            return
-                ((IStateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>)
-                 (stateMachine.ChildStateMachines[StateMachineType.SavedSearch]));
-        }
-
-        public SavedSearchState CurrentState { get; set; }
+        public LucidUI UIContext { get; set; }
     }
 }

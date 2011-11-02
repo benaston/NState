@@ -1,5 +1,8 @@
 ﻿namespace NState.Test.Fast
 {
+    using System;
+
+    [Serializable]
     public class AccountTabState : LucidUIState
     {
         public class Expanded : AccountTabState

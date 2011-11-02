@@ -3,6 +3,7 @@ namespace NState.Test.Fast
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Newtonsoft.Json;
     using NUnit.Framework;
 
     //write DSL for construction of the state machine
@@ -14,40 +15,48 @@ namespace NState.Test.Fast
         [Test]
         public void PerformTransition_WhenHappyPathFollowed_StateIsChanged()
         {
+            var savedSearch1StateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new SavedSearchTransitions.Collapse((ss,state) => ss), 
+                        new SavedSearchTransitions.Expand((ss,state) => ss),
+                    },
+                new SavedSearchState.Collapsed(), null);
+
+            var savedSearch2StateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new SavedSearchTransitions.Collapse((ss,state) => ss), 
+                        new SavedSearchTransitions.Expand((ss,state) => ss),
+                    },
+                new SavedSearchState.Collapsed(), null);
+
             var accountTabStateMachine = new StateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>(
                 new IStateTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>[]
                     {
                         new AccountTabTransitions.Collapse((tab,state) => tab), 
                         new AccountTabTransitions.Expand((tab,state) => tab),
-                    }, 
-                new AccountTabState.Collapsed(), null);
+                    },
+                new AccountTabState.Collapsed());
+
             var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>(
                 new IStateTransition<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>[]
                     {
                         new LucidUITransitions.Pause((lucidUI,state) => lucidUI), 
                         new LucidUITransitions.Resume((lucidUI,state) => lucidUI),
-                    }, 
+                    },
                 new LucidUIState.Paused(),
-                new Dictionary<StateMachineType, IStateMachine> { {StateMachineType.AccountTab, accountTabStateMachine}, });
+                new List<IStateMachine> { { accountTabStateMachine }, });
 
-            var ui = new LucidUI();
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine).CurrentState == new LucidUIState.Paused(), "lucid start state");
-            ui = lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine).CurrentState == new LucidUIState.Active(), "lucid state post transition");
-            var accountTab = new AccountTab();
-            Assert.That(accountTab.GetStateMachine(lucidUIStateMachine).CurrentState == new AccountTabState.Collapsed());
-            accountTab = accountTab.PerformTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
-                (new AccountTabState.Expanded(), lucidUIStateMachine);
-            Assert.That(accountTab.GetStateMachine(lucidUIStateMachine).CurrentState == new AccountTabState.Expanded(), "accountTab post transition");
+            var ui = new LucidUI(lucidUIStateMachine) { AccountTab = new AccountTab(accountTabStateMachine), };
+            Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
+            ui.PerformTransition(ui, new LucidUIState.Active());
+            Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid state post transition");
+            Assert.That(ui.AccountTab.CurrentState == new AccountTabState.Collapsed());
+            ui.AccountTab.PerformTransition(ui.AccountTab, new AccountTabState.Expanded());
+            Assert.That(ui.AccountTab.CurrentState == new AccountTabState.Expanded(), "accountTab post transition");
         }
-
-        /// <summary>
-        /// The "domain object model" represents the UI elements. The state machine 
-        /// mereley controls the "transitions" that may be performed on these domain
-        /// objects.
-        /// In order to enable trivial ui state persistence, then we need a single 
-        /// state machine per domain stateful object?
-        /// </summary>
+    
         [Test]
         public void PerformTransition_WhenTransitionAffectsOtherPartsOfStateMachine_StateIsChangedInRelevantPlaces()
         {
@@ -59,71 +68,137 @@ namespace NState.Test.Fast
                     },
                 new LucidUIState.Paused());
 
-            var savedSearchStateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+            var savedSearchAStateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
                 new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
                     {
                         new SavedSearchTransitions.Expand((ss,state) =>
                                                                 {
-                                                                    ss.UiContext
+                                                                    foreach (var i in ss.UIContext
                                                                         .SavedSearches
-                                                                        .SkipWhile(s => s.Id == ss.Id)
-                                                                        .Select(
-                                                                            i =>
-                                                                            i.PerformTransition
-                                                                                <SavedSearch, SavedSearchState, LucidUI,
-                                                                                LucidUIState, StateMachineType>(
-                                                                                    new SavedSearchState.Collapsed(),
-                                                                                    lucidUIStateMachine));
+                                                                        .SkipWhile(s => s.Id == ss.Id).ToList())
+                                                                    {
+                                                                        i.PerformTransition(i, new SavedSearchState.Collapsed());
+                                                                    }
                                                                     return ss;
                                                                 }), 
                         new SavedSearchTransitions.Collapse((ss,state) => ss),
                     },
-                new SavedSearchState.Collapsed(), childStateMachines: null);
+                new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines:null);
 
-            lucidUIStateMachine.ChildStateMachines.Add(StateMachineType.SavedSearch, savedSearchStateMachine);
-            var ui = new LucidUI();
-            ui.SavedSearches = new List<SavedSearch> { new SavedSearch(ui) { Id = "a" }, new SavedSearch(ui) { Id = "b" } } ;
+            var savedSearchBStateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new SavedSearchTransitions.Expand((ss,state) =>
+                                                                {
+                                                                    foreach(var i in ss.UIContext
+                                                                        .SavedSearches
+                                                                        .SkipWhile(s => s.Id == ss.Id).ToList())
+                                                                    {
+                                                                        i.PerformTransition(i, new SavedSearchState.Collapsed());
+                                                                    }
+                                                                        //.Select(
+                                                                        //    i =>
+                                                                        //    i.PerformTransition(i, new SavedSearchState.Collapsed()));
+                                                                    return ss;
+                                                                }), 
+                        new SavedSearchTransitions.Collapse((ss,state) => ss),
+                    },
+                new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine).CurrentState == new LucidUIState.Paused(), "lucid start state");
+            lucidUIStateMachine.ChildStateMachines.Add(savedSearchAStateMachine);
+            lucidUIStateMachine.ChildStateMachines.Add(savedSearchBStateMachine);
 
-            //todo: each stateful object to get its own state machine and expose perform transition
-            ui = lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine).CurrentState == new LucidUIState.Active(), "lucid post transition state");
+            var ui = new LucidUI(lucidUIStateMachine);
+            ui.SavedSearches = new List<SavedSearch> { new SavedSearch(savedSearchAStateMachine, ui) { Id = "a" }, new SavedSearch(savedSearchBStateMachine, ui) { Id = "b" } } ;
 
-            var savedSearchA = ui.SavedSearches
-                          .First(s => s.Id == "a");
-            Assert.That(savedSearchA.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Collapsed());
-            savedSearchA = savedSearchA.PerformTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
-                (new SavedSearchState.Expanded(), lucidUIStateMachine);
-            Assert.That(savedSearchA.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Expanded());
+            Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
 
-            var savedSearchB = ui.SavedSearches
-                          .First(s => s.Id == "b");
-            Assert.That(savedSearchB.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Collapsed());
+            lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
+            Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid post transition state");
 
-            Assert.That(savedSearchA.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Expanded());
-            savedSearchB = savedSearchB.PerformTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
-                (new SavedSearchState.Expanded(), lucidUIStateMachine);
-            Assert.That(savedSearchB.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Expanded());
-            Assert.That(savedSearchA.GetStateMachine(lucidUIStateMachine).CurrentState == new SavedSearchState.Collapsed());
+            var savedSearchA = ui.SavedSearches.First(s => s.Id == "a");
+            var savedSearchB = ui.SavedSearches.First(s => s.Id == "b");
+            Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());
+            Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
+            savedSearchA.PerformTransition(savedSearchA, new SavedSearchState.Expanded());
+            Assert.That(savedSearchA.CurrentState == new SavedSearchState.Expanded());
+            Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
+            savedSearchB.PerformTransition(savedSearchB, new SavedSearchState.Expanded());
+            Assert.That(savedSearchB.CurrentState == new SavedSearchState.Expanded());
+            Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());
         }
 
-        //tests for event registration/invocation and transition performance, per old tests
-    }
-
-    public static class StateExtensions
-    {
-        public static TStatefulDomainObject PerformTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnumeration>
-            (this TStatefulDomainObject statefulDomainObject, 
-             TState targetState, 
-             IStateMachine<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnumeration> stateMachine)
-            where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnumeration>
-            where TState : State
-            where TBaseDomainObject : IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnumeration>
-            where TBaseState : State
-            where TStateMachineTypeEnumeration : struct
+        //todo simplify object for serialization or come up with a better way
+        //get json.net to persist specific fields and then have custom parser
+        [Test]
+        public void Serialize_WhenInvoked_SerializesStateMachineStateToAString()
         {
-            return statefulDomainObject.GetStateMachine(stateMachine).PerformTransition(statefulDomainObject, targetState);
+            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new LucidUITransitions.Pause((lucidUI,state) => lucidUI), 
+                        new LucidUITransitions.Resume((lucidUI,state) => lucidUI),
+                    },
+                new LucidUIState.Paused());
+
+            var savedSearchAStateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new SavedSearchTransitions.Expand((ss,state) =>
+                                                                {
+                                                                    foreach (var i in ss.UIContext
+                                                                        .SavedSearches
+                                                                        .SkipWhile(s => s.Id == ss.Id).ToList())
+                                                                    {
+                                                                        i.PerformTransition(i, new SavedSearchState.Collapsed());
+                                                                    }
+                                                                    return ss;
+                                                                }), 
+                        new SavedSearchTransitions.Collapse((ss,state) => ss),
+                    },
+                new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
+
+            var savedSearchBStateMachine = new StateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>(
+                new IStateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>[]
+                    {
+                        new SavedSearchTransitions.Expand((ss,state) =>
+                                                                {
+                                                                    foreach(var i in ss.UIContext
+                                                                        .SavedSearches
+                                                                        .SkipWhile(s => s.Id == ss.Id).ToList())
+                                                                    {
+                                                                        i.PerformTransition(i, new SavedSearchState.Collapsed());
+                                                                    }
+                                                                    return ss;
+                                                                }), 
+                        new SavedSearchTransitions.Collapse((ss,state) => ss),
+                    },
+                new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
+
+            //lucidUIStateMachine.ChildStateMachines.Add(savedSearchAStateMachine);
+            //lucidUIStateMachine.ChildStateMachines.Add(savedSearchBStateMachine);
+
+            var ui = new LucidUI(lucidUIStateMachine);
+            ui.SavedSearches = new List<SavedSearch> { new SavedSearch(savedSearchAStateMachine, ui) { Id = "a" }, new SavedSearch(savedSearchBStateMachine, ui) { Id = "b" } };
+
+            Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
+
+            lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
+            Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid post transition state");
+
+            var savedSearchA = ui.SavedSearches.First(s => s.Id == "a");
+            var savedSearchB = ui.SavedSearches.First(s => s.Id == "b");
+            Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());
+            Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
+            savedSearchA.PerformTransition(savedSearchA, new SavedSearchState.Expanded());
+
+            var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};
+            var serializedStateMachine = JsonConvert.SerializeObject(lucidUIStateMachine, Formatting.Indented, settings);
+
+            var ooo = JsonConvert.DeserializeObject<StateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>>(serializedStateMachine);
+            //var newUI = new LucidUI();
+            //Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());
+            //Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
         }
     }
 }

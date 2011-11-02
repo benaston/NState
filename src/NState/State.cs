@@ -1,5 +1,8 @@
 ﻿namespace NState
 {
+    using System;
+
+    [Serializable]
     public abstract class State
     {
         public string Name { get; protected set; }
