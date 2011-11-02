@@ -1,6 +1,7 @@
 ﻿namespace NState
 {
     using System;
+    using NSure;
 
     public abstract class StateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
         IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
@@ -10,7 +11,14 @@
         where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
-        public Func<TStatefulDomainObject, TState, TStatefulDomainObject> TransitionFunction { get; set; }
+        protected StateTransition(Func<TStatefulDomainObject, TState, TStatefulDomainObject> transitionFunction)
+        {
+            Ensure.That(transitionFunction != null, "transitionFunction not supplied");
+
+            TransitionFunction = transitionFunction;
+        }
+
+        public Func<TStatefulDomainObject, TState, TStatefulDomainObject> TransitionFunction { get; private set; }
 
         public abstract TState StartState { get; }
 
@@ -24,13 +32,14 @@
                            {
                                OnRaiseBeforeTransition();
                                var v = TransitionFunction(o, s);
-                               OnRaiseBeforeTransition();
+                               OnRaiseAfterTransition();
                                return v;
                            };
             }
         }
 
         public event EventHandler RaiseBeforeTransitionEvent;
+
         public event EventHandler RaiseAfterTransitionEvent;
 
         protected virtual void OnRaiseBeforeTransition()

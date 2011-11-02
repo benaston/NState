@@ -34,11 +34,13 @@
     <Reference Include="NBasicExtensionMethod">
       <HintPath>..\packages\NBasicExtensionMethod.1.0.4292.32667\lib\net40\NBasicExtensionMethod.dll</HintPath>
     </Reference>
-    <Reference Include="NHelpfulException">
-      <HintPath>..\packages\NHelpfulException.1.0.4292.35244\lib\net40\NHelpfulException.dll</HintPath>
+    <Reference Include="NHelpfulException, Version=1.0.4322.41274, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NHelpfulException.1.0.4322.41274\lib\net40\NHelpfulException.dll</HintPath>
     </Reference>
-    <Reference Include="NSure">
-      <HintPath>..\packages\NSure.1.0.4292.35410\lib\net40\NSure.dll</HintPath>
+    <Reference Include="NSure, Version=1.0.4322.41374, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NSure.1.0.4322.41374\lib\net40\NSure.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

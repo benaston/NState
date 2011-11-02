@@ -17,6 +17,7 @@
     ///   instances.
     ///   NOTE 1: BA; http://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
     /// </summary>
+    /// <typeparam name="TBaseDomainObject">This is the root of the tree of domain objects in the state machine?</typeparam>
     public class StateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
         IStateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
         where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
@@ -33,11 +34,11 @@
             TState startState,
             Dictionary<TStateMachineTypeEnum, IStateMachine> childStateMachines)
         {
-            Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.")
-                .And(childStateMachines.IsNotNull(), "childStateMachines not supplied.");
+            Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
+                //.And(childStateMachines.IsNotNull(), "childStateMachines not supplied.");
 
             StateTransitions = stateTransitions;
-            ChildStateMachines = childStateMachines;
+            ChildStateMachines = childStateMachines ?? new Dictionary<TStateMachineTypeEnum, IStateMachine>();
             StartState = startState;
             CurrentState = startState;
         }
@@ -73,6 +74,7 @@
                 var v = StateTransitions.First(t => t.StartState == CurrentState && t.EndState == targetState).
                     Transition
                     (statefulDomainObject, targetState);
+                CurrentState = targetState;
                 OnRaiseAfterEveryTransition();
 
                 return v;
@@ -94,6 +96,7 @@
         }
 
         public event EventHandler RaiseBeforeEveryTransitionEvent;
+
         public event EventHandler RaiseAfterEveryTransitionEvent;
 
         // Wrap event invocations inside a protected virtual method

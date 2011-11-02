@@ -13,31 +13,39 @@ namespace NState.Test.Fast
         [Test]
         public void PerformTransition_WhenHappyPathFollowed_StateIsChanged()
         {
+        //class StateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
+        //IStateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        //where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        //where TState : State
+        //where TBaseDomainObject : IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        //where TBaseState : State
+        //where TStateMachineTypeEnum : struct
+
             var accountTabStateMachine = new StateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>(
                 new IStateTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>[]
                     {
-                        //Sam syntax idea
-                        new AccountTabTransitions.Collapse(), 
-                        new AccountTabTransitions.Expand(),
+                        new AccountTabTransitions.Collapse((tab,state) => tab), 
+                        new AccountTabTransitions.Expand((tab,state) => tab),
                     }, 
                 new AccountTabState.Collapsed(), null);
             var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>(
                 new IStateTransition<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>[]
                     {
-                        new LucidUITransitions.Pause(), 
-                        new LucidUITransitions.Resume(),
+                        new LucidUITransitions.Pause((lucidUI,state) => lucidUI), 
+                        new LucidUITransitions.Resume((lucidUI,state) => lucidUI),
                     }, 
                 new LucidUIState.Paused(),
                 new Dictionary<StateMachineType, IStateMachine> { {StateMachineType.AccountTab, accountTabStateMachine}, });
 
             var ui = new LucidUI();
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine).Equals(new LucidUIState.Paused()));
+            Assert.That(ui.GetStateMachineFromRootComposite(lucidUIStateMachine).CurrentState == new LucidUIState.Paused(), "lucid start state");
             ui = lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
-            Assert.That(ui.GetStateMachine(lucidUIStateMachine) == new LucidUIState.Active());
+            Assert.That(ui.GetStateMachineFromRootComposite(lucidUIStateMachine).CurrentState == new LucidUIState.Active(), "lucid state post transition");
             var accountTab = new AccountTab();
-            Assert.That(accountTab.GetStateMachine(lucidUIStateMachine).CurrentState == new AccountTabState.Collapsed());
-            accountTab = accountTab.PerformTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>(new AccountTabState.Expanded(), lucidUIStateMachine);
-            Assert.That(accountTab.GetStateMachine(lucidUIStateMachine).CurrentState == new AccountTabState.Expanded());
+            Assert.That(accountTab.GetStateMachineFromRootComposite(lucidUIStateMachine).CurrentState == new AccountTabState.Collapsed());
+            accountTab = accountTab.PerformTransition<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
+                (new AccountTabState.Expanded(), lucidUIStateMachine);
+            Assert.That(accountTab.GetStateMachineFromRootComposite(lucidUIStateMachine).CurrentState == new AccountTabState.Expanded(), "accountTab post transition");
         }
 
         //tests for event registration/invocation and transition performance, per old tests
@@ -53,7 +61,7 @@ namespace NState.Test.Fast
             where TBaseState : State
             where TStateMachineTypeEnumeration : struct
         {
-            return statefulDomainObject.GetStateMachine(stateMachine).PerformTransition(statefulDomainObject, targetState);
+            return statefulDomainObject.GetStateMachineFromRootComposite(stateMachine).PerformTransition(statefulDomainObject, targetState);
         }
     }
 }
