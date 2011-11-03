@@ -27,11 +27,11 @@ How to use:
 				{
 					new BugTransition.Open((bug,state,args) => ss),
 					new BugTransition.Assign((bug,state,args) => { bug.AssigneeEmail = args;
-										       		_emailSender.SendEmail(bug.AssigneeEmail, "Bug assigned to you."); 
-										       		return ss; }),
+										       				_emailSender.SendEmail(bug.AssigneeEmail, "Bug assigned to you."); 
+										       				return ss; }),
 					new BugTransition.Defer((bug,state,args) =>  { _emailSender.SendEmail(bug.AssigneeEmail, "You're off the hook."); 
-										       		bug.AssigneeEmail = String.Empty;
-										       		return ss; }),
+										       				bug.AssigneeEmail = String.Empty;
+										       				return ss; }),
 					new BugTransition.Resolve((bug,state,args) => ss),
 					new BugTransition.Close((bug,state,args) => ss),
 				};
