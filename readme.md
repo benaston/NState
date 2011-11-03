@@ -30,7 +30,6 @@ How to use:
  		public class Resolved : BugState {}
 	}
     
-
 ```
 
 **2. Define your stateful type**
@@ -71,7 +70,6 @@ How to use:
 			TransitionTo(new BugState.Closed(), new {ClosedByName = closedByName});
 		}
 	}
-
 
 ```
 
@@ -160,7 +158,6 @@ How to use:
 			}
 		}
 	}
-
 
 ```
 
