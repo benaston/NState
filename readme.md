@@ -1,5 +1,4 @@
 NState
-
 =====
 
 Simple state machine for .NET. This software is NOT production ready.
