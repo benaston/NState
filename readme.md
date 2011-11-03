@@ -34,13 +34,30 @@ How to use:
 		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
 
 
-```
 
-**3. Perform a state transition**
+
+**3. Create your stateful type**
 
 ```C#
 
-	myStateMachine.PerformTransition(new MyState.On());
+	public class MyStatefulType : Stateful<MyStatefulType, MyState, StateMachineType>
+	{
+		public MyStatefulType(IStateMachine<MyStatefulType, MyState, StateMachineType> stateMachine)
+			: base(stateMachine) {}
+
+		//...
+	}
+
+
+``````
+
+
+    
+**4. Perform a state transition**
+
+```C#
+
+	var myStatefulType = new MyStatefulType(myStateMachine).PerformTransition(new MyState.On());
 
 
 ```
