@@ -21,13 +21,17 @@ How to use:
 
 	var _emailSender = new MyEmailSender(); //full definition left out for clarity
 	
+	//NOTE: BA; that this transitional functionality defined in lambdas solely for clarity here.
+	//I am considering alternative approaches.
 	var myTransitions = new IStateTransition<Bug, BugState>[]
 				{
 					new BugTransition.Open((bug,state,args) => ss),
-					new BugTransition.Assign((bug,state,args) => { string assigneeEmail = args; 
-											_emailSender.SendEmail(assigneeEmail, "Bug assigned to you."); 
-											return ss; }),
-					new BugTransition.Defer((bug,state,args) => ss),
+					new BugTransition.Assign((bug,state,args) => { bug.AssigneeEmail = args;
+										       _emailSender.SendEmail(bug.AssigneeEmail, "Bug assigned to you."); 
+										       return ss; }),
+					new BugTransition.Defer((bug,state,args) =>  { _emailSender.SendEmail(bug.AssigneeEmail, "You're off the hook."); 
+										       bug.AssigneeEmail = String.Empty;
+										       return ss; }),
 					new BugTransition.Resolve((bug,state,args) => ss),
 					new BugTransition.Close((bug,state,args) => ss),
 				};
@@ -61,6 +65,8 @@ How to use:
 
 		public string Title { get; set; }
 		
+		public string AssigneeEmail { get; set; }
+		
 		public void Assign(string assigneeEmail)
 		{
 			stateMachine.PerformTransition(this, BugState.Assigned, assigneeEmail);
@@ -69,7 +75,6 @@ How to use:
 		public void Defer()
 		{
 			stateMachine.PerformTransition(this, BugState.Deferred);
-			Assignee = String.Empty;
 		}    
 		
 		public void Resolve()
