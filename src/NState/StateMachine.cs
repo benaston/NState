@@ -13,20 +13,19 @@
     ///   instances.
     /// </summary>
     [Serializable]
-    public class StateMachine<TStatefulDomainObject, TState, TStateMachineTypeEnum> :
-        IStateMachine<TStatefulDomainObject, TState, TStateMachineTypeEnum>
-        where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TStateMachineTypeEnum>
+    public class StateMachine<TStatefulDomainObject, TState> :
+        IStateMachine<TStatefulDomainObject, TState>
+        where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState>
         where TState : State
-        where TStateMachineTypeEnum : struct
     {
         protected readonly
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState>>
             StateTransitions;
 
         public StateMachine(
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState>>
                 stateTransitions,
             TState startState,
             List<IStateMachine> childStateMachines = null,
@@ -51,7 +50,7 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public List<IStateMachine> ParentStateMachines { get; set; }
 
-        public Dictionary<DateTime,IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>> History { get; set; }
+        public Dictionary<DateTime,IStateTransition<TStatefulDomainObject, TState>> History { get; set; }
 
         /// <summary>
         /// WIP - hierarchy!

@@ -9,12 +9,10 @@
     ///   to the database, or an onscreen notification or the billing of funds.
     ///   Note that a computer program might invoke the state transition.
     /// </summary>
-    public interface IStateTransition<TStatefulObject, TState,
-                                      TStateMachineTypeEnum>
+    public interface IStateTransition<TStatefulObject, TState>
         where TStatefulObject :
-            IStateful<TStatefulObject, TState, TStateMachineTypeEnum>
+            IStateful<TStatefulObject, TState>
         where TState : State
-        where TStateMachineTypeEnum : struct
     {
         TState StartState { get; }
 

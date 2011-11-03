@@ -4,9 +4,9 @@
     using System.Collections.Generic;
 
     [Serializable]
-    public class LucidUI : Stateful<LucidUI, LucidUIState, StateMachineType>
+    public class LucidUI : Stateful<LucidUI, LucidUIState>
     {
-        public LucidUI(IStateMachine<LucidUI, LucidUIState, StateMachineType> stateMachine)
+        public LucidUI(IStateMachine<LucidUI, LucidUIState> stateMachine)
             : base(stateMachine) {}
 
         public AccountTab AccountTab { get; set; }

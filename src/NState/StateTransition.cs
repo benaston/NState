@@ -3,13 +3,12 @@
     using System;
     using NSure;
 
-    public abstract class StateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum> :
+    public abstract class StateTransition<TStatefulDomainObject, TState> :
                                               IStateTransition
-                                                  <TStatefulDomainObject, TState, TStateMachineTypeEnum>
+                                                  <TStatefulDomainObject, TState>
         where TStatefulDomainObject :
-            IStateful<TStatefulDomainObject, TState, TStateMachineTypeEnum>
+            IStateful<TStatefulDomainObject, TState>
         where TState : State
-        where TStateMachineTypeEnum : struct
     {
         private readonly TStatefulDomainObject _statefulDomainObject;
 

@@ -3,19 +3,18 @@
     using System;
 
     [Serializable]
-    public abstract class Stateful<TStatefulObject, TState, TStateMachineTypeEnum> :
-        IStateful<TStatefulObject, TState, TStateMachineTypeEnum>
-        where TStatefulObject : IStateful<TStatefulObject, TState, TStateMachineTypeEnum>
+    public abstract class Stateful<TStatefulObject, TState> :
+        IStateful<TStatefulObject, TState>
+        where TStatefulObject : IStateful<TStatefulObject, TState>
         where TState : State
-        where TStateMachineTypeEnum : struct
     {
         protected Stateful(
-            IStateMachine<TStatefulObject, TState, TStateMachineTypeEnum> stateMachine)
+            IStateMachine<TStatefulObject, TState> stateMachine)
         {
             StateMachine = stateMachine;
         }
 
-        public IStateMachine<TStatefulObject, TState, TStateMachineTypeEnum> StateMachine { get; set; }
+        public IStateMachine<TStatefulObject, TState> StateMachine { get; set; }
 
         public TState CurrentState
         {
@@ -27,7 +26,7 @@
             return
                 StateMachine.PerformTransition(
                     (TStatefulObject)
-                    ((IStateful<TStatefulObject, TState, TStateMachineTypeEnum>) this),
+                    ((IStateful<TStatefulObject, TState>) this),
                     targetState);
         }
     }

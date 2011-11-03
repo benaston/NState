@@ -17,16 +17,16 @@ namespace NState.Test.Fast
         public void PerformTransition_WhenHappyPathFollowed_StateIsChanged()
         {
             var accountTabStateMachine = new StateMachine
-                <AccountTab, AccountTabState, StateMachineType>(
-                new IStateTransition<AccountTab, AccountTabState, StateMachineType>[]
+                <AccountTab, AccountTabState>(
+                new IStateTransition<AccountTab, AccountTabState>[]
                     {
                         new AccountTabTransitions.Collapse((tab, state) => tab),
                         new AccountTabTransitions.Expand((tab, state) => tab),
                     },
                 new AccountTabState.Collapsed());
 
-            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, StateMachineType>(
-                new IStateTransition<LucidUI, LucidUIState, StateMachineType>[]
+            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
+                new IStateTransition<LucidUI, LucidUIState>[]
                     {
                         new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
                         new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
@@ -54,8 +54,8 @@ namespace NState.Test.Fast
         [Test]
         public void PerformTransition_WhenTransitionAffectsOtherPartsOfStateMachine_StateIsChangedInRelevantPlaces()
         {
-            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, StateMachineType>(
-                new IStateTransition<LucidUI, LucidUIState, StateMachineType>[]
+            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
+                new IStateTransition<LucidUI, LucidUIState>[]
                     {
                         new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
                         new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
@@ -63,8 +63,8 @@ namespace NState.Test.Fast
                 new LucidUIState.Paused());
 
             var savedSearchAStateMachine = new StateMachine
-                <SavedSearch, SavedSearchState, StateMachineType>(
-                new IStateTransition<SavedSearch, SavedSearchState, StateMachineType>[]
+                <SavedSearch, SavedSearchState>(
+                new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
                         new SavedSearchTransitions.Expand((ss, state) =>
                                                               {
@@ -83,8 +83,8 @@ namespace NState.Test.Fast
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
             var savedSearchBStateMachine = new StateMachine
-                <SavedSearch, SavedSearchState, StateMachineType>(
-                new IStateTransition<SavedSearch, SavedSearchState, StateMachineType>[]
+                <SavedSearch, SavedSearchState>(
+                new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
                         new SavedSearchTransitions.Expand((ss, state) =>
                                                               {
@@ -142,8 +142,8 @@ namespace NState.Test.Fast
         [Test, Ignore("WIP")]
         public void Serialize_WhenInvoked_SerializesStateMachineStateToAString()
         {
-            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState, StateMachineType>(
-                new IStateTransition<LucidUI, LucidUIState, StateMachineType>[]
+            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
+                new IStateTransition<LucidUI, LucidUIState>[]
                     {
                         new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
                         new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
@@ -151,8 +151,8 @@ namespace NState.Test.Fast
                 new LucidUIState.Paused());
 
             var savedSearchAStateMachine = new StateMachine
-                <SavedSearch, SavedSearchState, StateMachineType>(
-                new IStateTransition<SavedSearch, SavedSearchState, StateMachineType>[]
+                <SavedSearch, SavedSearchState>(
+                new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
                         new SavedSearchTransitions.Expand((ss, state) =>
                                                               {
@@ -170,8 +170,8 @@ namespace NState.Test.Fast
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
             var savedSearchBStateMachine = new StateMachine
-                <SavedSearch, SavedSearchState, StateMachineType>(
-                new IStateTransition<SavedSearch, SavedSearchState, StateMachineType>[]
+                <SavedSearch, SavedSearchState>(
+                new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
                         new SavedSearchTransitions.Expand((ss, state) =>
                                                               {
@@ -218,7 +218,7 @@ namespace NState.Test.Fast
 
             var ooo =
                 JsonConvert.DeserializeObject
-                    <StateMachine<LucidUI, LucidUIState, StateMachineType>>(
+                    <StateMachine<LucidUI, LucidUIState>>(
                         serializedStateMachine);
             //var newUI = new LucidUI();
             //Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());

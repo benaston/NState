@@ -6,7 +6,7 @@
     public class AccountTabTransitions
     {
         [Serializable]
-        public class Collapse : StateTransition<AccountTab, AccountTabState, StateMachineType>
+        public class Collapse : StateTransition<AccountTab, AccountTabState>
         {
             public Collapse(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}
 
@@ -22,7 +22,7 @@
         }
 
         [Serializable]
-        public class Expand : StateTransition<AccountTab, AccountTabState, StateMachineType>
+        public class Expand : StateTransition<AccountTab, AccountTabState>
         {
             public Expand(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}
 

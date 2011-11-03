@@ -3,10 +3,10 @@
     using System;
 
     [Serializable]
-    public class SavedSearch : Stateful<SavedSearch, SavedSearchState, StateMachineType>
+    public class SavedSearch : Stateful<SavedSearch, SavedSearchState>
     {
         public SavedSearch(
-            IStateMachine<SavedSearch, SavedSearchState, StateMachineType> stateMachine,
+            IStateMachine<SavedSearch, SavedSearchState> stateMachine,
             LucidUI uiContext) : base(stateMachine)
         {
             UIContext = uiContext;

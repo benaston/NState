@@ -9,11 +9,10 @@
     ///   Responsible for defining the interface for types that
     ///   control the transitions between state machine states.
     /// </summary>
-    public interface IStateMachine<TStatefulObject, TState, TStateMachineTypeEnum> :
+    public interface IStateMachine<TStatefulObject, TState> :
         IStateMachine
-        where TStatefulObject : IStateful<TStatefulObject, TState, TStateMachineTypeEnum>
+        where TStatefulObject : IStateful<TStatefulObject, TState>
         where TState : State
-        where TStateMachineTypeEnum : struct
     {
         TState StartState { get; set; }
 
@@ -24,7 +23,7 @@
         List<IStateMachine> ParentStateMachines { get; set; }
 
         Dictionary
-            <DateTime, IStateTransition<TStatefulObject, TState, TStateMachineTypeEnum>>
+            <DateTime, IStateTransition<TStatefulObject, TState>>
             History { get; set; }
 
         TStatefulObject PerformTransition(TStatefulObject opportunity, TState targetState);

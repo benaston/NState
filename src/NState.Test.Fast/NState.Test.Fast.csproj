@@ -80,7 +80,6 @@
     <Compile Include="SavedSearch.cs" />
     <Compile Include="SavedSearchState.cs" />
     <Compile Include="SavedSearchTransitions.cs" />
-    <Compile Include="StateMachineType.cs" />
     <Compile Include="StateMachineTests.cs" />
   </ItemGroup>
   <ItemGroup>
