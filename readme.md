@@ -16,6 +16,7 @@ How to use:
 **1. Create some state transitions**
 
 ```C#
+
 	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
 				{
 					new MyState.Off((ss,state) => ss),
