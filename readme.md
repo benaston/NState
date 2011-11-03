@@ -3,10 +3,10 @@ NState
 
 Simple state machine for .NET.
 
-Usage:
+How to use:
 --------
 
-*Create some state transitions*
+**Create some state transitions**
 
 ```C#
 	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
@@ -19,7 +19,7 @@ Usage:
 ```
 
 
-*Create your state machine*
+**Create your state machine**
 
 ```C#
 
@@ -29,7 +29,7 @@ Usage:
 
 ```
 
-*Perform a state transition*
+**Perform a state transition**
 
 ```C#
 
