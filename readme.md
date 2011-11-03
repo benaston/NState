@@ -9,7 +9,7 @@ How to use:
 **0. Get it**
 
 ```shell
-	nuget install nfeature
+	nuget install nstate
 ```
 
 
