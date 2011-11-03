@@ -15,7 +15,7 @@ How to use:
 
 **1. Create some state transitions**
 
-*This example is taken from Stateless, another, (significantly better!) state machine for .NET*
+*This is an implementation of the example used for Stateless, another, (significantly better!) state machine for .NET*
 
 ```C#
 
@@ -91,13 +91,3 @@ How to use:
 ``````
 
 
-    
-**4. Perform a state transition**
-
-
-```C#
-
-	var myStatefulType = new MyStatefulType(myStateMachine); //state is "Off"
-	myStatefulType = myStatefulType.PerformTransition(new MyState.On()); //state transitioned to "On"
-
-```
