@@ -24,7 +24,9 @@ How to use:
 	var myTransitions = new IStateTransition<Bug, BugState>[]
 				{
 					new BugTransition.Open((bug,state,args) => ss),
-					new BugTransition.Assign((bug,state,args) => { _emailSender.SendEmail(args.Assignee, "Bug assigned to you."); return ss; }),
+					new BugTransition.Assign((bug,state,args) => { string assigneeEmail = args; 
+											_emailSender.SendEmail(assigneeEmail, "Bug assigned to you."); 
+											return ss; }),
 					new BugTransition.Defer((bug,state,args) => ss),
 					new BugTransition.Resolve((bug,state,args) => ss),
 					new BugTransition.Close((bug,state,args) => ss),
@@ -59,12 +61,9 @@ How to use:
 
 		public string Title { get; set; }
 		
-		public string Assignee { get; set; }
-		
-		public void Assign(string assignee)
+		public void Assign(string assigneeEmail)
 		{
-			Assignee = assignee;
-			stateMachine.PerformTransition(this, BugState.Assigned);
+			stateMachine.PerformTransition(this, BugState.Assigned, assigneeEmail);
 		}    
 		
 		public void Defer()
