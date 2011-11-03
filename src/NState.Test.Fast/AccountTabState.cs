@@ -9,8 +9,6 @@
         {
             public Collapsed()
             {
-                Name = "Collapsed";
-                Description = "";
             }
         }
 
@@ -18,8 +16,6 @@
         {
             public Expanded()
             {
-                Name = "Expanded";
-                Description = "";
             }
         }
     }

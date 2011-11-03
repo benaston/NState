@@ -40,13 +40,13 @@ namespace NState.Test.Fast
             Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
 
             //act
-            ui.PerformTransition(new LucidUIState.Active());
+            ui.TransitionTo(new LucidUIState.Active());
             
             Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid state post transition");
             Assert.That(ui.AccountTab.CurrentState == new AccountTabState.Collapsed());
 
             //act
-            ui.AccountTab.PerformTransition(new AccountTabState.Expanded());
+            ui.AccountTab.TransitionTo(new AccountTabState.Expanded());
 
             Assert.That(ui.AccountTab.CurrentState == new AccountTabState.Expanded(), "accountTab post transition");
         }
@@ -72,7 +72,7 @@ namespace NState.Test.Fast
                                                                       .SavedSearches
                                                                       .SkipWhile(s => s.Id == ss.Id).ToList())
                                                                   {
-                                                                      i.PerformTransition(
+                                                                      i.TransitionTo(
                                                                           new SavedSearchState.Collapsed());
                                                                   }
 
@@ -92,7 +92,7 @@ namespace NState.Test.Fast
                                                                       .SavedSearches
                                                                       .SkipWhile(s => s.Id == ss.Id).ToList())
                                                                   {
-                                                                      i.PerformTransition(
+                                                                      i.TransitionTo(
                                                                           new SavedSearchState.Collapsed());
                                                                   }
 
@@ -114,7 +114,7 @@ namespace NState.Test.Fast
 
             Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
 
-            lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
+            lucidUIStateMachine.TransitionTo(ui, new LucidUIState.Active());
             Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid post transition state");
 
             var savedSearchA = ui.SavedSearches.First(s => s.Id == "a");
@@ -124,13 +124,13 @@ namespace NState.Test.Fast
             Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
 
             //act
-            savedSearchA.PerformTransition(new SavedSearchState.Expanded());
+            savedSearchA.TransitionTo(new SavedSearchState.Expanded());
 
             Assert.That(savedSearchA.CurrentState == new SavedSearchState.Expanded());
             Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
 
             //act
-            savedSearchB.PerformTransition(new SavedSearchState.Expanded());
+            savedSearchB.TransitionTo(new SavedSearchState.Expanded());
 
             Assert.That(savedSearchB.CurrentState == new SavedSearchState.Expanded());
             Assert.That(savedSearchA.CurrentState == new SavedSearchState.Collapsed());
@@ -160,7 +160,7 @@ namespace NState.Test.Fast
                                                                       .SavedSearches
                                                                       .SkipWhile(s => s.Id == ss.Id).ToList())
                                                                   {
-                                                                      i.PerformTransition(
+                                                                      i.TransitionTo(
                                                                           new SavedSearchState.Collapsed());
                                                                   }
                                                                   return ss;
@@ -179,7 +179,7 @@ namespace NState.Test.Fast
                                                                       .SavedSearches
                                                                       .SkipWhile(s => s.Id == ss.Id).ToList())
                                                                   {
-                                                                      i.PerformTransition(
+                                                                      i.TransitionTo(
                                                                           new SavedSearchState.Collapsed());
                                                                   }
                                                                   return ss;
@@ -200,7 +200,7 @@ namespace NState.Test.Fast
 
             Assert.That(ui.CurrentState == new LucidUIState.Paused(), "lucid start state");
 
-            lucidUIStateMachine.PerformTransition(ui, new LucidUIState.Active());
+            lucidUIStateMachine.TransitionTo(ui, new LucidUIState.Active());
             Assert.That(ui.CurrentState == new LucidUIState.Active(), "lucid post transition state");
 
             var savedSearchA = ui.SavedSearches.First(s => s.Id == "a");
@@ -210,7 +210,7 @@ namespace NState.Test.Fast
             Assert.That(savedSearchB.CurrentState == new SavedSearchState.Collapsed());
             
             //act
-            savedSearchA.PerformTransition(new SavedSearchState.Expanded());
+            savedSearchA.TransitionTo(new SavedSearchState.Expanded());
 
             //wip...
             var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};

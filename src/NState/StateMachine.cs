@@ -14,19 +14,19 @@
     ///   instances.
     /// </summary>
     [Serializable]
-    public class StateMachine<TStatefulDomainObject, TState> :
-        IStateMachine<TStatefulDomainObject, TState>
-        where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState>
+    public class StateMachine<TStatefulObject, TState> :
+        IStateMachine<TStatefulObject, TState>
+        where TStatefulObject : IStateful<TStatefulObject, TState>
         where TState : State
     {
         protected readonly
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState>>
+                <IStateTransition<TStatefulObject, TState>>
             StateTransitions;
 
         public StateMachine(
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState>>
+                <IStateTransition<TStatefulObject, TState>>
                 stateTransitions,
             TState startState,
             List<IStateMachine> childStateMachines = null,
@@ -51,16 +51,16 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public List<IStateMachine> ParentStateMachines { get; set; }
 
-        public Dictionary<DateTime, IStateTransition<TStatefulDomainObject, TState>> History { get; set; }
+        public Dictionary<DateTime, IStateTransition<TStatefulObject, TState>> History { get; set; }
 
         /// <summary>
         ///   WIP - hierarchy!
         /// </summary>
-        public TStatefulDomainObject PerformTransition(TStatefulDomainObject statefulDomainObject, TState targetState,
+        public TStatefulObject TransitionTo(TStatefulObject statefulObject, TState targetState,
                                                        dynamic dto = default(dynamic))
         {
-            Ensure.That<ArgumentNullException>(statefulDomainObject.IsNotNull(),
-                                               "statefulDomainObject not supplied.");
+            Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
+                                               "statefulObject not supplied.");
 
             OnRaiseBeforeEveryTransition();
 
@@ -68,18 +68,18 @@
             {
                 if (CurrentState != targetState) //make this explicit?
                 {
-                    statefulDomainObject = StateTransitions.First(
-                        t =>
-                        t.StartState.DistinctBy(s => s.Name == CurrentState.Name).Any() &&
-                        t.EndState.DistinctBy(e => e.Name == targetState.Name).Any()).
-                        Transition
-                        (statefulDomainObject, targetState, dto);
+                    var transition = StateTransitions.Where(
+                       t =>
+                       t.StartState.Where(s => s == CurrentState).Any() &&
+                       t.EndState.Where(e => e == targetState).Any()).First().Transition;
+
+                    statefulObject = transition(statefulObject, targetState, dto);
 
                     CurrentState = targetState;
                 }
                 OnRaiseAfterEveryTransition();
 
-                return statefulDomainObject;
+                return statefulObject;
             }
             catch (Exception)
             {

@@ -5,7 +5,20 @@
     [Serializable]
     public abstract class State
     {
-        public string Name { get; protected set; }
+        private string _name;
+
+        public virtual string Name
+        {
+            get
+            {
+                return _name ?? GetType().FullName;
+            }
+
+            set
+            {
+                _name = value;
+            }
+        }
 
         public string Description { get; protected set; }
 

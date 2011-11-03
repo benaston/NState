@@ -1,22 +1,20 @@
 ﻿namespace NState
 {
     using System;
-    using NSure;
 
     public abstract class StateTransition<TStatefulDomainObject, TState> :
-                                              IStateTransition
-                                                  <TStatefulDomainObject, TState>
+        IStateTransition
+            <TStatefulDomainObject, TState>
         where TStatefulDomainObject :
             IStateful<TStatefulDomainObject, TState>
         where TState : State
     {
         private readonly TStatefulDomainObject _statefulDomainObject;
 
-        protected StateTransition(Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> transitionFunction)
+        protected StateTransition(
+            Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> transitionFunction = null)
         {
-            Ensure.That(transitionFunction != null, "transitionFunction not supplied");
-
-            TransitionFunction = transitionFunction;
+            TransitionFunction = transitionFunction ?? ((o, s, args) => o); //identity
         }
 
         public Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> TransitionFunction { get; private set; }

@@ -21,10 +21,10 @@
             get { return StateMachine.CurrentState; }
         }
 
-        public TStatefulObject PerformTransition(TState targetState, dynamic dto = default(dynamic))
+        public TStatefulObject TransitionTo(TState targetState, dynamic dto = default(dynamic))
         {
             return
-                StateMachine.PerformTransition(
+                StateMachine.TransitionTo(
                     (TStatefulObject)
                     ((IStateful<TStatefulObject, TState>) this),
                     targetState, dto);
