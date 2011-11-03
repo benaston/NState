@@ -6,7 +6,7 @@ Simple state machine for .NET.
 Usage:
 --------
 
-NOTE: the API is currently pretty horrible and is a WIP. It will be simplified.
+PLEASE NOTE: this project is unfinished and I realise that the API is currently pretty horrible.
 
 *Create some state transitions*
 
