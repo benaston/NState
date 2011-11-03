@@ -15,13 +15,19 @@ How to use:
 
 **1. Create some state transitions**
 
+*This example is taken from Stateless, another, (significantly better!) state machine for .NET*
 
 ```C#
 
-	var myTransitions = new IStateTransition<MyStatefulType, MyState>[]
+	var _emailSender = new MyEmailSender(); //full definition left out for clarity
+	
+	var myTransitions = new IStateTransition<Bug, BugState>[]
 				{
-					new MyState.Off((ss,state) => ss),
-					new MyState.On((ss,state) => ss),
+					new BugTransition.Open((bug,state,args) => ss),
+					new BugTransition.Assign((bug,state,args) => { _emailSender.SendEmail(args.Assignee, "Bug assigned to you."); return ss; }),
+					new BugTransition.Defer((bug,state,args) => ss),
+					new BugTransition.Resolve((bug,state,args) => ss),
+					new BugTransition.Close((bug,state,args) => ss),
 				};
 
 ```
@@ -33,7 +39,7 @@ How to use:
 ```C#
 
 	var myStateMachine 
-		= new StateMachine<MyStatefulType, MyState>(myTransitions, initialState:new MyState.Off());
+		= new StateMachine<Bug, BugState>(myTransitions, initialState:new BugState.Open());
 
 ```
 
@@ -43,12 +49,39 @@ How to use:
 
 ```C#
 
-	public class MyStatefulType : Stateful<MyStatefulType, MyState>
+	public class Bug : Stateful<Bug, BugState>
 	{
-		public MyStatefulType(IStateMachine<MyStatefulType, MyState> stateMachine)
-			: base(stateMachine) {}
+		public MyStatefulType(string title, IStateMachine<MyStatefulType, MyState> stateMachine)
+			: base(stateMachine) 
+		{
+			Title = title;
+		}
 
-		//...
+		public string Title { get; set; }
+		
+		public string Assignee { get; set; }
+		
+		public void Assign(string assignee)
+		{
+			Assignee = assignee;
+			stateMachine.PerformTransition(this, BugState.Assigned);
+		}    
+		
+		public void Defer()
+		{
+			stateMachine.PerformTransition(this, BugState.Deferred);
+			Assignee = String.Empty;
+		}    
+		
+		public void Resolve()
+		{
+			stateMachine.PerformTransition(this, BugState.Resolved);
+		}
+		
+		public void Close()
+		{
+			stateMachine.PerformTransition(this, BugState.Closed);
+		}    
 	}
 
 ``````
