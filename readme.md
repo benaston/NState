@@ -18,8 +18,8 @@ How to use:
 ```C#
 	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
 				{
-					new MyState.On((ss,state) => ss),
 					new MyState.Off((ss,state) => ss),
+					new MyState.On((ss,state) => ss),
 				};
 
 
@@ -31,7 +31,7 @@ How to use:
 ```C#
 
 	var myStateMachine 
-		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new SavedSearchState.Collapsed());
+		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
 
 
 ```
