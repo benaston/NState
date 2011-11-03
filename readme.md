@@ -22,7 +22,7 @@ How to use:
 	var _emailSender = new MyEmailSender(); //full definition left out for clarity
 	
 	//NOTE: BA; that this transitional functionality defined in lambdas solely for clarity here.
-	//I am considering alternative approaches.
+	//NState also has build in Event support, not shown here.
 	var myTransitions = new IStateTransition<Bug, BugState>[]
 				{
 					new BugTransition.Open((bug,state,args) => ss),
