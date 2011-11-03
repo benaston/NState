@@ -6,7 +6,8 @@
     [Serializable]
     public class LucidUI : Stateful<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType>
     {
-        public LucidUI(IStateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType> stateMachine) : base(stateMachine) {}
+        public LucidUI(IStateMachine<LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType> stateMachine)
+            : base(stateMachine) {}
 
         public AccountTab AccountTab { get; set; }
 

@@ -37,7 +37,8 @@
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0)*397) ^ (Description != null ? Description.GetHashCode() : 0);
+                return ((Name != null ? Name.GetHashCode() : 0)*397) ^
+                       (Description != null ? Description.GetHashCode() : 0);
             }
         }
     }

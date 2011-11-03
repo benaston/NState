@@ -18,7 +18,6 @@
             public override LucidUIState EndState
             {
                 get { return new LucidUIState.Paused(); }
-
             }
         }
 

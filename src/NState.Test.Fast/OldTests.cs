@@ -1,5 +1,4 @@
-﻿
-//[TestFixture]
+﻿//[TestFixture]
 //public class StateMachineTransitionTests
 //{
 //    private TestItem _testItem;

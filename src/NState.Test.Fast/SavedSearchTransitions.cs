@@ -6,36 +6,36 @@
     public class SavedSearchTransitions
     {
         [Serializable]
-        public class Expand : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
+        public class Collapse : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
         {
-            public Expand(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction) : base(transitionFunction) { }
+            public Collapse(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction)
+                : base(transitionFunction) {}
 
             public override SavedSearchState StartState
             {
-                get { return new SavedSearchState.Collapsed(); }
+                get { return new SavedSearchState.Expanded(); }
             }
 
             public override SavedSearchState EndState
             {
-                get { return new SavedSearchState.Expanded(); }
-
+                get { return new SavedSearchState.Collapsed(); }
             }
         }
 
         [Serializable]
-        public class Collapse : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
+        public class Expand : StateTransition<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
         {
-            public Collapse(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction) : base(transitionFunction) { }
+            public Expand(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction)
+                : base(transitionFunction) {}
 
             public override SavedSearchState StartState
             {
-                get { return new SavedSearchState.Expanded(); }
+                get { return new SavedSearchState.Collapsed(); }
             }
 
             public override SavedSearchState EndState
             {
-                get { return new SavedSearchState.Collapsed(); }
-
+                get { return new SavedSearchState.Expanded(); }
             }
         }
     }

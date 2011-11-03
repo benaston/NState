@@ -5,6 +5,8 @@
     [Serializable]
     public class AccountTab : Stateful<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
     {
-        public AccountTab(IStateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType> stateMachine) : base(stateMachine) {}
+        public AccountTab(
+            IStateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType> stateMachine)
+            : base(stateMachine) {}
     }
 }
