@@ -6,8 +6,6 @@ Simple state machine for .NET.
 Usage:
 --------
 
-PLEASE NOTE: this project is unfinished and I realise that the API is currently pretty horrible.
-
 *Create some state transitions*
 
 ```C#
