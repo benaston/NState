@@ -8,32 +8,32 @@
         [Serializable]
         public class Pause : StateTransition<LucidUI, LucidUIState>
         {
-            public Pause(Func<LucidUI, LucidUIState, LucidUI> transitionFunction) : base(transitionFunction) {}
+            public Pause(Func<LucidUI, LucidUIState, dynamic, LucidUI> transitionFunction) : base(transitionFunction) {}
 
-            public override LucidUIState StartState
+            public override LucidUIState[] StartState
             {
-                get { return new LucidUIState.Active(); }
+                get { return new [] { new LucidUIState.Active(), }; }
             }
 
-            public override LucidUIState EndState
+            public override LucidUIState[] EndState
             {
-                get { return new LucidUIState.Paused(); }
+                get { return new[] { new LucidUIState.Paused(), }; }
             }
         }
 
         [Serializable]
         public class Resume : StateTransition<LucidUI, LucidUIState>
         {
-            public Resume(Func<LucidUI, LucidUIState, LucidUI> transitionFunction) : base(transitionFunction) {}
+            public Resume(Func<LucidUI, LucidUIState, dynamic, LucidUI> transitionFunction) : base(transitionFunction) {}
 
-            public override LucidUIState StartState
+            public override LucidUIState[] StartState
             {
-                get { return new LucidUIState.Paused(); }
+                get { return new[] { new LucidUIState.Paused(), }; }
             }
 
-            public override LucidUIState EndState
+            public override LucidUIState[] EndState
             {
-                get { return new LucidUIState.Active(); }
+                get { return new[] { new LucidUIState.Active(), }; }
             }
         }
     }

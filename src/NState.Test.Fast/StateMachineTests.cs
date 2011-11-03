@@ -20,16 +20,16 @@ namespace NState.Test.Fast
                 <AccountTab, AccountTabState>(
                 new IStateTransition<AccountTab, AccountTabState>[]
                     {
-                        new AccountTabTransitions.Collapse((tab, state) => tab),
-                        new AccountTabTransitions.Expand((tab, state) => tab),
+                        new AccountTabTransitions.Collapse((tab, state, dto) => tab),
+                        new AccountTabTransitions.Expand((tab, state, dto) => tab),
                     },
                 new AccountTabState.Collapsed());
 
             var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
                 new IStateTransition<LucidUI, LucidUIState>[]
                     {
-                        new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
-                        new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
+                        new LucidUITransitions.Pause((lucidUI, state, dto) => lucidUI),
+                        new LucidUITransitions.Resume((lucidUI, state, dto) => lucidUI),
                     },
                 new LucidUIState.Paused(),
                 new List<IStateMachine> {accountTabStateMachine,});
@@ -57,8 +57,8 @@ namespace NState.Test.Fast
             var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
                 new IStateTransition<LucidUI, LucidUIState>[]
                     {
-                        new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
-                        new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
+                        new LucidUITransitions.Pause((lucidUI, state, dto) => lucidUI),
+                        new LucidUITransitions.Resume((lucidUI, state, dto) => lucidUI),
                     },
                 new LucidUIState.Paused());
 
@@ -66,7 +66,7 @@ namespace NState.Test.Fast
                 <SavedSearch, SavedSearchState>(
                 new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
-                        new SavedSearchTransitions.Expand((ss, state) =>
+                        new SavedSearchTransitions.Expand((ss, state, dto) =>
                                                               {
                                                                   foreach (var i in ss.UIContext
                                                                       .SavedSearches
@@ -78,7 +78,7 @@ namespace NState.Test.Fast
 
                                                                   return ss;
                                                               }),
-                        new SavedSearchTransitions.Collapse((ss, state) => ss),
+                        new SavedSearchTransitions.Collapse((ss, state, dto) => ss),
                     },
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
@@ -86,7 +86,7 @@ namespace NState.Test.Fast
                 <SavedSearch, SavedSearchState>(
                 new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
-                        new SavedSearchTransitions.Expand((ss, state) =>
+                        new SavedSearchTransitions.Expand((ss, state, dto) =>
                                                               {
                                                                   foreach (var i in ss.UIContext
                                                                       .SavedSearches
@@ -98,7 +98,7 @@ namespace NState.Test.Fast
 
                                                                   return ss;
                                                               }),
-                        new SavedSearchTransitions.Collapse((ss, state) => ss),
+                        new SavedSearchTransitions.Collapse((ss, state, dto) => ss),
                     },
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
@@ -145,8 +145,8 @@ namespace NState.Test.Fast
             var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
                 new IStateTransition<LucidUI, LucidUIState>[]
                     {
-                        new LucidUITransitions.Pause((lucidUI, state) => lucidUI),
-                        new LucidUITransitions.Resume((lucidUI, state) => lucidUI),
+                        new LucidUITransitions.Pause((lucidUI, state, dto) => lucidUI),
+                        new LucidUITransitions.Resume((lucidUI, state, dto) => lucidUI),
                     },
                 new LucidUIState.Paused());
 
@@ -154,7 +154,7 @@ namespace NState.Test.Fast
                 <SavedSearch, SavedSearchState>(
                 new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
-                        new SavedSearchTransitions.Expand((ss, state) =>
+                        new SavedSearchTransitions.Expand((ss, state, dto) =>
                                                               {
                                                                   foreach (var i in ss.UIContext
                                                                       .SavedSearches
@@ -165,7 +165,7 @@ namespace NState.Test.Fast
                                                                   }
                                                                   return ss;
                                                               }),
-                        new SavedSearchTransitions.Collapse((ss, state) => ss),
+                        new SavedSearchTransitions.Collapse((ss, state, dto) => ss),
                     },
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 
@@ -173,7 +173,7 @@ namespace NState.Test.Fast
                 <SavedSearch, SavedSearchState>(
                 new IStateTransition<SavedSearch, SavedSearchState>[]
                     {
-                        new SavedSearchTransitions.Expand((ss, state) =>
+                        new SavedSearchTransitions.Expand((ss, state, dto) =>
                                                               {
                                                                   foreach (var i in ss.UIContext
                                                                       .SavedSearches
@@ -184,7 +184,7 @@ namespace NState.Test.Fast
                                                                   }
                                                                   return ss;
                                                               }),
-                        new SavedSearchTransitions.Collapse((ss, state) => ss),
+                        new SavedSearchTransitions.Collapse((ss, state, dto) => ss),
                     },
                 new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
 

@@ -14,10 +14,10 @@
             IStateful<TStatefulObject, TState>
         where TState : State
     {
-        TState StartState { get; }
+        TState[] StartState { get; }
 
-        TState EndState { get; }
+        TState[] EndState { get; }
 
-        Func<TStatefulObject, TState, TStatefulObject> Transition { get; }
+        Func<TStatefulObject, TState, dynamic, TStatefulObject> Transition { get; }
     }
 }

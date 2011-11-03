@@ -26,6 +26,6 @@
             <DateTime, IStateTransition<TStatefulObject, TState>>
             History { get; set; }
 
-        TStatefulObject PerformTransition(TStatefulObject opportunity, TState targetState);
+        TStatefulObject PerformTransition(TStatefulObject opportunity, TState targetState, dynamic dto);
     }
 }

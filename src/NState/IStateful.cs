@@ -13,6 +13,6 @@
 
         TState CurrentState { get; }
 
-        TStatefulObject PerformTransition(TState targetState);
+        TStatefulObject PerformTransition(TState targetState, dynamic dto);
     }
 }

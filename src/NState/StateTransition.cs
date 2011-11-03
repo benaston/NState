@@ -12,27 +12,27 @@
     {
         private readonly TStatefulDomainObject _statefulDomainObject;
 
-        protected StateTransition(Func<TStatefulDomainObject, TState, TStatefulDomainObject> transitionFunction)
+        protected StateTransition(Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> transitionFunction)
         {
             Ensure.That(transitionFunction != null, "transitionFunction not supplied");
 
             TransitionFunction = transitionFunction;
         }
 
-        public Func<TStatefulDomainObject, TState, TStatefulDomainObject> TransitionFunction { get; private set; }
+        public Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> TransitionFunction { get; private set; }
 
-        public abstract TState StartState { get; }
+        public abstract TState[] StartState { get; }
 
-        public abstract TState EndState { get; }
+        public abstract TState[] EndState { get; }
 
-        public Func<TStatefulDomainObject, TState, TStatefulDomainObject> Transition
+        public Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> Transition
         {
             get
             {
-                return (o, s) =>
+                return (o, s, dto) =>
                            {
                                OnRaiseBeforeTransition();
-                               var v = TransitionFunction(o, s);
+                               var v = TransitionFunction(o, s, dto);
                                OnRaiseAfterTransition();
                                return v;
                            };

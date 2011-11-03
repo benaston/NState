@@ -8,32 +8,32 @@
         [Serializable]
         public class Collapse : StateTransition<AccountTab, AccountTabState>
         {
-            public Collapse(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}
+            public Collapse(Func<AccountTab, AccountTabState, dynamic, AccountTab> transitionFunction) : base(transitionFunction) {}
 
-            public override AccountTabState StartState
+            public override AccountTabState[] StartState
             {
-                get { return new AccountTabState.Expanded(); }
+                get { return new[] { new AccountTabState.Expanded(), }; }
             }
 
-            public override AccountTabState EndState
+            public override AccountTabState[] EndState
             {
-                get { return new AccountTabState.Collapsed(); }
+                get { return new[] { new AccountTabState.Collapsed(), }; }
             }
         }
 
         [Serializable]
         public class Expand : StateTransition<AccountTab, AccountTabState>
         {
-            public Expand(Func<AccountTab, AccountTabState, AccountTab> transitionFunction) : base(transitionFunction) {}
+            public Expand(Func<AccountTab, AccountTabState, dynamic, AccountTab> transitionFunction) : base(transitionFunction) {}
 
-            public override AccountTabState StartState
+            public override AccountTabState[] StartState
             {
-                get { return new AccountTabState.Collapsed(); }
+                get { return new[] { new AccountTabState.Collapsed(), }; }
             }
 
-            public override AccountTabState EndState
+            public override AccountTabState[] EndState
             {
-                get { return new AccountTabState.Expanded(); }
+                get { return new[] { new AccountTabState.Expanded(), }; }
             }
         }
     }

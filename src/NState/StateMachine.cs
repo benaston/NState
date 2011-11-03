@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using MoreLinq;
     using NBasicExtensionMethod;
     using Newtonsoft.Json;
     using NSure;
@@ -50,12 +51,13 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public List<IStateMachine> ParentStateMachines { get; set; }
 
-        public Dictionary<DateTime,IStateTransition<TStatefulDomainObject, TState>> History { get; set; }
+        public Dictionary<DateTime, IStateTransition<TStatefulDomainObject, TState>> History { get; set; }
 
         /// <summary>
-        /// WIP - hierarchy!
+        ///   WIP - hierarchy!
         /// </summary>
-        public TStatefulDomainObject PerformTransition(TStatefulDomainObject statefulDomainObject, TState targetState)
+        public TStatefulDomainObject PerformTransition(TStatefulDomainObject statefulDomainObject, TState targetState,
+                                                       dynamic dto = default(dynamic))
         {
             Ensure.That<ArgumentNullException>(statefulDomainObject.IsNotNull(),
                                                "statefulDomainObject not supplied.");
@@ -67,9 +69,11 @@
                 if (CurrentState != targetState) //make this explicit?
                 {
                     statefulDomainObject = StateTransitions.First(
-                        t => t.StartState == CurrentState && t.EndState == targetState).
+                        t =>
+                        t.StartState.DistinctBy(s => s.Name == CurrentState.Name).Any() &&
+                        t.EndState.DistinctBy(e => e.Name == targetState.Name).Any()).
                         Transition
-                        (statefulDomainObject, targetState);
+                        (statefulDomainObject, targetState, dto);
 
                     CurrentState = targetState;
                 }
