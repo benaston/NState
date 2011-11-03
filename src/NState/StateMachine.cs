@@ -68,12 +68,10 @@
             {
                 if (CurrentState != targetState) //make this explicit?
                 {
-                    var transition = StateTransitions.Where(
-                       t =>
-                       t.StartState.Where(s => s == CurrentState).Any() &&
-                       t.EndState.Where(e => e == targetState).Any()).First().Transition;
-
-                    statefulObject = transition(statefulObject, targetState, dto);
+                    statefulObject = StateTransitions.Where(t =>
+                       t.StartStates.Where(s => s == CurrentState).Any() &&
+                       t.EndStates.Where(e => e == targetState).Any())
+                       .First().TransitionFunction(statefulObject, targetState, dto);
 
                     CurrentState = targetState;
                 }
@@ -81,11 +79,9 @@
 
                 return statefulObject;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                var i = new InvalidStateTransitionException<TState>(CurrentState, targetState);
-
-                throw i;
+                throw new InvalidStateTransitionException<TState>(CurrentState, targetState, innerException:e);
             }
         }
 

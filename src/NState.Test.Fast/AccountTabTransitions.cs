@@ -10,12 +10,12 @@
         {
             public Collapse(Func<AccountTab, AccountTabState, dynamic, AccountTab> transitionFunction) : base(transitionFunction) {}
 
-            public override AccountTabState[] StartState
+            public override AccountTabState[] StartStates
             {
                 get { return new[] { new AccountTabState.Expanded(), }; }
             }
 
-            public override AccountTabState[] EndState
+            public override AccountTabState[] EndStates
             {
                 get { return new[] { new AccountTabState.Collapsed(), }; }
             }
@@ -26,12 +26,12 @@
         {
             public Expand(Func<AccountTab, AccountTabState, dynamic, AccountTab> transitionFunction) : base(transitionFunction) {}
 
-            public override AccountTabState[] StartState
+            public override AccountTabState[] StartStates
             {
                 get { return new[] { new AccountTabState.Collapsed(), }; }
             }
 
-            public override AccountTabState[] EndState
+            public override AccountTabState[] EndStates
             {
                 get { return new[] { new AccountTabState.Expanded(), }; }
             }

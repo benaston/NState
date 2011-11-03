@@ -11,12 +11,12 @@
             public Collapse(Func<SavedSearch, SavedSearchState, dynamic, SavedSearch> transitionFunction)
                 : base(transitionFunction) {}
 
-            public override SavedSearchState[] StartState
+            public override SavedSearchState[] StartStates
             {
                 get { return new[] { new SavedSearchState.Expanded(), }; }
             }
 
-            public override SavedSearchState[] EndState
+            public override SavedSearchState[] EndStates
             {
                 get { return new[] { new SavedSearchState.Collapsed(), }; }
             }
@@ -28,12 +28,12 @@
             public Expand(Func<SavedSearch, SavedSearchState, dynamic, SavedSearch> transitionFunction)
                 : base(transitionFunction) {}
 
-            public override SavedSearchState[] StartState
+            public override SavedSearchState[] StartStates
             {
                 get { return new[] { new SavedSearchState.Collapsed(), }; }
             }
 
-            public override SavedSearchState[] EndState
+            public override SavedSearchState[] EndStates
             {
                 get { return new[] { new SavedSearchState.Expanded(), }; }
             }

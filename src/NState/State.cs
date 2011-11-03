@@ -7,7 +7,7 @@
     {
         private string _name;
 
-        public virtual string Name
+        public string Name
         {
             get
             {
@@ -37,6 +37,7 @@
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof (State)) return false;
+
             return Equals((State) obj);
         }
 

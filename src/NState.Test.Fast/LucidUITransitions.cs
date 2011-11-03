@@ -10,12 +10,12 @@
         {
             public Pause(Func<LucidUI, LucidUIState, dynamic, LucidUI> transitionFunction) : base(transitionFunction) {}
 
-            public override LucidUIState[] StartState
+            public override LucidUIState[] StartStates
             {
                 get { return new [] { new LucidUIState.Active(), }; }
             }
 
-            public override LucidUIState[] EndState
+            public override LucidUIState[] EndStates
             {
                 get { return new[] { new LucidUIState.Paused(), }; }
             }
@@ -26,12 +26,12 @@
         {
             public Resume(Func<LucidUI, LucidUIState, dynamic, LucidUI> transitionFunction) : base(transitionFunction) {}
 
-            public override LucidUIState[] StartState
+            public override LucidUIState[] StartStates
             {
                 get { return new[] { new LucidUIState.Paused(), }; }
             }
 
-            public override LucidUIState[] EndState
+            public override LucidUIState[] EndStates
             {
                 get { return new[] { new LucidUIState.Active(), }; }
             }

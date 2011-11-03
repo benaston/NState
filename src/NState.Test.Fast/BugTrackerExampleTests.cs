@@ -35,7 +35,7 @@ namespace NState.Test.Fast
 
         public void Assign(string assigneeEmail)
         {
-            TransitionTo(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
+            TransitionTo(new BugState.Assigned(), new {AssigneeEmail = assigneeEmail});
         }
 
         public void Defer()
@@ -45,12 +45,12 @@ namespace NState.Test.Fast
 
         public void Resolve()
         {
-            TransitionTo(new BugState.Deferred());
+            TransitionTo(new BugState.Resolved());
         }
 
         public void Close(string closedByName)
         {
-            TransitionTo(new BugState.Assigned(), new { ClosedByName = closedByName });
+            TransitionTo(new BugState.Closed(), new {ClosedByName = closedByName});
         }
     }
 
@@ -63,12 +63,12 @@ namespace NState.Test.Fast
         {
             public Assign(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
 
-            public override BugState[] StartState
+            public override BugState[] StartStates
             {
                 get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
             }
 
-            public override BugState[] EndState
+            public override BugState[] EndStates
             {
                 get { return new[] {new BugState.Assigned(),}; }
             }
@@ -79,12 +79,12 @@ namespace NState.Test.Fast
         {
             public Close(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
 
-            public override BugState[] StartState
+            public override BugState[] StartStates
             {
                 get { return new[] {new BugState.Resolved(),}; }
             }
 
-            public override BugState[] EndState
+            public override BugState[] EndStates
             {
                 get { return new[] {new BugState.Closed(),}; }
             }
@@ -95,12 +95,12 @@ namespace NState.Test.Fast
         {
             public Defer(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
 
-            public override BugState[] StartState
+            public override BugState[] StartStates
             {
                 get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
             }
 
-            public override BugState[] EndState
+            public override BugState[] EndStates
             {
                 get { return new[] {new BugState.Deferred(),}; }
             }
@@ -109,12 +109,12 @@ namespace NState.Test.Fast
         [Serializable]
         public class Open : StateTransition<Bug, BugState>
         {
-            public override BugState[] StartState
+            public override BugState[] StartStates
             {
                 get { return new[] {new BugState.Closed(),}; }
             }
 
-            public override BugState[] EndState
+            public override BugState[] EndStates
             {
                 get { return new[] {new BugState.Open(),}; }
             }
@@ -125,12 +125,12 @@ namespace NState.Test.Fast
         {
             public Resolve(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
 
-            public override BugState[] StartState
+            public override BugState[] StartStates
             {
                 get { return new[] {new BugState.Assigned(),}; }
             }
 
-            public override BugState[] EndState
+            public override BugState[] EndStates
             {
                 get { return new[] {new BugState.Resolved(),}; }
             }
@@ -215,6 +215,50 @@ namespace NState.Test.Fast
         }
 
         [Test]
+        public void PerformTransition_TwoSuccessiveValidTransitions_StateSetCorrectly()
+        {
+            //arrange
+            var bug = new Bug("bug1", _stateMachine);
+
+            //act/assert
+            Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Assigned(),
+                                                       new {AssigneeEmail = "example@example.com"}).TransitionTo(
+                                                           new BugState.Deferred()));
+        }
+
+        [Test]
+        public void PerformTransition_TwoSuccessiveValidTransitions_NoExceptionThrown()
+        {
+            //arrange
+            var bug = new Bug("bug1", _stateMachine);
+
+            //act/assert
+            Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Assigned(),
+                                                       new {AssigneeEmail = "example@example.com"})
+                                         .TransitionTo(new BugState.Deferred()));
+        }
+
+        [Test]
+        public void PerformTransition_IdentityTransition_NoExceptionThrown()
+        {
+            //arrange
+            var bug = new Bug("bug1", _stateMachine);
+
+            //act/assert
+            Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Open()));
+        }
+
+        [Test]
+        public void PerformTransition_UnexpectedDtoSupplied_NoExceptionThrown() //not sure how I could detect this in the framework
+        {
+            //arrange
+            var bug = new Bug("bug1", _stateMachine);
+
+            //act/assert
+            Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Open(), new { Blah = "blah", }));
+        }
+
+        [Test]
         public void PerformTransition_ValidTransitionWithArgument_ArgumentSetInTargetObjectCorrectly()
         {
             //arrange
@@ -223,7 +267,7 @@ namespace NState.Test.Fast
 
             //act/assert
             bug = bug.TransitionTo(new BugState.Assigned(),
-                                        new {AssigneeEmail = assigneeEmail});
+                                   new {AssigneeEmail = assigneeEmail});
 
             Assert.That(bug.AssigneeEmail == assigneeEmail);
         }
@@ -236,7 +280,7 @@ namespace NState.Test.Fast
 
             //act/assert
             Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Assigned(),
-                                                            new {AssigneeEmail = "example@example.com"}));
+                                                       new {AssigneeEmail = "example@example.com"}));
         }
     }
 }

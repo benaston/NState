@@ -2,28 +2,26 @@
 {
     using System;
 
-    public abstract class StateTransition<TStatefulDomainObject, TState> :
+    public abstract class StateTransition<TStatefulObject, TState> :
         IStateTransition
-            <TStatefulDomainObject, TState>
-        where TStatefulDomainObject :
-            IStateful<TStatefulDomainObject, TState>
+            <TStatefulObject, TState>
+        where TStatefulObject :
+            IStateful<TStatefulObject, TState>
         where TState : State
     {
-        private readonly TStatefulDomainObject _statefulDomainObject;
-
         protected StateTransition(
-            Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> transitionFunction = null)
+            Func<TStatefulObject, TState, dynamic, TStatefulObject> transitionFunction = null)
         {
             TransitionFunction = transitionFunction ?? ((o, s, args) => o); //identity
         }
 
-        public Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> TransitionFunction { get; private set; }
+        public Func<TStatefulObject, TState, dynamic, TStatefulObject> TransitionFunction { get; private set; }
 
-        public abstract TState[] StartState { get; }
+        public abstract TState[] StartStates { get; }
 
-        public abstract TState[] EndState { get; }
+        public abstract TState[] EndStates { get; }
 
-        public Func<TStatefulDomainObject, TState, dynamic, TStatefulDomainObject> Transition
+        public Func<TStatefulObject, TState, dynamic, TStatefulObject> TransitionTo
         {
             get
             {

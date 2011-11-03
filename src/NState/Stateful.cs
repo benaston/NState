@@ -2,6 +2,11 @@
 {
     using System;
 
+    /// <summary>
+    /// Inherit from this if you want to make your object stateful.
+    /// </summary>
+    /// <typeparam name="TStatefulObject">The type of your stateful object.</typeparam>
+    /// <typeparam name="TState">The type you are using to define the state for your type.</typeparam>
     [Serializable]
     public abstract class Stateful<TStatefulObject, TState> :
         IStateful<TStatefulObject, TState>
