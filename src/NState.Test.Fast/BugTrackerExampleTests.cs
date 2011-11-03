@@ -2,6 +2,7 @@
 namespace NState.Test.Fast
 {
     using System;
+    using Newtonsoft.Json;
     using NUnit.Framework;
 
     //define states
@@ -263,7 +264,7 @@ namespace NState.Test.Fast
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
-            var assigneeEmail = "example@example.com";
+            const string assigneeEmail = "example@example.com";
 
             //act/assert
             bug = bug.TransitionTo(new BugState.Assigned(),
@@ -281,6 +282,29 @@ namespace NState.Test.Fast
             //act/assert
             Assert.DoesNotThrow(() => bug.TransitionTo(new BugState.Assigned(),
                                                        new {AssigneeEmail = "example@example.com"}));
+        }
+
+        [Test]
+        public void Serialize_ValidStateMachine_NoExceptionThrown()
+        {
+            //arrange
+            var bug = new Bug("bug1", _stateMachine);
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
+            
+            //act/assert
+            Assert.DoesNotThrow(() => JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings));
+        }
+
+
+        [Test, Ignore("Currently fails due to constructor of StateMachine type. WIP.")]
+        public void DeSerialize_ValidStateMachine_NoExceptionThrown()
+        {
+            //arrange
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
+            var serializedStateMachine = JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
+
+            //act/assert
+            Assert.DoesNotThrow(() => JsonConvert.DeserializeObject<StateMachine<LucidUI, LucidUIState>>(serializedStateMachine));
         }
     }
 }
