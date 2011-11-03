@@ -15,6 +15,7 @@ How to use:
 
 **1. Create some state transitions**
 
+
 ```C#
 
 	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
@@ -29,6 +30,7 @@ How to use:
 
 **2. Create your state machine**
 
+
 ```C#
 
 	var myStateMachine 
@@ -38,6 +40,7 @@ How to use:
 
 
 **3. Create your stateful type**
+
 
 ```C#
 
@@ -55,6 +58,7 @@ How to use:
 
     
 **4. Perform a state transition**
+
 
 ```C#
 
