@@ -6,7 +6,7 @@
     public class AccountTab : Stateful<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
     {
         public AccountTab(
-            IStateMachine<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType> stateMachine)
+            IStateMachine<AccountTab, AccountTabState, LucidUIState, StateMachineType> stateMachine)
             : base(stateMachine) {}
     }
 }

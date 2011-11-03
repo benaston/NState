@@ -6,7 +6,7 @@
     public class SavedSearch : Stateful<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType>
     {
         public SavedSearch(
-            IStateMachine<SavedSearch, SavedSearchState, LucidUI, LucidUIState, StateMachineType> stateMachine,
+            IStateMachine<SavedSearch, SavedSearchState, LucidUIState, StateMachineType> stateMachine,
             LucidUI uiContext) : base(stateMachine)
         {
             UIContext = uiContext;

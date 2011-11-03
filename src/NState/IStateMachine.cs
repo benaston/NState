@@ -9,12 +9,12 @@
     ///   Responsible for defining the interface for types that
     ///   control the transitions between state machine states.
     /// </summary>
-    public interface IStateMachine<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
+    public interface IStateMachine<TStatefulObject, TState, TBaseState, TStateMachineTypeEnum> :
         IStateMachine
-        where TStatefulObject : IStateful<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        where TStatefulObject : IStateful<TStatefulObject, TState, TBaseState, TStateMachineTypeEnum>
         where TState : State
-        where TBaseDomainObject :
-            IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        //where TBaseDomainObject :
+        //    IStateful<TBaseDomainObject, TBaseState, TBaseState, TStateMachineTypeEnum>
         where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
@@ -27,7 +27,7 @@
         TState CurrentState { get; set; }
 
         Dictionary
-            <DateTime, IStateTransition<TStatefulObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>>
+            <DateTime, IStateTransition<TStatefulObject, TState, TBaseState, TStateMachineTypeEnum>>
             History { get; set; }
 
         TStatefulObject PerformTransition(TStatefulObject opportunity, TState targetState);

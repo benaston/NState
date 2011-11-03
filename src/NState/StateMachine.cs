@@ -17,26 +17,25 @@
     ///   instances.
     ///   NOTE 1: BA; http://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
     /// </summary>
-    /// <typeparam name = "TBaseDomainObject">This is the root of the tree of domain objects in the state machine?</typeparam>
-    [Serializable] //LucidUI, LucidUIState, LucidUI, LucidUIState, StateMachineType
-    public class StateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum> :
-        IStateMachine<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+    [Serializable]
+    public class StateMachine<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum> :
+        IStateMachine<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>
         where TStatefulDomainObject :
-            IStateful<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+            IStateful<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>
         where TState : State
-        where TBaseDomainObject :
-            IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
+        //where TBaseDomainObject :
+        //    IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
         where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
         protected readonly
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
             StateTransitions;
 
         public StateMachine(
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
                 stateTransitions,
             TState startState,
             List<IStateMachine> childStateMachines = null,
@@ -65,15 +64,9 @@
             Dictionary
                 <DateTime,
                     IStateTransition
-                        <TStatefulDomainObject, TState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>>
+                        <TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
             History { get; set; }
 
-        /// <summary>
-        ///   Select transition to invoke, and invoke.
-        ///   NOTE: BA; many to many state relationships possible. 
-        ///   Performs first matching transition that is found.
-        ///   NOTE: BA; transitions to self must be explicitly defined.
-        /// </summary>
         public TStatefulDomainObject PerformTransition(TStatefulDomainObject statefulDomainObject, TState targetState)
         {
             Ensure.That<ArgumentNullException>(statefulDomainObject.IsNotNull(),
@@ -92,7 +85,6 @@
                         (statefulDomainObject, targetState);
 
                     CurrentState = targetState;
-                    //statefulDomainObject.CurrentState = targetState;
                 }
                 OnRaiseAfterEveryTransition();
 
@@ -140,7 +132,5 @@
                 handler(this, new EventArgs());
             }
         }
-
-        //use for state machine persistence and re-creation
     }
 }
