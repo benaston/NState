@@ -1,40 +1,65 @@
 NState
 =====
 
-Simple state machine for .NET.
+Simple state machine for .NET. This software is NOT production ready.
 
-Usage:
+How to use:
 --------
 
-PLEASE NOTE: this project is unfinished and I realise that the API is currently pretty horrible.
+**0. Get it**
 
-*Create some state transitions*
+```shell
+	nuget install nstate
+```
+
+
+**1. Create some state transitions**
+
 
 ```C#
-	var myTransitions = new IStateTransition<MyStatefulType, MyStates, RootStatefulTyoe, RootStatefulTypeStates, StateMachineType>[]
-                    {
-                        new MyStates.On((ss,state) => ss),
-                        new MyStates.Off((ss,state) => ss),
-                    },
 
+	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
+				{
+					new MyState.Off((ss,state) => ss),
+					new MyState.On((ss,state) => ss),
+				};
 
 ```
 
 
-*Create your state machine*
+**2. Create your state machine**
+
 
 ```C#
 
-	var myStateMachine = new StateMachine<MyStatefulType, MyStates, RootStatefulTyoe, RootStatefulTypeStates, StateMachineType>(
-		myTransitions, initialState:new SavedSearchState.Collapsed(), childStateMachines: null, parentStateMachines: null);
+	var myStateMachine 
+		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
 
 ```
 
-*Perform a state transition*
+
+**3. Create your stateful type**
+
 
 ```C#
 
-	myStateMachine.PerformTransition(myStateMachine, new MyStates.On());
+	public class MyStatefulType : Stateful<MyStatefulType, MyState, StateMachineType>
+	{
+		public MyStatefulType(IStateMachine<MyStatefulType, MyState, StateMachineType> stateMachine)
+			: base(stateMachine) {}
 
+		//...
+	}
+
+``````
+
+
+    
+**4. Perform a state transition**
+
+
+```C#
+
+	var myStatefulType = new MyStatefulType(myStateMachine).PerformTransition(new MyState.On());
 
 ```
