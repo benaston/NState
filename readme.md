@@ -24,7 +24,6 @@ How to use:
 					new MyState.On((ss,state) => ss),
 				};
 
-
 ```
 
 
@@ -32,7 +31,6 @@ How to use:
 
 
 ```C#
-
 
 	var myStateMachine 
 		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
@@ -53,7 +51,6 @@ How to use:
 		//...
 	}
 
-
 ``````
 
 
@@ -64,6 +61,5 @@ How to use:
 ```C#
 
 	var myStatefulType = new MyStatefulType(myStateMachine).PerformTransition(new MyState.On());
-
 
 ```
