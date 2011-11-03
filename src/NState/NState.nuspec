@@ -7,7 +7,7 @@
     <authors>$author$</authors>
     <owners>$author$</owners>
     <licenseUrl>http://www.gnu.org/licenses/lgpl.txt</licenseUrl>
-    <projectUrl>https://github.com/benaston/NDecorate</projectUrl>
+    <projectUrl>https://github.com/benaston/NState</projectUrl>
     <iconUrl>https://secure.gravatar.com/avatar/2a43432a33175c6bbe896da22dd6f6ee?s=140</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>

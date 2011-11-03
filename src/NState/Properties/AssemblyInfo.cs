@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("NCacheFacade")]
+[assembly: AssemblyTitle("NState")]
 [assembly:
     AssemblyDescription(
         "A simple state machine implementation.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ben Aston")]
-[assembly: AssemblyProduct("NCacheFacade")]
+[assembly: AssemblyProduct("NState")]
 [assembly: AssemblyCopyright("Copyright © Ben Aston")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
