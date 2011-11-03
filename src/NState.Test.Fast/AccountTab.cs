@@ -3,10 +3,10 @@
     using System;
 
     [Serializable]
-    public class AccountTab : Stateful<AccountTab, AccountTabState, LucidUI, LucidUIState, StateMachineType>
+    public class AccountTab : Stateful<AccountTab, AccountTabState, StateMachineType>
     {
         public AccountTab(
-            IStateMachine<AccountTab, AccountTabState, LucidUIState, StateMachineType> stateMachine)
+            IStateMachine<AccountTab, AccountTabState, StateMachineType> stateMachine)
             : base(stateMachine) {}
     }
 }

@@ -8,34 +8,25 @@
     using NSure;
     using ArgumentNullException = NHelpfulException.FrameworkExceptions.ArgumentNullException;
 
-    ////  which, if not present, is assumed to be the current state machine.
     /// <summary>
-    ///   TODO: BA; basedomainobject might be modified to be a parent statemachine
-    ///   TODO: BA add persistence of current state and subsequent retrieval.
-    ///   Responsible for defining the base functionality for object state machines
-    ///   to enable specification of valid state changes to be applied to object
+    ///   Enables specification of valid state changes to be applied to object
     ///   instances.
-    ///   NOTE 1: BA; http://stackoverflow.com/questions/79126/create-generic-method-constraining-t-to-an-enum
     /// </summary>
     [Serializable]
-    public class StateMachine<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum> :
-        IStateMachine<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>
-        where TStatefulDomainObject :
-            IStateful<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>
+    public class StateMachine<TStatefulDomainObject, TState, TStateMachineTypeEnum> :
+        IStateMachine<TStatefulDomainObject, TState, TStateMachineTypeEnum>
+        where TStatefulDomainObject : IStateful<TStatefulDomainObject, TState, TStateMachineTypeEnum>
         where TState : State
-        //where TBaseDomainObject :
-        //    IStateful<TBaseDomainObject, TBaseState, TBaseDomainObject, TBaseState, TStateMachineTypeEnum>
-        where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
         protected readonly
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>>
             StateTransitions;
 
         public StateMachine(
             IEnumerable
-                <IStateTransition<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
+                <IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>>
                 stateTransitions,
             TState startState,
             List<IStateMachine> childStateMachines = null,
@@ -60,13 +51,11 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public List<IStateMachine> ParentStateMachines { get; set; }
 
-        public
-            Dictionary
-                <DateTime,
-                    IStateTransition
-                        <TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>>
-            History { get; set; }
+        public Dictionary<DateTime,IStateTransition<TStatefulDomainObject, TState, TStateMachineTypeEnum>> History { get; set; }
 
+        /// <summary>
+        /// WIP - hierarchy!
+        /// </summary>
         public TStatefulDomainObject PerformTransition(TStatefulDomainObject statefulDomainObject, TState targetState)
         {
             Ensure.That<ArgumentNullException>(statefulDomainObject.IsNotNull(),
@@ -76,9 +65,8 @@
 
             try
             {
-                if (CurrentState != targetState) //valid?
+                if (CurrentState != targetState) //make this explicit?
                 {
-                    //todo: check parent state machines for valid transitions too
                     statefulDomainObject = StateTransitions.First(
                         t => t.StartState == CurrentState && t.EndState == targetState).
                         Transition
@@ -90,10 +78,9 @@
 
                 return statefulDomainObject;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 var i = new InvalidStateTransitionException<TState>(CurrentState, targetState);
-                //i.Log();
 
                 throw i;
             }

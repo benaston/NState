@@ -6,7 +6,7 @@
     public class SavedSearchTransitions
     {
         [Serializable]
-        public class Collapse : StateTransition<SavedSearch, SavedSearchState, LucidUIState, StateMachineType>
+        public class Collapse : StateTransition<SavedSearch, SavedSearchState, StateMachineType>
         {
             public Collapse(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction)
                 : base(transitionFunction) {}
@@ -23,7 +23,7 @@
         }
 
         [Serializable]
-        public class Expand : StateTransition<SavedSearch, SavedSearchState, LucidUIState, StateMachineType>
+        public class Expand : StateTransition<SavedSearch, SavedSearchState, StateMachineType>
         {
             public Expand(Func<SavedSearch, SavedSearchState, SavedSearch> transitionFunction)
                 : base(transitionFunction) {}

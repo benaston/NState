@@ -9,18 +9,17 @@
     ///   to the database, or an onscreen notification or the billing of funds.
     ///   Note that a computer program might invoke the state transition.
     /// </summary>
-    public interface IStateTransition<TStatefulDomainObject, TState,
+    public interface IStateTransition<TStatefulObject, TState,
                                       TStateMachineTypeEnum>
-        where TStatefulDomainObject :
-            IStateful<TStatefulDomainObject, TState, TBaseState, TStateMachineTypeEnum>
+        where TStatefulObject :
+            IStateful<TStatefulObject, TState, TStateMachineTypeEnum>
         where TState : State
-        //where TRootDomainObject :
-        //    IStateful<TRootDomainObject, TBaseState, TRootDomainObject, TBaseState, TStateMachineTypeEnum>
-        where TBaseState : State
         where TStateMachineTypeEnum : struct
     {
         TState StartState { get; }
+
         TState EndState { get; }
-        Func<TStatefulDomainObject, TState, TStatefulDomainObject> Transition { get; }
+
+        Func<TStatefulObject, TState, TStatefulObject> Transition { get; }
     }
 }

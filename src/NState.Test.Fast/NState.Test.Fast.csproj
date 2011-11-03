@@ -76,13 +76,12 @@
     <Compile Include="LucidUI.cs" />
     <Compile Include="LucidUIState.cs" />
     <Compile Include="LucidUITransitions.cs" />
-    <Compile Include="OldTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SavedSearch.cs" />
     <Compile Include="SavedSearchState.cs" />
     <Compile Include="SavedSearchTransitions.cs" />
     <Compile Include="StateMachineType.cs" />
-    <Compile Include="StateTests.cs" />
+    <Compile Include="StateMachineTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
