@@ -37,4 +37,4 @@ NOTE: the API is currently pretty horrible and is a WIP. It will be simplified.
 	myStateMachine.PerformTransition(mnyStateMachine, new MyStates.On());
 
 
-```C#
+```
