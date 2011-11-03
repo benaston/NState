@@ -18,7 +18,7 @@ How to use:
 
 ```C#
 
-	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
+	var myTransitions = new IStateTransition<MyStatefulType, MyState>[]
 				{
 					new MyState.Off((ss,state) => ss),
 					new MyState.On((ss,state) => ss),
@@ -33,7 +33,7 @@ How to use:
 ```C#
 
 	var myStateMachine 
-		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
+		= new StateMachine<MyStatefulType, MyState>(myTransitions, initialState:new MyState.Off());
 
 ```
 
@@ -43,9 +43,9 @@ How to use:
 
 ```C#
 
-	public class MyStatefulType : Stateful<MyStatefulType, MyState, StateMachineType>
+	public class MyStatefulType : Stateful<MyStatefulType, MyState>
 	{
-		public MyStatefulType(IStateMachine<MyStatefulType, MyState, StateMachineType> stateMachine)
+		public MyStatefulType(IStateMachine<MyStatefulType, MyState> stateMachine)
 			: base(stateMachine) {}
 
 		//...
@@ -60,6 +60,7 @@ How to use:
 
 ```C#
 
-	var myStatefulType = new MyStatefulType(myStateMachine).PerformTransition(new MyState.On());
+	var myStatefulType = new MyStatefulType(myStateMachine); //state is "Off"
+	myStatefulType = myStatefulType.PerformTransition(new MyState.On()); //state transitioned to "On"
 
 ```
