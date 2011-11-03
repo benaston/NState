@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InvalidStateTransition.cs" />
+    <Compile Include="InvalidStateTransitionException.cs" />
     <Compile Include="IStateful.cs" />
     <Compile Include="IStateMachine.cs" />
     <Compile Include="IStateTransition.cs" />
