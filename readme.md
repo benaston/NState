@@ -33,10 +33,11 @@ How to use:
 
 ```C#
 
+
 	var myStateMachine 
 		= new StateMachine<MyStatefulType, MyState, StateMachineType>(myTransitions, initialState:new MyState.Off());
 
-
+```
 
 
 **3. Create your stateful type**
