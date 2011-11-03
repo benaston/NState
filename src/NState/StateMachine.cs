@@ -24,6 +24,11 @@
                 <IStateTransition<TStatefulObject, TState>>
             StateTransitions;
 
+        /// <summary>
+        /// Required for deserialization.
+        /// </summary>
+        public StateMachine() { } //empty
+
         public StateMachine(
             IEnumerable
                 <IStateTransition<TStatefulObject, TState>>
