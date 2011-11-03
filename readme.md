@@ -6,7 +6,14 @@ Simple state machine for .NET.
 How to use:
 --------
 
-**Create some state transitions**
+**0. Get it**
+
+```shell
+	nuget install nfeature
+```
+
+
+**1. Create some state transitions**
 
 ```C#
 	var myTransitions = new IStateTransition<MyStatefulType, MyState, StateMachineType>[]
@@ -19,7 +26,7 @@ How to use:
 ```
 
 
-**Create your state machine**
+**2. Create your state machine**
 
 ```C#
 
@@ -29,7 +36,7 @@ How to use:
 
 ```
 
-**Perform a state transition**
+**3. Perform a state transition**
 
 ```C#
 
