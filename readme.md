@@ -36,9 +36,9 @@ How to use:
 
 ```C#
 
-	public class Bug : Stateful<BugTracker, MyAppState>
+	public class Bug : Stateful<Bug, MyAppState>
 	{
-		public Bug(string title, IStateMachine<BugTracker, MyAppState> stateMachine)
+		public Bug(string title, IStateMachine<Bug, MyAppState> stateMachine)
 		: base(stateMachine)
 		{
 			Title = title;
@@ -206,15 +206,9 @@ How to use:
 					new BugTransition.Defer(BugHelper.Defer),
 					new BugTransition.Resolve(BugHelper.Resolve),
 					new BugTransition.Close(BugHelper.Close),
-				};
+				};	
 	
-	var parentTransitions = new IStateTransition<MyAppState>[]
-	{
-		new BugTrackerTransition.SetAlight(),
-		new BugTrackerTransition.Extinguish(),
-	};
-	
-	var myStateMachine = new StateMachine<BugTracker, MyAppState>(transitions, startState:new BugState.Open());
+	var myStateMachine = new StateMachine<Bug, MyAppState>(transitions, startState:new BugState.Open());
 	
 	//...
 
