@@ -36,9 +36,9 @@ How to use:
 
 ```C#
 
-	public class Bug : Stateful<Bug, MyAppState>
+	public class Bug : Stateful<Bug, BugState>
 	{
-		public Bug(string title, IStateMachine<Bug, MyAppState> stateMachine)
+		public Bug(string title, IStateMachine<Bug, BugState> stateMachine)
 		: base(stateMachine)
 		{
 			Title = title;
@@ -81,73 +81,73 @@ How to use:
 	public class BugTransition
 	{
 		[Serializable]
-		public class Assign : StateTransition<Bug, MyAppState>
+		public class Assign : StateTransition<Bug, BugState>
 		{
 			public Assign(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
-			public override MyAppState[] StartStates
+			public override BugState[] StartStates
 			{
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
 			}
 			
-			public override MyAppState[] EndStates
+			public override BugState[] EndStates
 			{
 				get { return new[] {new BugState.Assigned(),}; }
 			}
 		}
 		
 		[Serializable]
-		public class Close : StateTransition<Bug, MyAppState>
+		public class Close : StateTransition<Bug, BugState>
 		{
-			public Close(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Close(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
-			public override MyAppState[] StartStates
+			public override BugState[] StartStates
 			{
-			get { return new BugState[] { new BugState.Resolved() }; }
+				get { return new BugState[] { new BugState.Resolved() }; }
 			}
 			
-			public override MyAppState[] EndStates
+			public override BugState[] EndStates
 			{
-			get { return new[] { new BugState.Closed(), }; }
+				get { return new[] { new BugState.Closed(), }; }
 			}
 		}
 			
 		[Serializable]
-		public class Defer : StateTransition<Bug, MyAppState>
+		public class Defer : StateTransition<Bug, BugState>
 		{
-			public Defer(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Defer(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
-			public override MyAppState[] StartStates
+			public override BugState[] StartStates
 			{
 				get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
 			}
 			
-			public override MyAppState[] EndStates
+			public override BugState[] EndStates
 			{
 				get { return new[] { new BugState.Deferred(), }; }
 			}
 		}
 		
 		[Serializable]
-		public class Open : StateTransition<Bug, MyAppState>
+		public class Open : StateTransition<Bug, BugState>
 		{
-			public Open(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Open(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
-			public override MyAppState[] StartStates
+			public override BugState[] StartStates
 			{
 				get { return new[] {new BugState.Closed(),}; }
 			}
 			
-			public override MyAppState[] EndStates
+			public override BugState[] EndStates
 			{
 				get { return new[] {new BugState.Open(),}; }
 			}
 		}
 		
 		[Serializable]
-		public class Resolve : StateTransition<Bug, MyAppState>
+		public class Resolve : StateTransition<Bug, BugState>
 		{
-			public Resolve(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Resolve(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override MyAppState[] StartStates
 			{
@@ -169,22 +169,22 @@ How to use:
 
 	public class BugHelper
 	{
-		public static void Assign(MyAppState state, dynamic args)
+		public static void Assign(BugState state, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
 		}
 		
-		public static void Defer(MyAppState state, dynamic args)
+		public static void Defer(BugState state, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static void Resolve(MyAppState state, dynamic args)
+		public static void Resolve(BugState state, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static void Close(MyAppState state, dynamic args)
+		public static void Close(BugState state, dynamic args)
 		{
 			args.StatefulObject.ClosedByName = args.ClosedByName;
 		}
@@ -199,7 +199,7 @@ How to use:
 
 	//...
 	
-	var transitions = new IStateTransition<MyAppState>[]
+	var transitions = new IStateTransition<BugState>[]
 				{
 					new BugTransition.Open(),
 					new BugTransition.Assign(BugHelper.Assign),
@@ -208,7 +208,7 @@ How to use:
 					new BugTransition.Close(BugHelper.Close),
 				};	
 	
-	var myStateMachine = new StateMachine<Bug, MyAppState>(transitions, startState:new BugState.Open());
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, startState:new BugState.Open());
 	
 	//...
 
