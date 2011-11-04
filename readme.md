@@ -52,22 +52,22 @@ How to use:
 		
 		public void Assign(string assigneeEmail)
 		{
-		PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
+			PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
 		}
 		
 		public void Defer()
 		{
-		PerformTransition<Bug>(new BugState.Deferred());
+			PerformTransition<Bug>(new BugState.Deferred());
 		}
 		
 		public void Resolve()
 		{
-		PerformTransition<Bug>(new BugState.Resolved());
+			PerformTransition<Bug>(new BugState.Resolved());
 		}
 		
 		public void Close(string closedByName)
 		{
-		PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
+			PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
 		}
 	}
 
@@ -170,32 +170,24 @@ How to use:
 
 	public class BugHelper
 	{
-		public static Bug Assign(Bug bug, BugState state, dynamic args)
+		public static void Assign(MyAppState state, dynamic args)
 		{
-			bug.AssigneeEmail = args.AssigneeEmail;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
 		}
 		
-		public static Bug Defer(Bug bug, BugState state, dynamic args)
+		public static void Defer(MyAppState state, dynamic args)
 		{
-			bug.AssigneeEmail = String.Empty;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static Bug Resolve(Bug bug, BugState state, dynamic args)
+		public static void Resolve(MyAppState state, dynamic args)
 		{
-			bug.AssigneeEmail = String.Empty;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static Bug Close(Bug bug, BugState state, dynamic args)
+		public static void Close(MyAppState state, dynamic args)
 		{
-			bug.ClosedByName = args.ClosedByName;
-		
-			return bug;
+			args.StatefulObject.ClosedByName = args.ClosedByName;
 		}
 	}
 
@@ -208,16 +200,22 @@ How to use:
 
 	//...
 	
-	var transitions = new IStateTransition<Bug, BugState>[]
+	var transitions = new IStateTransition<MyAppState>[]
+				{
+					new BugTransition.Open(),
+					new BugTransition.Assign(BugHelper.Assign),
+					new BugTransition.Defer(BugHelper.Defer),
+					new BugTransition.Resolve(BugHelper.Resolve),
+					new BugTransition.Close(BugHelper.Close),
+				};
+	
+	var parentTransitions = new IStateTransition<MyAppState>[]
 	{
-		new BugTransition.Open(),
-		new BugTransition.Assign(BugHelper.Assign),
-		new BugTransition.Defer(BugHelper.Defer),
-		new BugTransition.Resolve(BugHelper.Resolve),
-		new BugTransition.Close(BugHelper.Close),
+		new BugTrackerTransition.SetAlight(),
+		new BugTrackerTransition.Extinguish(),
 	};
 	
-	_stateMachine = new StateMachine<Bug, BugState>(transitions, startState: new BugState.Open());
+	var myStateMachine = new StateMachine<BugTracker, MyAppState>(transitions, startState:new BugState.Open());
 	
 	//...
 
@@ -231,6 +229,7 @@ How to use:
 
 	var bug = new Bug("bug1", _stateMachine);	
 	bug.Assign("example@example.com");
+	
 	Assert.That(bug.CurrentState == new BugState.Assigned());
 
 ```
