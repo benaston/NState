@@ -16,7 +16,7 @@
 
         TState StartState { get; set; }
 
-        //IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
+        IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
         TState CurrentState { get; set; }
 

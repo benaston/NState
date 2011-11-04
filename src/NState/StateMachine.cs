@@ -32,7 +32,7 @@
 
             StateTransitions = stateTransitions;
             StartState = startState;
-            //ParentStateMachine = parentStateMachine;
+            ParentStateMachine = parentStateMachine;
             CurrentState = startState;
         }
 
@@ -40,8 +40,8 @@
 
         public TState StartState { get; set; }
 
-        //[JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-        //public IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
+        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+        public IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
         public TState CurrentState { get; set; }
 
@@ -69,12 +69,12 @@
                     }
                     else
                     {
-                        //if (ParentStateMachine == null)
-                        //{
+                        if (ParentStateMachine == null)
+                        {
                             throw new Exception(); //to be caught below, refactor
-                        //}
+                        }
 
-                        //ParentStateMachine.PerformTransition<TStateful>(statefulObject, targetState, dto);
+                        ParentStateMachine.PerformTransition<TStateful>(statefulObject, targetState, dto);
                     }
                 }
 

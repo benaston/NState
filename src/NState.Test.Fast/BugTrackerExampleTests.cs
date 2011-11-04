@@ -267,7 +267,7 @@ namespace NState.Test.Fast
 
             //act/assert
             Assert.That(bug.CurrentState == new BugState.Open());
-            //Assert.That(bug.StateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
+            Assert.That(bug.StateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
         }
 
         [Test]
@@ -300,19 +300,19 @@ namespace NState.Test.Fast
 
             //act/assert
             Assert.That(bug.CurrentState == new BugState.Open());
-            //Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
+            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
 
             bug.PerformTransition<Bug>(new BugTrackerState.Smoking());
 
             Assert.That(bug.CurrentState == new BugState.Open());
-            //Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
             Assert.That(bug.AssigneeEmail == null);
-            //Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
 
             bug.PerformTransition<Bug>(new BugState.Assigned(), new { StatefulObject = bug, AssigneeEmail = "example@example.com" });
             Assert.That(bug.CurrentState == new BugState.Assigned());
             Assert.That(bug.AssigneeEmail == "example@example.com");
-            //Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
         }
 
         [Test]
@@ -340,7 +340,7 @@ namespace NState.Test.Fast
 
             Assert.That(bug.CurrentState == new BugState.Assigned());
             Assert.That(bug.AssigneeEmail == assigneeEmail);
-            //Assert.That(bug.ParentState == new BugTrackerState.Smoking());
+            Assert.That(bug.ParentState == new BugTrackerState.Smoking());
         }
 
         [Test]
@@ -348,10 +348,9 @@ namespace NState.Test.Fast
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
-            var assigneeEmail = "example@example.com";
             
             //act/assert
-            Assert.Throws<RuntimeBinderException>(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Smoking()));
+            Assert.Throws<RuntimeBinderException>(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Extinguished()));
         }
 
         [Test]
@@ -371,7 +370,7 @@ namespace NState.Test.Fast
             var bug = new BugTracker(_stateMachine);
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Smoking())
+            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Smoking())
                 .PerformTransition<BugTracker>(new BugTrackerState.Extinguished()));
         }
 

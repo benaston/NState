@@ -26,10 +26,10 @@
             get { return StateMachine.CurrentState; }
         }
 
-        //public TState ParentState
-        //{
-        //    get { return StateMachine.ParentStateMachine.CurrentState; }
-        //}
+        public TState ParentState
+        {
+            get { return StateMachine.ParentStateMachine.CurrentState; }
+        }
 
         public TExpectedReturn PerformTransition<TExpectedReturn>(TState targetState, dynamic dto = default(dynamic))
         {
