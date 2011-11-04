@@ -41,7 +41,7 @@ How to use:
 		public Bug(string title, IStateMachine<BugTracker, MyAppState> stateMachine)
 		: base(stateMachine)
 		{
-		Title = title;
+			Title = title;
 		}
 		
 		public string Title { get; set; }
@@ -119,12 +119,12 @@ How to use:
 			
 			public override MyAppState[] StartStates
 			{
-			get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
+				get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
 			}
 			
 			public override MyAppState[] EndStates
 			{
-			get { return new[] { new BugState.Deferred(), }; }
+				get { return new[] { new BugState.Deferred(), }; }
 			}
 		}
 		
@@ -135,12 +135,12 @@ How to use:
 			
 			public override MyAppState[] StartStates
 			{
-			get { return new[] {new BugState.Closed(),}; }
+				get { return new[] {new BugState.Closed(),}; }
 			}
 			
 			public override MyAppState[] EndStates
 			{
-			get { return new[] {new BugState.Open(),}; }
+				get { return new[] {new BugState.Open(),}; }
 			}
 		}
 		
@@ -156,8 +156,7 @@ How to use:
 			
 			public override MyAppState[] EndStates
 			{
-				get { return new[] { new BugState.Resolved(), }; }
-			
+				get { return new[] { new BugState.Resolved(), }; }			
 			}
 		}
 	}
