@@ -36,10 +36,10 @@ How to use:
 
 ```C#
 
-	[Serializable]
 	public class Bug : Stateful<Bug, BugState>
 	{
-		public Bug(string title, IStateMachine<Bug, BugState> stateMachine) : base(stateMachine)
+		public Bug(string title, IStateMachine<Bug, BugState> stateMachine)
+		: base(stateMachine)
 		{
 			Title = title;
 		}
@@ -52,22 +52,22 @@ How to use:
 		
 		public void Assign(string assigneeEmail)
 		{
-			TransitionTo(new BugState.Assigned(), new {AssigneeEmail = assigneeEmail});
+			PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
 		}
 		
 		public void Defer()
 		{
-			TransitionTo(new BugState.Deferred());
+			PerformTransition<Bug>(new BugState.Deferred());
 		}
 		
 		public void Resolve()
 		{
-			TransitionTo(new BugState.Resolved());
+			PerformTransition<Bug>(new BugState.Resolved());
 		}
 		
 		public void Close(string closedByName)
 		{
-			TransitionTo(new BugState.Closed(), new {ClosedByName = closedByName});
+			PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
 		}
 	}
 
@@ -83,8 +83,8 @@ How to use:
 		[Serializable]
 		public class Assign : StateTransition<Bug, BugState>
 		{
-			public Assign(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-	
+			public Assign(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
 			public override BugState[] StartStates
 			{
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
@@ -95,42 +95,44 @@ How to use:
 				get { return new[] {new BugState.Assigned(),}; }
 			}
 		}
-	
+		
 		[Serializable]
 		public class Close : StateTransition<Bug, BugState>
 		{
-			public Close(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-		
+			public Close(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
 			public override BugState[] StartStates
 			{
-				get { return new[] {new BugState.Resolved(),}; }
+				get { return new BugState[] { new BugState.Resolved() }; }
 			}
 			
 			public override BugState[] EndStates
 			{
-				get { return new[] {new BugState.Closed(),}; }
+				get { return new[] { new BugState.Closed(), }; }
 			}
 		}
-		
+			
 		[Serializable]
 		public class Defer : StateTransition<Bug, BugState>
 		{
-			public Defer(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-		
+			public Defer(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
 			public override BugState[] StartStates
 			{
-				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
+				get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
 			}
-		
+			
 			public override BugState[] EndStates
 			{
-				get { return new[] {new BugState.Deferred(),}; }
+				get { return new[] { new BugState.Deferred(), }; }
 			}
 		}
 		
 		[Serializable]
 		public class Open : StateTransition<Bug, BugState>
 		{
+			public Open(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
 			public override BugState[] StartStates
 			{
 				get { return new[] {new BugState.Closed(),}; }
@@ -141,20 +143,20 @@ How to use:
 				get { return new[] {new BugState.Open(),}; }
 			}
 		}
-	
+		
 		[Serializable]
 		public class Resolve : StateTransition<Bug, BugState>
 		{
-			public Resolve(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-		
-			public override BugState[] StartStates
+			public Resolve(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
 			{
-				get { return new[] {new BugState.Assigned(),}; }
+				get { return new[] { new BugState.Assigned(), }; }
 			}
 			
-			public override BugState[] EndStates
+			public override MyAppState[] EndStates
 			{
-				get { return new[] {new BugState.Resolved(),}; }
+				get { return new[] { new BugState.Resolved(), }; }			
 			}
 		}
 	}
@@ -167,32 +169,24 @@ How to use:
 
 	public class BugHelper
 	{
-		public static Bug Assign(Bug bug, BugState state, dynamic args)
+		public static void Assign(BugState state, dynamic args)
 		{
-			bug.AssigneeEmail = args.AssigneeEmail;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
 		}
 		
-		public static Bug Defer(Bug bug, BugState state, dynamic args)
+		public static void Defer(BugState state, dynamic args)
 		{
-			bug.AssigneeEmail = String.Empty;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static Bug Resolve(Bug bug, BugState state, dynamic args)
+		public static void Resolve(BugState state, dynamic args)
 		{
-			bug.AssigneeEmail = String.Empty;
-		
-			return bug;
+			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static Bug Close(Bug bug, BugState state, dynamic args)
+		public static void Close(BugState state, dynamic args)
 		{
-			bug.ClosedByName = args.ClosedByName;
-		
-			return bug;
+			args.StatefulObject.ClosedByName = args.ClosedByName;
 		}
 	}
 
@@ -205,16 +199,16 @@ How to use:
 
 	//...
 	
-	var transitions = new IStateTransition<Bug, BugState>[]
-	{
-		new BugTransition.Open(),
-		new BugTransition.Assign(BugHelper.Assign),
-		new BugTransition.Defer(BugHelper.Defer),
-		new BugTransition.Resolve(BugHelper.Resolve),
-		new BugTransition.Close(BugHelper.Close),
-	};
+	var transitions = new IStateTransition<BugState>[]
+				{
+					new BugTransition.Open(),
+					new BugTransition.Assign(BugHelper.Assign),
+					new BugTransition.Defer(BugHelper.Defer),
+					new BugTransition.Resolve(BugHelper.Resolve),
+					new BugTransition.Close(BugHelper.Close),
+				};	
 	
-	_stateMachine = new StateMachine<Bug, BugState>(transitions, startState: new BugState.Open());
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, startState:new BugState.Open());
 	
 	//...
 
@@ -226,8 +220,9 @@ How to use:
 
 ```C#
 
-	var bug = new Bug("bug1", _stateMachine);	
+	var bug = new Bug("my bug name", _stateMachine);	
 	bug.Assign("example@example.com");
+	
 	Assert.That(bug.CurrentState == new BugState.Assigned());
 
 ```
