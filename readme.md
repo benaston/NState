@@ -36,12 +36,12 @@ How to use:
 
 ```C#
 
-	[Serializable]
-	public class Bug : Stateful<Bug, BugState>
+	public class Bug : Stateful<BugTracker, MyAppState>
 	{
-		public Bug(string title, IStateMachine<Bug, BugState> stateMachine) : base(stateMachine)
+		public Bug(string title, IStateMachine<BugTracker, MyAppState> stateMachine)
+		: base(stateMachine)
 		{
-			Title = title;
+		Title = title;
 		}
 		
 		public string Title { get; set; }
@@ -52,22 +52,22 @@ How to use:
 		
 		public void Assign(string assigneeEmail)
 		{
-			TransitionTo(new BugState.Assigned(), new {AssigneeEmail = assigneeEmail});
+		PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
 		}
 		
 		public void Defer()
 		{
-			TransitionTo(new BugState.Deferred());
+		PerformTransition<Bug>(new BugState.Deferred());
 		}
 		
 		public void Resolve()
 		{
-			TransitionTo(new BugState.Resolved());
+		PerformTransition<Bug>(new BugState.Resolved());
 		}
 		
 		public void Close(string closedByName)
 		{
-			TransitionTo(new BugState.Closed(), new {ClosedByName = closedByName});
+		PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
 		}
 	}
 
