@@ -14,7 +14,7 @@
 //    public class StateMachineTests
 //    {
 //        [Test]
-//        public void PerformTransition_WhenHappyPathFollowed_StateIsChanged()
+//        public void TriggerTransition_WhenHappyPathFollowed_StateIsChanged()
 //        {
 //            var accountTabStateMachine = new StateMachine
 //                <AccountTab, AccountTabState>(
@@ -52,7 +52,7 @@
 //        }
 
 //        [Test]
-//        public void PerformTransition_WhenTransitionAffectsOtherPartsOfStateMachine_StateIsChangedInRelevantPlaces()
+//        public void TriggerTransition_WhenTransitionAffectsOtherPartsOfStateMachine_StateIsChangedInRelevantPlaces()
 //        {
 //            var lucidUIStateMachine = new StateMachine<LucidUI, LucidUIState>(
 //                new IStateTransition<LucidUI, LucidUIState>[]

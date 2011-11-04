@@ -13,6 +13,6 @@
 
         TState CurrentState { get; }
 
-        TStateful PerformTransition<TStateful>(TState targetState, dynamic dto);
+        TStateful TriggerTransition<TStateful>(TState targetState, dynamic dto);
     }
 }

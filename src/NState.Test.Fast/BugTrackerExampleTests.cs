@@ -67,22 +67,22 @@ namespace NState.Test.Fast
 
         public void Assign(string assigneeEmail)
         {
-            PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
+            TriggerTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
         }
 
         public void Defer()
         {
-            PerformTransition<Bug>(new BugState.Deferred());
+            TriggerTransition<Bug>(new BugState.Deferred());
         }
 
         public void Resolve()
         {
-            PerformTransition<Bug>(new BugState.Resolved());
+            TriggerTransition<Bug>(new BugState.Resolved());
         }
 
         public void Close(string closedByName)
         {
-            PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
+            TriggerTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
         }
     }
 
@@ -271,24 +271,24 @@ namespace NState.Test.Fast
         }
 
         [Test]
-        public void PerformTransition_StateTransitionIsUndefined_ExceptionThrown()
+        public void TriggerTransition_StateTransitionIsUndefined_ExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
-            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.PerformTransition<Bug>(new MyUnrelatedState.Extinguished()));
+            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.TriggerTransition<Bug>(new MyUnrelatedState.Extinguished()));
         }
 
         [Test]
-        public void PerformTransition_StateTransitionIsUndefined_ExceptionThrown2()
+        public void TriggerTransition_StateTransitionIsUndefined_ExceptionThrown2()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
-            bug.PerformTransition<Bug>(new BugState.Assigned(),
+            bug.TriggerTransition<Bug>(new BugState.Assigned(),
                                        new { StatefulObject = bug, AssigneeEmail = "example@example.com" })
-               .PerformTransition<Bug>(new BugTrackerState.Smoking(), new { StatefulObject = bug });
+               .TriggerTransition<Bug>(new BugTrackerState.Smoking(), new { StatefulObject = bug });
 
-            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.PerformTransition<Bug>(new MyUnrelatedState.Extinguished()));
+            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.TriggerTransition<Bug>(new MyUnrelatedState.Extinguished()));
         }
 
         [Test]
@@ -302,41 +302,41 @@ namespace NState.Test.Fast
             Assert.That(bug.CurrentState == new BugState.Open());
             Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
 
-            bug.PerformTransition<Bug>(new BugTrackerState.Smoking());
+            bug.TriggerTransition<Bug>(new BugTrackerState.Smoking());
 
             Assert.That(bug.CurrentState == new BugState.Open());
             Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
             Assert.That(bug.AssigneeEmail == null);
             Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
 
-            bug.PerformTransition<Bug>(new BugState.Assigned(), new { StatefulObject = bug, AssigneeEmail = "example@example.com" });
+            bug.TriggerTransition<Bug>(new BugState.Assigned(), new { StatefulObject = bug, AssigneeEmail = "example@example.com" });
             Assert.That(bug.CurrentState == new BugState.Assigned());
             Assert.That(bug.AssigneeEmail == "example@example.com");
             Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
         }
 
         [Test]
-        public void PerformTransition_InvalidTransition_ExceptionThrown()
+        public void TriggerTransition_InvalidTransition_ExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
             //act/assert
             Assert.Throws<InvalidStateTransitionException<MyAppState>>(
-                () => bug.PerformTransition<Bug>(new BugState.Resolved()));
+                () => bug.TriggerTransition<Bug>(new BugState.Resolved()));
         }
 
         [Test]
-        public void PerformTransition_TwoSuccessiveValidTransitions_StateSetCorrectly()
+        public void TriggerTransition_TwoSuccessiveValidTransitions_StateSetCorrectly()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
             var assigneeEmail = "example@example.com";
 
             //act/assert
-            bug.PerformTransition<Bug>(new BugState.Assigned(),
+            bug.TriggerTransition<Bug>(new BugState.Assigned(),
                                        new { StatefulObject = bug, AssigneeEmail = assigneeEmail })
-               .PerformTransition<Bug>(new BugTrackerState.Smoking());
+               .TriggerTransition<Bug>(new BugTrackerState.Smoking());
 
             Assert.That(bug.CurrentState == new BugState.Assigned());
             Assert.That(bug.AssigneeEmail == assigneeEmail);
@@ -344,79 +344,79 @@ namespace NState.Test.Fast
         }
 
         [Test]
-        public void PerformTransition_ExpectedReturnTypeMismatch_ExceptionThrown()
+        public void TriggerTransition_ExpectedReturnTypeMismatch_ExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
             
             //act/assert
-            Assert.Throws<RuntimeBinderException>(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Extinguished()));
+            Assert.Throws<RuntimeBinderException>(() => bug.TriggerTransition<BugTracker>(new BugTrackerState.Extinguished()));
         }
 
         [Test]
-        public void PerformTransition_ValidTransitions_NoExceptionThrown()
+        public void TriggerTransition_ValidTransitions_NoExceptionThrown()
         {
             //arrange
             var bug = new BugTracker(_stateMachine);
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Extinguished()));
+            Assert.DoesNotThrow(() => bug.TriggerTransition<BugTracker>(new BugTrackerState.Extinguished()));
         }
 
         [Test]
-        public void PerformTransition_ValidFollowedBySubsequentInvalidTransition_ExceptionThrown()
+        public void TriggerTransition_ValidFollowedBySubsequentInvalidTransition_ExceptionThrown()
         {
             //arrange
             var bug = new BugTracker(_stateMachine);
 
             //act/assert
-            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.PerformTransition<BugTracker>(new BugTrackerState.Smoking())
-                .PerformTransition<BugTracker>(new BugTrackerState.Extinguished()));
+            Assert.Throws<InvalidStateTransitionException<MyAppState>>(() => bug.TriggerTransition<BugTracker>(new BugTrackerState.Smoking())
+                .TriggerTransition<BugTracker>(new BugTrackerState.Extinguished()));
         }
 
         [Test]
-        public void PerformTransition_TwoSuccessiveValidTransitions_NoExceptionThrown()
+        public void TriggerTransition_TwoSuccessiveValidTransitions_NoExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.PerformTransition<Bug>(new BugState.Assigned(),
+            Assert.DoesNotThrow(() => bug.TriggerTransition<Bug>(new BugState.Assigned(),
                                                                  new { StatefulObject = bug, AssigneeEmail = "example@example.com" })
-                                         .PerformTransition<Bug>(new BugState.Deferred(), new { StatefulObject = bug }));
+                                         .TriggerTransition<Bug>(new BugState.Deferred(), new { StatefulObject = bug }));
         }
 
         [Test]
-        public void PerformTransition_IdentityTransition_NoExceptionThrown()
+        public void TriggerTransition_IdentityTransition_NoExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
             //act/assert
             Assert.That(bug.CurrentState == new BugState.Open());
-            Assert.DoesNotThrow(() => bug.PerformTransition<Bug>(new BugState.Open()));
+            Assert.DoesNotThrow(() => bug.TriggerTransition<Bug>(new BugState.Open()));
             Assert.That(bug.CurrentState == new BugState.Open());
         }
 
         [Test]
-        public void PerformTransition_UnexpectedDtoSupplied_NoExceptionThrown() //not sure how I could detect this in the framework
+        public void TriggerTransition_UnexpectedDtoSupplied_NoExceptionThrown() //not sure how I could detect this in the framework
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.PerformTransition<Bug>(new BugState.Open(), new { Blah = "blah", }));
+            Assert.DoesNotThrow(() => bug.TriggerTransition<Bug>(new BugState.Open(), new { Blah = "blah", }));
         }
 
         [Test]
-        public void PerformTransition_ValidTransitionWithArgument_ArgumentSetInTargetObjectCorrectly()
+        public void TriggerTransition_ValidTransitionWithArgument_ArgumentSetInTargetObjectCorrectly()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
             const string assigneeEmail = "example@example.com";
 
             //act/assert
-            bug = bug.PerformTransition<Bug>(new BugState.Assigned(),
+            bug = bug.TriggerTransition<Bug>(new BugState.Assigned(),
                                    new { StatefulObject = bug, 
                                          AssigneeEmail = assigneeEmail });
 
@@ -424,13 +424,13 @@ namespace NState.Test.Fast
         }
 
         [Test]
-        public void PerformTransition_ValidTransition_NoExceptionThrown()
+        public void TriggerTransition_ValidTransition_NoExceptionThrown()
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.PerformTransition<Bug>(new BugState.Assigned(),
+            Assert.DoesNotThrow(() => bug.TriggerTransition<Bug>(new BugState.Assigned(),
                                                        new { StatefulObject = bug, AssigneeEmail = "example@example.com" }));
         }
 

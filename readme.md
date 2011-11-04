@@ -52,22 +52,22 @@ How to use:
 		
 		public void Assign(string assigneeEmail)
 		{
-			PerformTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
+			TriggerTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
 		}
 		
 		public void Defer()
 		{
-			PerformTransition<Bug>(new BugState.Deferred());
+			TriggerTransition<Bug>(new BugState.Deferred());
 		}
 		
 		public void Resolve()
 		{
-			PerformTransition<Bug>(new BugState.Resolved());
+			TriggerTransition<Bug>(new BugState.Resolved());
 		}
 		
 		public void Close(string closedByName)
 		{
-			PerformTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
+			TriggerTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
 		}
 	}
 

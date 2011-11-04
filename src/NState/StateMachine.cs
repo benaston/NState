@@ -47,7 +47,7 @@
 
         public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
 
-        public TStateful PerformTransition<TStateful>(TStateful statefulObject, TState targetState,
+        public TStateful TriggerTransition<TStateful>(TStateful statefulObject, TState targetState,
                                                       dynamic dto = default(dynamic))
         {
             Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
@@ -74,7 +74,7 @@
                             throw new Exception(); //to be caught below, refactor
                         }
 
-                        ParentStateMachine.PerformTransition<TStateful>(statefulObject, targetState, dto);
+                        ParentStateMachine.TriggerTransition<TStateful>(statefulObject, targetState, dto);
                     }
                 }
 

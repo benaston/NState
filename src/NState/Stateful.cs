@@ -31,10 +31,10 @@
             get { return StateMachine.ParentStateMachine.CurrentState; }
         }
 
-        public TExpectedReturn PerformTransition<TExpectedReturn>(TState targetState, dynamic dto = default(dynamic))
+        public TExpectedReturn TriggerTransition<TExpectedReturn>(TState targetState, dynamic dto = default(dynamic))
         {
             return
-                StateMachine.PerformTransition(this, targetState, dto);
+                StateMachine.TriggerTransition(this, targetState, dto);
         }
     }
 }

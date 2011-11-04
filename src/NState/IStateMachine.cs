@@ -22,6 +22,6 @@
 
         Dictionary <DateTime, IStateTransition<TState>> History { get; set; }
 
-        TStateful PerformTransition<TStateful>(TStateful opportunity, TState targetState, dynamic dto);
+        TStateful TriggerTransition<TStateful>(TStateful opportunity, TState targetState, dynamic dto);
     }
 }
