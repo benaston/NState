@@ -220,7 +220,7 @@ How to use:
 
 ```C#
 
-	var bug = new Bug("bug1", _stateMachine);	
+	var bug = new Bug("my bug name", _stateMachine);	
 	bug.Assign("example@example.com");
 	
 	Assert.That(bug.CurrentState == new BugState.Assigned());
