@@ -12,82 +12,225 @@ How to use:
 	nuget install nstate
 ```
 
-
-**1. Create some state transitions**
-
-*This is an implementation of the example used for Stateless, another, (significantly better!) state machine for .NET*
+**1. Create some states**
 
 ```C#
 
-	var _emailSender = new MyEmailSender(); //full definition left out for clarity
-	
-	//NOTE: BA; that this transitional functionality defined in lambdas solely for clarity here.
-	//NState also has build in Event support, not shown here.
-	var myTransitions = new IStateTransition<Bug, BugState>[]
-				{
-					new BugTransition.Open((bug,state,args) => ss),
-					new BugTransition.Assign((bug,state,args) => { bug.AssigneeEmail = args;
-										       						_emailSender.SendEmail(bug.AssigneeEmail, "Bug assigned to you."); 
-										       						return ss; }),
-					new BugTransition.Defer((bug,state,args) =>  { _emailSender.SendEmail(bug.AssigneeEmail, "You're off the hook."); 
-										       						bug.AssigneeEmail = String.Empty;
-										       						return ss; }),
-					new BugTransition.Resolve((bug,state,args) => ss),
-					new BugTransition.Close((bug,state,args) => ss),
-				};
+	[Serializable]
+	public abstract class BugState : State
+	{
+		public class Assigned : BugState {}
 
+ 		public class Closed : BugState {}
+
+ 		public class Deferred : BugState {}
+
+  		public class Open : BugState {}
+
+ 		public class Resolved : BugState {}
+	}
+    
 ```
 
-
-**2. Create your state machine**
-
+**2. Define your stateful type**
 
 ```C#
 
-	var myStateMachine 
-		= new StateMachine<Bug, BugState>(myTransitions, initialState:new BugState.Open());
-
-```
-
-
-**3. Create your stateful type**
-
-
-```C#
-
+	[Serializable]
 	public class Bug : Stateful<Bug, BugState>
 	{
-		public MyStatefulType(string title, IStateMachine<MyStatefulType, MyState> stateMachine)
-			: base(stateMachine) 
+		public Bug(string title, IStateMachine<Bug, BugState> stateMachine) : base(stateMachine)
 		{
 			Title = title;
 		}
-
+		
 		public string Title { get; set; }
 		
 		public string AssigneeEmail { get; set; }
 		
+		public string ClosedByName { get; set; }
+		
 		public void Assign(string assigneeEmail)
 		{
-			stateMachine.PerformTransition(this, BugState.Assigned, assigneeEmail);
-		}    
+			TransitionTo(new BugState.Assigned(), new {AssigneeEmail = assigneeEmail});
+		}
 		
 		public void Defer()
 		{
-			stateMachine.PerformTransition(this, BugState.Deferred);
-		}    
+			TransitionTo(new BugState.Deferred());
+		}
 		
 		public void Resolve()
 		{
-			stateMachine.PerformTransition(this, BugState.Resolved);
+			TransitionTo(new BugState.Resolved());
 		}
 		
-		public void Close()
+		public void Close(string closedByName)
 		{
-			stateMachine.PerformTransition(this, BugState.Closed);
-		}    
+			TransitionTo(new BugState.Closed(), new {ClosedByName = closedByName});
+		}
 	}
 
-``````
+```
+
+**3. Define your transitions**
+
+```C#
+
+	[Serializable]
+	public class BugTransition
+	{
+		[Serializable]
+		public class Assign : StateTransition<Bug, BugState>
+		{
+			public Assign(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
+	
+			public override BugState[] StartStates
+			{
+				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
+			}
+			
+			public override BugState[] EndStates
+			{
+				get { return new[] {new BugState.Assigned(),}; }
+			}
+		}
+	
+		[Serializable]
+		public class Close : StateTransition<Bug, BugState>
+		{
+			public Close(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
+		
+			public override BugState[] StartStates
+			{
+				get { return new[] {new BugState.Resolved(),}; }
+			}
+			
+			public override BugState[] EndStates
+			{
+				get { return new[] {new BugState.Closed(),}; }
+			}
+		}
+		
+		[Serializable]
+		public class Defer : StateTransition<Bug, BugState>
+		{
+			public Defer(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
+		
+			public override BugState[] StartStates
+			{
+				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
+			}
+		
+			public override BugState[] EndStates
+			{
+				get { return new[] {new BugState.Deferred(),}; }
+			}
+		}
+		
+		[Serializable]
+		public class Open : StateTransition<Bug, BugState>
+		{
+			public override BugState[] StartStates
+			{
+				get { return new[] {new BugState.Closed(),}; }
+			}
+			
+			public override BugState[] EndStates
+			{
+				get { return new[] {new BugState.Open(),}; }
+			}
+		}
+	
+		[Serializable]
+		public class Resolve : StateTransition<Bug, BugState>
+		{
+			public Resolve(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
+		
+			public override BugState[] StartStates
+			{
+				get { return new[] {new BugState.Assigned(),}; }
+			}
+			
+			public override BugState[] EndStates
+			{
+				get { return new[] {new BugState.Resolved(),}; }
+			}
+		}
+	}
+
+```
+
+**4. Define your transition functions (optional logic run within the transitions)**
+
+```C#
+
+	public class BugHelper
+	{
+		public static Bug Assign(Bug bug, BugState state, dynamic args)
+		{
+			bug.AssigneeEmail = args.AssigneeEmail;
+		
+			return bug;
+		}
+		
+		public static Bug Defer(Bug bug, BugState state, dynamic args)
+		{
+			bug.AssigneeEmail = String.Empty;
+		
+			return bug;
+		}
+		
+		public static Bug Resolve(Bug bug, BugState state, dynamic args)
+		{
+			bug.AssigneeEmail = String.Empty;
+		
+			return bug;
+		}
+		
+		public static Bug Close(Bug bug, BugState state, dynamic args)
+		{
+			bug.ClosedByName = args.ClosedByName;
+		
+			return bug;
+		}
+	}
+
+```
+
+**5. Instantiate your state machine**
+
+
+```C#
+
+	//...
+	
+	var transitions = new IStateTransition<Bug, BugState>[]
+	{
+		new BugTransition.Open(),
+		new BugTransition.Assign(BugHelper.Assign),
+		new BugTransition.Defer(BugHelper.Defer),
+		new BugTransition.Resolve(BugHelper.Resolve),
+		new BugTransition.Close(BugHelper.Close),
+	};
+	
+	_stateMachine = new StateMachine<Bug, BugState>(transitions, startState: new BugState.Open());
+	
+	//...
+
+```
+
+
+**6. Work with you stateful object**
+
+
+```C#
+
+	var bug = new Bug("bug1", _stateMachine);	
+	bug.Assign("example@example.com");
+	Assert.That(bug.CurrentState == new BugState.Assigned());
+
+```
+
 
 
