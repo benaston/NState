@@ -81,80 +81,83 @@ How to use:
 	public class BugTransition
 	{
 		[Serializable]
-		public class Assign : StateTransition<Bug, BugState>
+		public class Assign : StateTransition<Bug, MyAppState>
 		{
-			public Assign(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-	
-			public override BugState[] StartStates
+			public Assign(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
 			{
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
 			}
 			
-			public override BugState[] EndStates
+			public override MyAppState[] EndStates
 			{
 				get { return new[] {new BugState.Assigned(),}; }
 			}
 		}
-	
-		[Serializable]
-		public class Close : StateTransition<Bug, BugState>
-		{
-			public Close(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
 		
-			public override BugState[] StartStates
+		[Serializable]
+		public class Close : StateTransition<Bug, MyAppState>
+		{
+			public Close(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
 			{
-				get { return new[] {new BugState.Resolved(),}; }
+			get { return new BugState[] { new BugState.Resolved() }; }
 			}
 			
-			public override BugState[] EndStates
+			public override MyAppState[] EndStates
 			{
-				get { return new[] {new BugState.Closed(),}; }
+			get { return new[] { new BugState.Closed(), }; }
+			}
+		}
+			
+		[Serializable]
+		public class Defer : StateTransition<Bug, MyAppState>
+		{
+			public Defer(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
+			{
+			get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
+			}
+			
+			public override MyAppState[] EndStates
+			{
+			get { return new[] { new BugState.Deferred(), }; }
 			}
 		}
 		
 		[Serializable]
-		public class Defer : StateTransition<Bug, BugState>
+		public class Open : StateTransition<Bug, MyAppState>
 		{
-			public Defer(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-		
-			public override BugState[] StartStates
+			public Open(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
 			{
-				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
+			get { return new[] {new BugState.Closed(),}; }
 			}
-		
-			public override BugState[] EndStates
+			
+			public override MyAppState[] EndStates
 			{
-				get { return new[] {new BugState.Deferred(),}; }
+			get { return new[] {new BugState.Open(),}; }
 			}
 		}
 		
 		[Serializable]
-		public class Open : StateTransition<Bug, BugState>
+		public class Resolve : StateTransition<Bug, MyAppState>
 		{
-			public override BugState[] StartStates
+			public Resolve(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			
+			public override MyAppState[] StartStates
 			{
-				get { return new[] {new BugState.Closed(),}; }
+				get { return new[] { new BugState.Assigned(), }; }
 			}
 			
-			public override BugState[] EndStates
+			public override MyAppState[] EndStates
 			{
-				get { return new[] {new BugState.Open(),}; }
-			}
-		}
-	
-		[Serializable]
-		public class Resolve : StateTransition<Bug, BugState>
-		{
-			public Resolve(Func<Bug, BugState, dynamic, Bug> transitionFunction) : base(transitionFunction) {}
-		
-			public override BugState[] StartStates
-			{
-				get { return new[] {new BugState.Assigned(),}; }
-			}
+				get { return new[] { new BugState.Resolved(), }; }
 			
-			public override BugState[] EndStates
-			{
-				get { return new[] {new BugState.Resolved(),}; }
 			}
 		}
 	}
