@@ -6,13 +6,13 @@
     ///   (akin to workflow.)
     /// </summary>
     public interface IStateful<TStatefulObject, TState>
-        where TStatefulObject : IStateful<TStatefulObject, TState>
+        where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
         IStateMachine<TStatefulObject, TState> StateMachine { get; set; }
 
         TState CurrentState { get; }
 
-        TStatefulObject TransitionTo(TState targetState, dynamic dto);
+        TStateful PerformTransition<TStateful>(TState targetState, dynamic dto);
     }
 }

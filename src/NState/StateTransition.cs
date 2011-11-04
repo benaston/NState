@@ -3,19 +3,28 @@
     using System;
 
     public abstract class StateTransition<TStatefulObject, TState> :
-        IStateTransition
-            <TStatefulObject, TState>
-        where TStatefulObject :
-            IStateful<TStatefulObject, TState>
+        IStateTransition<TState>
+        //where TStatefulObject :
+        //    Stateful<TStatefulObject, TState>
         where TState : State
     {
+        //protected StateTransition(
+        //    Func<TStatefulObject, TState, dynamic, TStatefulObject> transitionFunction = null)
+        //{
+        //    TransitionFunction = transitionFunction ?? ((o, s, args) => o); //identity
+        //}
+
         protected StateTransition(
-            Func<TStatefulObject, TState, dynamic, TStatefulObject> transitionFunction = null)
+            Action<TState, dynamic> transitionFunction = null)
         {
-            TransitionFunction = transitionFunction ?? ((o, s, args) => o); //identity
+            TransitionFunction = transitionFunction ?? ((s, args) => { });
         }
 
-        public Func<TStatefulObject, TState, dynamic, TStatefulObject> TransitionFunction { get; private set; }
+        public Action<TState, dynamic> TransitionFunction { get; private set; }
+
+        //public Func<TStatefulObject, TState, dynamic, TStatefulObject> TransitionFunction { get; private set; }
+        
+        //public Func<dynamic, dynamic, dynamic, dynamic> TransitionFunction { get; private set; }
 
         public abstract TState[] StartStates { get; }
 
@@ -25,10 +34,10 @@
         {
             get
             {
-                return (o, s, dto) =>
+                return (o, s, args) =>
                            {
                                OnRaiseBeforeTransition();
-                               var v = TransitionFunction(o, s, dto);
+                               var v = TransitionFunction(s, args);
                                OnRaiseAfterTransition();
                                return v;
                            };

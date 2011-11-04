@@ -9,15 +9,18 @@
     ///   to the database, or an onscreen notification or the billing of funds.
     ///   Note that a computer program might invoke the state transition.
     /// </summary>
-    public interface IStateTransition<TStatefulObject, TState>
-        where TStatefulObject :
-            IStateful<TStatefulObject, TState>
+    public interface IStateTransition<TState>
         where TState : State
     {
         TState[] StartStates { get; }
 
         TState[] EndStates { get; }
 
-        Func<TStatefulObject, TState, dynamic, TStatefulObject> TransitionFunction { get; }
+        //
+        //Func<TStatefulObject, TState, dynamic,TStatefulObject> TransitionFunction { get; }
+
+        Action<TState, dynamic> TransitionFunction { get; }
+
+        //Func<dynamic, dynamic, dynamic, dynamic> TransitionFunction { get; }
     }
 }

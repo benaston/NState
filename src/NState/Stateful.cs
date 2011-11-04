@@ -10,7 +10,7 @@
     [Serializable]
     public abstract class Stateful<TStatefulObject, TState> :
         IStateful<TStatefulObject, TState>
-        where TStatefulObject : IStateful<TStatefulObject, TState>
+        where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
         protected Stateful(
@@ -26,13 +26,15 @@
             get { return StateMachine.CurrentState; }
         }
 
-        public TStatefulObject TransitionTo(TState targetState, dynamic dto = default(dynamic))
+        //public TState ParentState
+        //{
+        //    get { return StateMachine.ParentStateMachine.CurrentState; }
+        //}
+
+        public TExpectedReturn PerformTransition<TExpectedReturn>(TState targetState, dynamic dto = default(dynamic))
         {
             return
-                StateMachine.TransitionTo(
-                    (TStatefulObject)
-                    ((IStateful<TStatefulObject, TState>) this),
-                    targetState, dto);
+                StateMachine.PerformTransition(this, targetState, dto);
         }
     }
 }

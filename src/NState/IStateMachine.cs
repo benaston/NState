@@ -9,23 +9,19 @@
     ///   Responsible for defining the interface for types that
     ///   control the transitions between state machine states.
     /// </summary>
-    public interface IStateMachine<TStatefulObject, TState> :
-        IStateMachine
-        where TStatefulObject : IStateful<TStatefulObject, TState>
+    public interface IStateMachine<TStatefulObject, TState> : IStateMachine where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
+        IEnumerable<IStateTransition<TState>> StateTransitions { get; }
+
         TState StartState { get; set; }
+
+        //IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
         TState CurrentState { get; set; }
 
-        List<IStateMachine> ChildStateMachines { get; set; }
+        Dictionary <DateTime, IStateTransition<TState>> History { get; set; }
 
-        List<IStateMachine> ParentStateMachines { get; set; }
-
-        Dictionary
-            <DateTime, IStateTransition<TStatefulObject, TState>>
-            History { get; set; }
-
-        TStatefulObject TransitionTo(TStatefulObject opportunity, TState targetState, dynamic dto);
+        TStateful PerformTransition<TStateful>(TStateful opportunity, TState targetState, dynamic dto);
     }
 }

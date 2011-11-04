@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using MoreLinq;
     using NBasicExtensionMethod;
     using Newtonsoft.Json;
     using NSure;
@@ -16,77 +15,74 @@
     [Serializable]
     public class StateMachine<TStatefulObject, TState> :
         IStateMachine<TStatefulObject, TState>
-        where TStatefulObject : IStateful<TStatefulObject, TState>
+        where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
-        protected readonly
-            IEnumerable
-                <IStateTransition<TStatefulObject, TState>>
-            StateTransitions;
-
         /// <summary>
-        /// Required for deserialization.
+        ///   Required for deserialization.
         /// </summary>
-        public StateMachine() { } //empty
+        public StateMachine() {}
 
         public StateMachine(
-            IEnumerable
-                <IStateTransition<TStatefulObject, TState>>
-                stateTransitions,
+            IEnumerable<IStateTransition<TState>> stateTransitions,
             TState startState,
-            List<IStateMachine> childStateMachines = null,
-            List<IStateMachine> parentStateMachines = null)
+            IStateMachine<TStatefulObject, TState> parentStateMachine = null)
         {
             Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
 
             StateTransitions = stateTransitions;
-            ChildStateMachines = childStateMachines ?? new List<IStateMachine>();
-            ParentStateMachines = parentStateMachines ?? new List<IStateMachine>();
             StartState = startState;
+            //ParentStateMachine = parentStateMachine;
             CurrentState = startState;
         }
 
+        public IEnumerable<IStateTransition<TState>> StateTransitions { get; protected set; }
+
         public TState StartState { get; set; }
+
+        //[JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+        //public IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
         public TState CurrentState { get; set; }
 
-        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-        public List<IStateMachine> ChildStateMachines { get; set; }
+        public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
 
-        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-        public List<IStateMachine> ParentStateMachines { get; set; }
-
-        public Dictionary<DateTime, IStateTransition<TStatefulObject, TState>> History { get; set; }
-
-        /// <summary>
-        ///   WIP - hierarchy!
-        /// </summary>
-        public TStatefulObject TransitionTo(TStatefulObject statefulObject, TState targetState,
-                                                       dynamic dto = default(dynamic))
+        public TStateful PerformTransition<TStateful>(TStateful statefulObject, TState targetState,
+                                                      dynamic dto = default(dynamic))
         {
             Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
                                                "statefulObject not supplied.");
-
-            OnRaiseBeforeEveryTransition();
 
             try
             {
                 if (CurrentState != targetState) //make this explicit?
                 {
-                    statefulObject = StateTransitions.Where(t =>
-                       t.StartStates.Where(s => s == CurrentState).Any() &&
-                       t.EndStates.Where(e => e == targetState).Any())
-                       .First().TransitionFunction(statefulObject, targetState, dto);
+                    var matches = StateTransitions.Where(t =>
+                                                             t.StartStates.Where(s => s == CurrentState).Any() &&
+                                                             t.EndStates.Where(e => e == targetState).Any());
+                    if (matches.Any())
+                    {
+                        OnRaiseBeforeEveryTransition();
+                        matches.First().TransitionFunction(targetState, dto);
+                        CurrentState = targetState;
+                        OnRaiseAfterEveryTransition();
+                    }
+                    else
+                    {
+                        //if (ParentStateMachine == null)
+                        //{
+                            throw new Exception(); //to be caught below, refactor
+                        //}
 
-                    CurrentState = targetState;
+                        //ParentStateMachine.PerformTransition<TStateful>(statefulObject, targetState, dto);
+                    }
                 }
-                OnRaiseAfterEveryTransition();
 
                 return statefulObject;
             }
             catch (Exception e)
             {
-                throw new InvalidStateTransitionException<TState>(CurrentState, targetState, innerException:e);
+                throw new InvalidStateTransitionException<TState>(CurrentState, targetState, innerException: e);
             }
         }
 
@@ -125,3 +121,24 @@
         }
     }
 }
+
+//state machines sharing common transitions need to be part of the same inheritance hierarchy
+//var localTransitions = matchingTransitionsFunction(StateTransitions);
+
+//possibly removal of type return constraint would enable covariance?
+//i think we can say this - each state machine can hold a reference to a parent 
+//state machine, *which is typed in terms of state to the former*
+//may need to refactor the code so the finding of the matching transition function 
+//occurs before the actual "transitionto behavior"?
+
+//statefulObject = localTransitions.Any() ? localTransitions.First()
+//    .TransitionFunction(statefulObject, targetState, dto) : ParentStateMachines.Where(sm => sm)
+
+
+/*pseudocode: test for matching local transitions, then invoke against parent (which should invoke its parent)*/
+/*may need to separat eout the transition function onto the IStateful interface (and remove some of the params like the stateful object
+.Could remove the stateful object and if needed, have it passed in via the dto, but that kind of sucks.*/
+/*perhaps modify the concept of the transition function to not affect the domain object? - investigate by constructing a test with this behavior*/
+
+
+//first  extract the recursive alo from this and start using interfaces/base types instead of concrete states
