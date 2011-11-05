@@ -3,7 +3,7 @@
     using System;
 
     [Serializable]
-    public abstract class BugState : MyAppState
+    public abstract class BugState : State
     {
         public class Assigned : BugState {}
 

@@ -72,19 +72,41 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BugTrackerExample\Bug.cs" />
-    <Compile Include="BugTrackerExample\BugHelper.cs" />
+    <Compile Include="BugTrackerExample\BugTransitionFunction.cs" />
     <Compile Include="BugTrackerExample\BugState.cs" />
-    <Compile Include="BugTrackerExample\BugTracker.cs" />
     <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
-    <Compile Include="BugTrackerExample\BugTrackerState.cs" />
-    <Compile Include="BugTrackerExample\BugTrackerTransition.cs" />
     <Compile Include="BugTrackerExample\BugTransition.cs" />
-    <Compile Include="BugTrackerExample\MyAppState.cs" />
-    <Compile Include="BugTrackerExample\MyOtherBugTrackerState.cs" />
-    <Compile Include="BugTrackerExample\MyUnrelatedState.cs" />
     <Compile Include="SerializationExample\SerializationExampleTests.cs" />
+    <Compile Include="UserInterfaceExample\AccountTab.cs" />
+    <Compile Include="UserInterfaceExample\AccountTabHelper.cs" />
+    <Compile Include="UserInterfaceExample\AccountTabState.cs" />
+    <Compile Include="UserInterfaceExample\AccountTabTransition.cs" />
+    <Compile Include="UserInterfaceExample\DetailPanelState.cs" />
+    <Compile Include="UserInterfaceExample\DetailsPanels.cs" />
+    <Compile Include="UserInterfaceExample\DetailsPanelsState.cs" />
+    <Compile Include="UserInterfaceExample\DetailsPanelsTransition.cs" />
+    <Compile Include="UserInterfaceExample\HomePanel.cs" />
+    <Compile Include="UserInterfaceExample\HomePanelState.cs" />
+    <Compile Include="UserInterfaceExample\HomePanelTransition.cs" />
     <Compile Include="UserInterfaceExample\LucidExampleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInterfaceExample\LucidState.cs" />
+    <Compile Include="UserInterfaceExample\SavedSearchAreaState.cs" />
+    <Compile Include="UserInterfaceExample\SavedSearchItemAreaState.cs" />
+    <Compile Include="UserInterfaceExample\SearchArea.cs" />
+    <Compile Include="UserInterfaceExample\SearchAreaHelper.cs" />
+    <Compile Include="UserInterfaceExample\SearchAreaState.cs" />
+    <Compile Include="UserInterfaceExample\SearchAreaTransition.cs" />
+    <Compile Include="UserInterfaceExample\SearchTab.cs" />
+    <Compile Include="UserInterfaceExample\SearchTabHelper.cs" />
+    <Compile Include="UserInterfaceExample\SearchTabState.cs" />
+    <Compile Include="UserInterfaceExample\SearchTabTransition.cs" />
+    <Compile Include="UserInterfaceExample\UIRoot.cs" />
+    <Compile Include="UserInterfaceExample\UIRootState.cs" />
+    <Compile Include="UserInterfaceExample\WorkingPanel.cs" />
+    <Compile Include="UserInterfaceExample\WorkingPanelHelper.cs" />
+    <Compile Include="UserInterfaceExample\WorkingPanelState.cs" />
+    <Compile Include="UserInterfaceExample\WorkingPanelTransition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

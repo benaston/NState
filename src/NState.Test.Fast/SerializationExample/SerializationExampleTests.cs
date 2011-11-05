@@ -14,10 +14,10 @@ namespace NState.Test.Fast.SerializationExample
             var bugTransitions = new IStateTransition<BugState>[]
                                   {
                                       new BugTransition.Open(),
-                                      new BugTransition.Assign(BugHelper.Assign),
-                                      new BugTransition.Defer(BugHelper.Defer),
-                                      new BugTransition.Resolve(BugHelper.Resolve),
-                                      new BugTransition.Close(BugHelper.Close),
+                                      new BugTransition.Assign(BugTransitionFunction.Assign),
+                                      new BugTransition.Defer(BugTransitionFunction.Defer),
+                                      new BugTransition.Resolve(BugTransitionFunction.Resolve),
+                                      new BugTransition.Close(BugTransitionFunction.Close),
                                   };
 
             _stateMachine = new StateMachine<Bug, BugState>("Bug",

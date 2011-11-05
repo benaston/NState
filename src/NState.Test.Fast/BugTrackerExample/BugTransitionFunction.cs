@@ -2,24 +2,24 @@
 {
     using System;
 
-    public class BugHelper
+    public class BugTransitionFunction
     {
-        public static void Assign(MyAppState state, dynamic args)
+        public static void Assign(BugState state, dynamic args)
         {
             args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
         }
 
-        public static void Defer(MyAppState state, dynamic args)
+        public static void Defer(BugState state, dynamic args)
         {
             args.StatefulObject.AssigneeEmail = String.Empty;
         }
 
-        public static void Resolve(MyAppState state, dynamic args)
+        public static void Resolve(BugState state, dynamic args)
         {
             args.StatefulObject.AssigneeEmail = String.Empty;
         }
 
-        public static void Close(MyAppState state, dynamic args)
+        public static void Close(BugState state, dynamic args)
         {
             args.StatefulObject.ClosedByName = args.ClosedByName;
         }

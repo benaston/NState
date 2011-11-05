@@ -1,507 +1,10 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace NState.Test.Fast.UserInterfaceExample
 {
-    using System;
     using NUnit.Framework;
 
-    public abstract class LucidState : State {}
-
-    public abstract class UIRootState : LucidState
-    {
-        public class Enabled : UIRootState { }
-    }
-
-    public abstract class HomePanelState : LucidState
-    {
-        public class Hidden : HomePanelState {}
-
-        public class Visible : HomePanelState {}
-    }
-
-    public abstract class SearchTabState : LucidState
-    {
-        public class Hidden : SearchTabState {}
-
-        public class Visible : SearchTabState {}
-    }
-
-    public abstract class AccountTabState : LucidState
-    {
-        public class Hidden : AccountTabState {}
-
-        public class Visible : AccountTabState {}
-    }
-
-    public abstract class SearchPanelState : LucidState
-    {
-        public class Hidden : SearchPanelState { }
-
-        public class Visible : SearchPanelState { }
-    }
-
-    public abstract class WorkingPanelState : LucidState
-    {
-        public class SearchMode : WorkingPanelState { }
-
-        public class AccountMode : WorkingPanelState { }
-    }
-
-    public abstract class DetailsPanelsState : LucidState
-    {
-        public class SearchMode : DetailsPanelsState { }
-
-        public class AccountMode : DetailsPanelsState { }
-    }
-
-    public abstract class DetailPanelState : LucidState
-    {
-        public class Hidden : DetailPanelState { }
-
-        public class SideA : DetailPanelState { }
-
-        public class SideB : DetailPanelState { }
-    }
-
-    public class UIRoot : Stateful<UIRoot, LucidState>
-    {
-        public UIRoot(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) {}
-
-        public UIRoot Hide()
-        {
-            return TriggerTransition(this, new HomePanelState.Hidden());
-        }
-
-        public UIRoot Show()
-        {
-            return TriggerTransition(this, new HomePanelState.Visible());
-        }
-    }
-
-    public class HomePanel : Stateful<UIRoot, LucidState>
-    {
-        public HomePanel(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) { }
-
-        public HomePanel Hide()
-        {
-            return TriggerTransition(this, new HomePanelState.Hidden());
-        }
-
-        public HomePanel Show()
-        {
-            return TriggerTransition(this, new HomePanelState.Visible());
-        }
-    }
-
-    public class SearchTab : Stateful<UIRoot, LucidState>
-    {
-        public SearchTab(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) {}
-
-        public SearchTab Hide()
-        {
-            return TriggerTransition(this, new SearchTabState.Hidden(),
-                                     new
-                                         {
-                                             SearchTabSM = StateMachine,
-                                             AccountTabSM =
-                                         StateMachine.Parent.Children["AccountTab"],
-                                         });
-
-            //return this;
-        }
-
-        public SearchTab Show()
-        {
-            return TriggerTransition(this, new SearchTabState.Visible(),
-                                     new
-                                         {
-                                             SearchTabSM = StateMachine,
-                                             AccountTabSM =
-                                         StateMachine.Parent.Children["AccountTab"],
-                                         });
-
-            //return this;
-        }
-    }
-
-    public class AccountTab : Stateful<UIRoot, LucidState>
-    {
-        public AccountTab(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) {}
-
-        public AccountTab Hide()
-        {
-            TriggerTransition(this, new AccountTabState.Hidden(),
-                              new
-                                  {
-                                      SearchTabSM = StateMachine.Parent.Children["SearchTab"],
-                                      AccountTabSM = StateMachine,
-                                  });
-
-            return this;
-        }
-
-        public AccountTab Show()
-        {
-            TriggerTransition(this, new AccountTabState.Visible(),
-                              new
-                                  {
-                                      SearchTabSM = StateMachine.Parent.Children["SearchTab"],
-                                      AccountTabSM = StateMachine,
-                                  });
-
-            return this;
-        }
-    }
-
-    public class SearchPanel : Stateful<UIRoot, LucidState>
-    {
-        public SearchPanel(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) { }
-
-        public SearchPanel Hide()
-        {
-            TriggerTransition(this, new SearchPanelState.Hidden(),
-                              new
-                              {
-                                  //       search panel search tab         home panel         root
-                                  StateMachine, //todo fix this madness - auto update root by walking the tree
-                              });
-
-            return this;
-        }
-
-        public SearchPanel Show()
-        {
-            TriggerTransition(this, new SearchPanelState.Visible(),
-                              new
-                              {
-                                  StateMachine,
-                              });
-
-            return this;
-        }
-    }
-
-    public class WorkingPanel : Stateful<UIRoot, LucidState>
-    {
-        public WorkingPanel(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) { }
-
-        public WorkingPanel SelectSearchMode()
-        {
-            TriggerTransition(this, new WorkingPanelState.SearchMode(),
-                              new
-                              {
-                                  StateMachine, //todo fix this madness - auto update root by walking the tree
-                              });
-
-            return this;
-        }
-
-        public WorkingPanel SelectAccountMode()
-        {
-            TriggerTransition(this, new WorkingPanelState.AccountMode(),
-                              new
-                              {
-                                  StateMachine,
-                              });
-
-            return this;
-        }
-    }
-
-    public class DetailsPanels : Stateful<UIRoot, LucidState>
-    {
-        public DetailsPanels(IStateMachine<UIRoot, LucidState> stateMachine)
-            : base(stateMachine) { }
-
-        public DetailsPanels SelectSearchMode()
-        {
-            TriggerTransition(this, new DetailsPanelsState.SearchMode(),
-                              new
-                              {
-                                  StateMachine,
-                              });
-
-            return this;
-        }
-
-        public DetailsPanels SelectAccountMode()
-        {
-            TriggerTransition(this, new DetailsPanelsState.AccountMode(),
-                              new
-                              {
-                                  StateMachine,
-                              });
-
-            return this;
-        }
-    }
-
-    public class HomePanelTransition
-    {
-        [Serializable]
-        public class Hide : StateTransition<LucidState>
-        {
-            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new HomePanelState.Visible(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new HomePanelState.Hidden(),}; }
-            }
-        }
-
-        [Serializable]
-        public class Show : StateTransition<LucidState>
-        {
-            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new HomePanelState.Hidden(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new HomePanelState.Visible(),}; }
-            }
-        }
-    }
-
-    public class SearchTabTransition
-    {
-        [Serializable]
-        public class Hide : StateTransition<LucidState>
-        {
-            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new SearchTabState.Visible(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new SearchTabState.Hidden(),}; }
-            }
-        }
-
-        [Serializable]
-        public class Show : StateTransition<LucidState>
-        {
-            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new SearchTabState.Hidden(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new SearchTabState.Visible(),}; }
-            }
-        }
-    }
-
-    public class AccountTabTransition
-    {
-        [Serializable]
-        public class Hide : StateTransition<LucidState>
-        {
-            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new AccountTabState.Visible(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new AccountTabState.Hidden(),}; }
-            }
-        }
-
-        [Serializable]
-        public class Show : StateTransition<LucidState>
-        {
-            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] {new AccountTabState.Hidden(),}; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] {new AccountTabState.Visible(),}; }
-            }
-        }
-    }
-
-    public class SearchPanelTransition
-    {
-        [Serializable]
-        public class Hide : StateTransition<LucidState>
-        {
-            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new SearchPanelState.Visible(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new SearchPanelState.Hidden(), }; }
-            }
-        }
-
-        [Serializable]
-        public class Show : StateTransition<LucidState>
-        {
-            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new SearchPanelState.Hidden(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new SearchPanelState.Visible(), }; }
-            }
-        }
-    }
-
-    public class WorkingPanelTransition
-    {
-        [Serializable]
-        public class SelectSearchMode : StateTransition<LucidState>
-        {
-            public SelectSearchMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new WorkingPanelState.AccountMode(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new WorkingPanelState.SearchMode(), }; }
-            }
-        }
-
-        [Serializable]
-        public class SelectAccountMode : StateTransition<LucidState>
-        {
-            public SelectAccountMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new WorkingPanelState.SearchMode(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new WorkingPanelState.AccountMode(), }; }
-            }
-        }
-    }
-
-    public class DetailsPanelsTransition
-    {
-        [Serializable]
-        public class SelectSearchMode : StateTransition<LucidState>
-        {
-            public SelectSearchMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new DetailsPanelsState.AccountMode(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new DetailsPanelsState.SearchMode(), }; }
-            }
-        }
-
-        [Serializable]
-        public class SelectAccountMode : StateTransition<LucidState>
-        {
-            public SelectAccountMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
-
-            public override LucidState[] StartStates
-            {
-                get { return new[] { new DetailsPanelsState.SearchMode(), }; }
-            }
-
-            public override LucidState[] EndStates
-            {
-                get { return new[] { new DetailsPanelsState.AccountMode(), }; }
-            }
-        }
-    }
-
-    public class SearchTabHelper
-    {
-        public static void Hide(LucidState state, dynamic args)
-        {
-            args.AccountTabSM.CurrentState = new AccountTabState.Visible();
-        }
-
-        public static void Show(LucidState state, dynamic args)
-        {
-            args.AccountTabSM.CurrentState = new AccountTabState.Hidden();
-        }
-    }
-
-    public class AccountTabHelper
-    {
-        public static void Hide(LucidState state, dynamic args)
-        {
-            args.SearchTabSM.CurrentState = new SearchTabState.Visible();
-        }
-
-        public static void Show(LucidState state, dynamic args)
-        {
-            args.SearchTabSM.CurrentState = new SearchTabState.Hidden();
-        }
-    }
-
-    public class SearchPanelHelper
-    {
-        public static void Show(LucidState state, dynamic args)
-        {
-            //when showing the search panel, ensure the working panel is in the home position?
-            //       search panel search tab         home panel         root
-            args.StateMachine.Parent.Parent.Parent.Children["WorkingPanel"].TriggerTransition(new WorkingPanelState.SearchMode());
-            args.StateMachine.Parent.Parent.Parent.Children["DetailsPanels"].TriggerTransition(new DetailsPanelsState.SearchMode());
-        }
-    }
-
-    public class WorkingPanelHelper
-    {
-        public static void SelectSearchMode(LucidState state, dynamic args)
-        {
-            //reset horiz position
-        }
-
-        public static void SelectAccountMode(LucidState state, dynamic args)
-        {
-            //reset horiz position
-        }
-    }
-
     /// <summary>
+    /// TODO: split out these tests.
     /// TODO: make configuration terser.
     /// TODO: supply context/root node by default to transitions (avoiding use of dto in many cases?).
     /// TODO: default all to all transitions? to minimise code
@@ -540,8 +43,8 @@ namespace NState.Test.Fast.UserInterfaceExample
 
             var searchPanelTransitions = new IStateTransition<LucidState>[]
                                             {
-                                                new SearchPanelTransition.Hide(),
-                                                new SearchPanelTransition.Show(SearchPanelHelper.Show),
+                                                new SearchAreaTransition.Hide(),
+                                                new SearchAreaTransition.Show(SearchAreaHelper.Show),
                                             };
 
             var workingPanelTransitions =   new IStateTransition<LucidState>[]
@@ -575,9 +78,9 @@ namespace NState.Test.Fast.UserInterfaceExample
                                                                               startState: new AccountTabState.Visible(),
                                                                               parentStateMachine: _homePanelStateMachine);
 
-            _searchPanelStateMachine = new StateMachine<UIRoot, LucidState>("SearchPanel",
+            _searchPanelStateMachine = new StateMachine<UIRoot, LucidState>("SearchArea",
                                                                               searchPanelTransitions,
-                                                                              startState: new SearchPanelState.Visible(),
+                                                                              startState: new SearchAreaState.Visible(),
                                                                               parentStateMachine: _accountTabStateMachine);
 
             _workingPanelStateMachine = new StateMachine<UIRoot, LucidState>("WorkingPanel",
@@ -710,35 +213,35 @@ namespace NState.Test.Fast.UserInterfaceExample
         }
 
         [Test]
-        public void SearchPanel_ShowHideShowTest()
+        public void SearchArea_ShowHideShowTest()
         {
             //arrange
-            var h = new SearchPanel(_searchPanelStateMachine).Hide().Show();
+            var h = new SearchArea(_searchPanelStateMachine).Hide().Show();
 
             //act/assert
-            Assert.That(h.CurrentState == new SearchPanelState.Visible());
+            Assert.That(h.CurrentState == new SearchAreaState.Visible());
         }
 
         [Test]
-        public void SearchPanel_ShowHideTest()
+        public void SearchArea_ShowHideTest()
         {
             //arrange
-            var h = new SearchPanel(_searchPanelStateMachine);
+            var h = new SearchArea(_searchPanelStateMachine);
             h.Hide();
 
             //act/assert
-            Assert.That(h.CurrentState == new SearchPanelState.Hidden());
+            Assert.That(h.CurrentState == new SearchAreaState.Hidden());
         }
 
         [Test]
-        public void SearchPanel_ShowShowTest()
+        public void SearchArea_ShowShowTest()
         {
             //arrange
-            var h = new SearchPanel(_searchPanelStateMachine);
+            var h = new SearchArea(_searchPanelStateMachine);
             h.Show();
 
             //act/assert
-            Assert.That(h.CurrentState == new SearchPanelState.Visible());
+            Assert.That(h.CurrentState == new SearchAreaState.Visible());
         }
     }
 

@@ -14,24 +14,29 @@
 
         public string ClosedByName { get; set; }
 
-        public void Assign(string assigneeEmail)
+        public Bug Open()
         {
-            TriggerTransition(this, new BugState.Assigned(), new {AssigneeEmail = assigneeEmail});
+            return TriggerTransition(this, new BugState.Open());
         }
 
-        public void Defer()
+        public Bug Assign(string assigneeEmail)
         {
-            TriggerTransition(this, new BugState.Deferred());
+            return TriggerTransition(this, new BugState.Assigned(), new {StatefulObject = this, AssigneeEmail = assigneeEmail});
         }
 
-        public void Resolve()
+        public Bug Defer()
         {
-            TriggerTransition(this, new BugState.Resolved());
+            return TriggerTransition(this, new BugState.Deferred(), new { StatefulObject = this });
         }
 
-        public void Close(string closedByName)
+        public Bug Resolve()
         {
-            TriggerTransition(this, new BugState.Closed(), new {ClosedByName = closedByName});
+            return TriggerTransition(this, new BugState.Resolved());
+        }
+
+        public Bug Close(string closedByName)
+        {
+            return TriggerTransition(this, new BugState.Closed(), new { StatefulObject = this, ClosedByName = closedByName });
         }
     }
 }
