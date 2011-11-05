@@ -38,7 +38,7 @@ How to use:
 
 	public class Bug : Stateful<Bug, BugState>
 	{
-		public Bug(string title, IStateMachine<Bug, BugState> stateMachine)
+		public Bug(string title, IStateMachine<BugState> stateMachine)
 		: base(stateMachine)
 		{
 			Title = title;
@@ -50,24 +50,35 @@ How to use:
 		
 		public string ClosedByName { get; set; }
 		
-		public void Assign(string assigneeEmail)
+		public Bug Open()
 		{
-			TriggerTransition<Bug>(new BugState.Assigned(), new { AssigneeEmail = assigneeEmail });
+			return TriggerTransition(this, new BugState.Open());
+		}
+        
+		public Bug Assign(string assigneeEmail)
+		{
+			dynamic args = new ExpandoObject();
+			args.AssigneeEmail = assigneeEmail;
+			
+			return TriggerTransition(this, new BugState.Assigned(), args);
 		}
 		
 		public void Defer()
 		{
-			TriggerTransition<Bug>(new BugState.Deferred());
+			TriggerTransition(this, new BugState.Deferred());
 		}
 		
 		public void Resolve()
 		{
-			TriggerTransition<Bug>(new BugState.Resolved());
+			TriggerTransition(this, new BugState.Resolved());
 		}
 		
-		public void Close(string closedByName)
+		public Bug Close(string closedByName)
 		{
-			TriggerTransition<Bug>(new BugState.Closed(), new { ClosedByName = closedByName });
+			dynamic args = new ExpandoObject();
+			args.ClosedByName = closedByName;
+		
+			return TriggerTransition(this, new BugState.Closed(), args);
 		}
 	}
 
@@ -83,7 +94,7 @@ How to use:
 		[Serializable]
 		public class Assign : StateTransition<Bug, BugState>
 		{
-			public Assign(Action<MyAppState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Assign(Action<MyAppState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
@@ -99,7 +110,7 @@ How to use:
 		[Serializable]
 		public class Close : StateTransition<Bug, BugState>
 		{
-			public Close(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Close(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
@@ -115,7 +126,7 @@ How to use:
 		[Serializable]
 		public class Defer : StateTransition<Bug, BugState>
 		{
-			public Defer(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Defer(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
@@ -131,7 +142,7 @@ How to use:
 		[Serializable]
 		public class Open : StateTransition<Bug, BugState>
 		{
-			public Open(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Open(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
@@ -147,7 +158,7 @@ How to use:
 		[Serializable]
 		public class Resolve : StateTransition<Bug, BugState>
 		{
-			public Resolve(Action<BugState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Resolve(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override MyAppState[] StartStates
 			{
@@ -167,24 +178,24 @@ How to use:
 
 ```C#
 
-	public class BugHelper
+	public class BugTransitionFunction
 	{
-		public static void Assign(BugState state, dynamic args)
+		public static void Assign(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
 		}
 		
-		public static void Defer(BugState state, dynamic args)
+		public static void Defer(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static void Resolve(BugState state, dynamic args)
+		public static void Resolve(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
 		{
 			args.StatefulObject.AssigneeEmail = String.Empty;
 		}
 		
-		public static void Close(BugState state, dynamic args)
+		public static void Close(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
 		{
 			args.StatefulObject.ClosedByName = args.ClosedByName;
 		}
