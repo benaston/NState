@@ -6,7 +6,6 @@
     using NBasicExtensionMethod;
     using Newtonsoft.Json;
     using NSure;
-    using ArgumentNullException = NHelpfulException.FrameworkExceptions.ArgumentNullException;
 
     /// <summary>
     ///   Enables specification of valid state changes to be applied to object
@@ -20,6 +19,8 @@
     {
         /// <summary>
         ///   Required for deserialization.
+        ///   TODO: give every SM a link to the root 
+        ///   to be used for transition context.
         /// </summary>
         public StateMachine() {}
 
@@ -33,10 +34,10 @@
             Name = name;
             StateTransitions = stateTransitions;
             StartState = startState;
-            ParentStateMachine = parentStateMachine;
+            Parent = parentStateMachine;
             if(parentStateMachine != null)
             {
-                ParentStateMachine.ChildStateMachines.Add(Name, this);
+                Parent.Children.Add(Name, this);
             }
             CurrentState = startState;
         }
@@ -48,10 +49,10 @@
         public TState StartState { get; set; }
 
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-        public IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
+        public IStateMachine<TStatefulObject, TState> Parent { get; set; }
 
         private Dictionary<string, IStateMachine<TStatefulObject, TState>> _childStateMachines = new Dictionary<string, IStateMachine<TStatefulObject, TState>>();
-        public Dictionary<string, IStateMachine<TStatefulObject, TState>> ChildStateMachines
+        public Dictionary<string, IStateMachine<TStatefulObject, TState>> Children
         {
             get { return _childStateMachines; }
             set { _childStateMachines = value; }
@@ -84,12 +85,12 @@
                     }
                     else
                     {
-                        if (ParentStateMachine == null)
+                        if (Parent == null)
                         {
                             throw new Exception(); //to be caught below, refactor
                         }
 
-                        ParentStateMachine.TriggerTransition(targetState, dto);
+                        Parent.TriggerTransition(targetState, dto);
                     }
                 }
             }

@@ -18,12 +18,12 @@
 
         TState StartState { get; set; }
 
-        IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
+        IStateMachine<TStatefulObject, TState> Parent { get; set; }
 
         /// <summary>
         /// Key is SM name.
         /// </summary>
-        Dictionary<string, IStateMachine<TStatefulObject, TState>> ChildStateMachines { get; set; }
+        Dictionary<string, IStateMachine<TStatefulObject, TState>> Children { get; set; }
 
         TState CurrentState { get; set; }
 

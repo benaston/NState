@@ -28,7 +28,7 @@
 
         public TState ParentState
         {
-            get { return StateMachine.ParentStateMachine.CurrentState; }
+            get { return StateMachine.Parent.CurrentState; }
         }
 
         public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, dynamic dto = default(dynamic))

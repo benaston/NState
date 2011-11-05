@@ -269,7 +269,7 @@ namespace NState.Test.Fast
 
             //act/assert
             Assert.That(bug.CurrentState == new BugState.Open());
-            Assert.That(bug.StateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
+            Assert.That(bug.StateMachine.Parent.CurrentState == new BugTrackerState.Extinguished());
         }
 
         [Test]
@@ -302,19 +302,19 @@ namespace NState.Test.Fast
 
             //act/assert
             Assert.That(bug.CurrentState == new BugState.Open());
-            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Extinguished());
+            Assert.That(_stateMachine.Parent.CurrentState == new BugTrackerState.Extinguished());
 
             bug.TriggerTransition<Bug>(bug, new BugTrackerState.Smoking());
 
             Assert.That(bug.CurrentState == new BugState.Open());
-            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.Parent.CurrentState == new BugTrackerState.Smoking());
             Assert.That(bug.AssigneeEmail == null);
-            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.Parent.CurrentState == new BugTrackerState.Smoking());
 
             bug.TriggerTransition<Bug>(bug, new BugState.Assigned(), new { StatefulObject = bug, AssigneeEmail = "example@example.com" });
             Assert.That(bug.CurrentState == new BugState.Assigned());
             Assert.That(bug.AssigneeEmail == "example@example.com");
-            Assert.That(_stateMachine.ParentStateMachine.CurrentState == new BugTrackerState.Smoking());
+            Assert.That(_stateMachine.Parent.CurrentState == new BugTrackerState.Smoking());
         }
 
         [Test]
