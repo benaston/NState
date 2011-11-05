@@ -94,7 +94,7 @@ How to use:
 		[Serializable]
 		public class Assign : StateTransition<Bug, BugState>
 		{
-			public Assign(Action<MyAppState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
