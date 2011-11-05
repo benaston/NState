@@ -1,7 +1,6 @@
 ﻿namespace NState.Test.Fast.BugTrackerExample
 {
     using System;
-    using UserInterfaceExample;
 
     public class BugTransitionFunction
     {

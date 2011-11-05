@@ -21,7 +21,7 @@
 
         public Bug Assign(string assigneeEmail)
         {
-            return TriggerTransition(this, new BugState.Assigned(), new {StatefulObject = this, AssigneeEmail = assigneeEmail});
+            return TriggerTransition(this, new BugState.Assigned(), new { StatefulObject = this, AssigneeEmail = assigneeEmail});
         }
 
         public Bug Defer()
