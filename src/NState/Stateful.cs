@@ -1,6 +1,7 @@
 ﻿namespace NState
 {
     using System;
+    using System.Dynamic;
 
     /// <summary>
     /// Inherit from this if you want to make your object stateful.
@@ -31,9 +32,10 @@
             get { return StateMachine.Parent.CurrentState; }
         }
 
-        //supply stateful object automatically?
-        public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, dynamic dto = default(dynamic))
+        public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, ExpandoObject dto = default(ExpandoObject))
         {
+            dto = dto ?? new ExpandoObject();
+            ((dynamic)dto).StatefulObject = statefulObject;
             StateMachine.TriggerTransition(targetState, dto);
 
             return statefulObject;

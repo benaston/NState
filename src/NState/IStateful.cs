@@ -1,5 +1,7 @@
 ﻿namespace NState
 {
+    using System.Dynamic;
+
     /// <summary>
     ///   Responsible for defining the interface for types 
     ///   that may be used inside with the StateMachine type 
@@ -13,6 +15,6 @@
 
         TState CurrentState { get; }
 
-        TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, dynamic dto);
+        TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, ExpandoObject dto);
     }
 }

@@ -1,5 +1,7 @@
 ﻿namespace NState.Test.Fast.BugTrackerExample
 {
+    using System.Dynamic;
+
     public class Bug : Stateful<Bug, BugState>
     {
         public Bug(string title, IStateMachine<BugState> stateMachine)
@@ -21,12 +23,15 @@
 
         public Bug Assign(string assigneeEmail)
         {
-            return TriggerTransition(this, new BugState.Assigned(), new { StatefulObject = this, AssigneeEmail = assigneeEmail});
+            dynamic args = new ExpandoObject();
+            args.AssigneeEmail = assigneeEmail;
+
+            return TriggerTransition(this, new BugState.Assigned(), args);
         }
 
         public Bug Defer()
         {
-            return TriggerTransition(this, new BugState.Deferred(), new { StatefulObject = this });
+            return TriggerTransition(this, new BugState.Deferred());
         }
 
         public Bug Resolve()
@@ -36,7 +41,10 @@
 
         public Bug Close(string closedByName)
         {
-            return TriggerTransition(this, new BugState.Closed(), new { StatefulObject = this, ClosedByName = closedByName });
+            dynamic args = new ExpandoObject();
+            args.ClosedByName = closedByName;
+
+            return TriggerTransition(this, new BugState.Closed(), args);
         }
     }
 }

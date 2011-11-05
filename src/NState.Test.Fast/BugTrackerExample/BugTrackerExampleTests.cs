@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace NState.Test.Fast.BugTrackerExample
 {
+    using System.Dynamic;
     using NUnit.Framework;
 
     [TestFixture]
@@ -63,9 +64,11 @@ namespace NState.Test.Fast.BugTrackerExample
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
+            dynamic args = new ExpandoObject();
+            args.Blah = "blah";
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Open(), new {Blah = "blah",}));
+            Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Open(), args));
         }
 
         [Test]
@@ -86,14 +89,11 @@ namespace NState.Test.Fast.BugTrackerExample
         {
             //arrange
             var bug = new Bug("bug1", _stateMachine);
+            dynamic args = new ExpandoObject();
+            args.AssigneeEmail = "example@example.com";
 
             //act/assert
-            Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Assigned(),
-                                                            new
-                                                                {
-                                                                    StatefulObject = bug,
-                                                                    AssigneeEmail = "example@example.com"
-                                                                }));
+            Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Assigned(), args));
         }
     }
 }
