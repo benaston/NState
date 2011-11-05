@@ -12,16 +12,23 @@
     public interface IStateMachine<TStatefulObject, TState> : IStateMachine where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
+        string Name { get; set; }
+
         IEnumerable<IStateTransition<TState>> StateTransitions { get; }
 
         TState StartState { get; set; }
 
         IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
+        /// <summary>
+        /// Key is SM name.
+        /// </summary>
+        Dictionary<string, IStateMachine<TStatefulObject, TState>> ChildStateMachines { get; set; }
+
         TState CurrentState { get; set; }
 
         Dictionary <DateTime, IStateTransition<TState>> History { get; set; }
 
-        TStateful TriggerTransition<TStateful>(TStateful opportunity, TState targetState, dynamic dto);
+        void TriggerTransition(TState targetState, dynamic dto);
     }
 }

@@ -13,6 +13,6 @@
 
         TState CurrentState { get; }
 
-        TStateful TriggerTransition<TStateful>(TState targetState, dynamic dto);
+        TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, dynamic dto);
     }
 }

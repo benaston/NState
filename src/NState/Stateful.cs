@@ -31,10 +31,11 @@
             get { return StateMachine.ParentStateMachine.CurrentState; }
         }
 
-        public TExpectedReturn TriggerTransition<TExpectedReturn>(TState targetState, dynamic dto = default(dynamic))
+        public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, dynamic dto = default(dynamic))
         {
-            return
-                StateMachine.TriggerTransition(this, targetState, dto);
+            StateMachine.TriggerTransition(targetState, dto);
+
+            return statefulObject;
         }
     }
 }

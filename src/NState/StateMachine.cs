@@ -23,18 +23,25 @@
         /// </summary>
         public StateMachine() {}
 
-        public StateMachine(
+        public StateMachine(string name,
             IEnumerable<IStateTransition<TState>> stateTransitions,
             TState startState,
             IStateMachine<TStatefulObject, TState> parentStateMachine = null)
         {
             Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
 
+            Name = name;
             StateTransitions = stateTransitions;
             StartState = startState;
             ParentStateMachine = parentStateMachine;
+            if(parentStateMachine != null)
+            {
+                ParentStateMachine.ChildStateMachines.Add(Name, this);
+            }
             CurrentState = startState;
         }
+
+        public string Name { get; set; }
 
         public IEnumerable<IStateTransition<TState>> StateTransitions { get; protected set; }
 
@@ -43,15 +50,23 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public IStateMachine<TStatefulObject, TState> ParentStateMachine { get; set; }
 
+        private Dictionary<string, IStateMachine<TStatefulObject, TState>> _childStateMachines = new Dictionary<string, IStateMachine<TStatefulObject, TState>>();
+        public Dictionary<string, IStateMachine<TStatefulObject, TState>> ChildStateMachines
+        {
+            get { return _childStateMachines; }
+            set { _childStateMachines = value; }
+        }
+
         public TState CurrentState { get; set; }
 
         public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
 
-        public TStateful TriggerTransition<TStateful>(TStateful statefulObject, TState targetState,
-                                                      dynamic dto = default(dynamic))
+        //public void TriggerTransition<TStateful>(TState targetState,
+        public void TriggerTransition(TState targetState,
+                                                 dynamic dto = default(dynamic))
         {
-            Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
-                                               "statefulObject not supplied.");
+            //Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
+            //                                   "statefulObject not supplied.");
 
             try
             {
@@ -74,11 +89,9 @@
                             throw new Exception(); //to be caught below, refactor
                         }
 
-                        ParentStateMachine.TriggerTransition<TStateful>(statefulObject, targetState, dto);
+                        ParentStateMachine.TriggerTransition(targetState, dto);
                     }
                 }
-
-                return statefulObject;
             }
             catch (Exception e)
             {

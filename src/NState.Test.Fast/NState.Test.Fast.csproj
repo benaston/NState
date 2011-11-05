@@ -75,6 +75,8 @@
     <Compile Include="AccountTabState.cs" />
     <Compile Include="AccountTabTransitions.cs" />
     <Compile Include="BugTrackerExampleTests.cs" />
+    <Compile Include="SearchTabTests.cs" />
+    <Compile Include="LucidExampleTests.cs" />
     <Compile Include="LucidUI.cs" />
     <Compile Include="LucidUIState.cs" />
     <Compile Include="LucidUITransitions.cs" />
