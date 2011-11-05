@@ -16,11 +16,8 @@
 
         TState[] EndStates { get; }
 
-        //
-        //Func<TStatefulObject, TState, dynamic,TStatefulObject> TransitionFunction { get; }
+        Func<TState, dynamic, bool> Guard { get; }
 
         Action<TState, dynamic> TransitionFunction { get; }
-
-        //Func<dynamic, dynamic, dynamic, dynamic> TransitionFunction { get; }
     }
 }

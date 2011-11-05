@@ -71,20 +71,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountTab.cs" />
-    <Compile Include="AccountTabState.cs" />
-    <Compile Include="AccountTabTransitions.cs" />
-    <Compile Include="BugTrackerExampleTests.cs" />
-    <Compile Include="SearchTabTests.cs" />
-    <Compile Include="LucidExampleTests.cs" />
-    <Compile Include="LucidUI.cs" />
-    <Compile Include="LucidUIState.cs" />
-    <Compile Include="LucidUITransitions.cs" />
+    <Compile Include="BugTrackerExample\Bug.cs" />
+    <Compile Include="BugTrackerExample\BugHelper.cs" />
+    <Compile Include="BugTrackerExample\BugState.cs" />
+    <Compile Include="BugTrackerExample\BugTracker.cs" />
+    <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
+    <Compile Include="BugTrackerExample\BugTrackerState.cs" />
+    <Compile Include="BugTrackerExample\BugTrackerTransition.cs" />
+    <Compile Include="BugTrackerExample\BugTransition.cs" />
+    <Compile Include="BugTrackerExample\MyAppState.cs" />
+    <Compile Include="BugTrackerExample\MyOtherBugTrackerState.cs" />
+    <Compile Include="BugTrackerExample\MyUnrelatedState.cs" />
+    <Compile Include="SerializationExample\SerializationExampleTests.cs" />
+    <Compile Include="UserInterfaceExample\LucidExampleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SavedSearch.cs" />
-    <Compile Include="SavedSearchState.cs" />
-    <Compile Include="SavedSearchTransitions.cs" />
-    <Compile Include="StateMachineTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -94,6 +94,9 @@
       <Project>{CD3850FF-96DA-441D-804F-2F56E7A3104E}</Project>
       <Name>NState</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SimpleHierarchicalStateMachineExample\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

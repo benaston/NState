@@ -1,5 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace NState.Test.Fast
+namespace NState.Test.Fast.UserInterfaceExample
 {
     using System;
     using NUnit.Framework;
@@ -51,6 +51,15 @@ namespace NState.Test.Fast
         public class SearchMode : DetailsPanelsState { }
 
         public class AccountMode : DetailsPanelsState { }
+    }
+
+    public abstract class DetailPanelState : LucidState
+    {
+        public class Hidden : DetailPanelState { }
+
+        public class SideA : DetailPanelState { }
+
+        public class SideB : DetailPanelState { }
     }
 
     public class UIRoot : Stateful<UIRoot, LucidState>
@@ -235,9 +244,9 @@ namespace NState.Test.Fast
     public class HomePanelTransition
     {
         [Serializable]
-        public class Hide : StateTransition<UIRoot, LucidState>
+        public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -251,9 +260,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class Show : StateTransition<UIRoot, LucidState>
+        public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -270,9 +279,9 @@ namespace NState.Test.Fast
     public class SearchTabTransition
     {
         [Serializable]
-        public class Hide : StateTransition<SearchTab, LucidState>
+        public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -286,9 +295,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class Show : StateTransition<SearchTab, LucidState>
+        public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -305,9 +314,9 @@ namespace NState.Test.Fast
     public class AccountTabTransition
     {
         [Serializable]
-        public class Hide : StateTransition<AccountTab, LucidState>
+        public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -321,9 +330,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class Show : StateTransition<AccountTab, LucidState>
+        public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) {}
+            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
@@ -340,9 +349,9 @@ namespace NState.Test.Fast
     public class SearchPanelTransition
     {
         [Serializable]
-        public class Hide : StateTransition<SearchPanel, LucidState>
+        public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -356,9 +365,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class Show : StateTransition<SearchPanel, LucidState>
+        public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -375,9 +384,9 @@ namespace NState.Test.Fast
     public class WorkingPanelTransition
     {
         [Serializable]
-        public class SelectSearchMode : StateTransition<WorkingPanel, LucidState>
+        public class SelectSearchMode : StateTransition<LucidState>
         {
-            public SelectSearchMode(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectSearchMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -391,9 +400,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class SelectAccountMode : StateTransition<WorkingPanel, LucidState>
+        public class SelectAccountMode : StateTransition<LucidState>
         {
-            public SelectAccountMode(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectAccountMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -410,9 +419,9 @@ namespace NState.Test.Fast
     public class DetailsPanelsTransition
     {
         [Serializable]
-        public class SelectSearchMode : StateTransition<DetailsPanels, LucidState>
+        public class SelectSearchMode : StateTransition<LucidState>
         {
-            public SelectSearchMode(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectSearchMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -426,9 +435,9 @@ namespace NState.Test.Fast
         }
 
         [Serializable]
-        public class SelectAccountMode : StateTransition<DetailsPanels, LucidState>
+        public class SelectAccountMode : StateTransition<LucidState>
         {
-            public SelectAccountMode(Action<LucidState, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectAccountMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {

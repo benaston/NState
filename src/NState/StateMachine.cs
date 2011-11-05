@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Transactions;
     using NBasicExtensionMethod;
     using Newtonsoft.Json;
     using NSure;
@@ -51,24 +52,20 @@
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public IStateMachine<TStatefulObject, TState> Parent { get; set; }
 
-        private Dictionary<string, IStateMachine<TStatefulObject, TState>> _childStateMachines = new Dictionary<string, IStateMachine<TStatefulObject, TState>>();
+        private Dictionary<string, IStateMachine<TStatefulObject, TState>> _children = new Dictionary<string, IStateMachine<TStatefulObject, TState>>();
         public Dictionary<string, IStateMachine<TStatefulObject, TState>> Children
         {
-            get { return _childStateMachines; }
-            set { _childStateMachines = value; }
+            get { return _children; }
+            set { _children = value; }
         }
 
         public TState CurrentState { get; set; }
 
         public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
 
-        //public void TriggerTransition<TStateful>(TState targetState,
         public void TriggerTransition(TState targetState,
-                                                 dynamic dto = default(dynamic))
+                                      dynamic args = default(dynamic))
         {
-            //Ensure.That<ArgumentNullException>(statefulObject.IsNotNull(),
-            //                                   "statefulObject not supplied.");
-
             try
             {
                 if (CurrentState != targetState) //make this explicit?
@@ -78,10 +75,16 @@
                                                              t.EndStates.Where(e => e == targetState).Any());
                     if (matches.Any())
                     {
-                        OnRaiseBeforeEveryTransition();
-                        matches.First().TransitionFunction(targetState, dto);
-                        CurrentState = targetState;
-                        OnRaiseAfterEveryTransition();
+                        using (var t = new TransactionScope()) //valid?
+                        {
+                            OnRaiseBeforeEveryTransition();
+                            CurrentState.ExitFunction(args);
+                            matches.First().TransitionFunction(targetState, args);
+                            targetState.EntryFunction(args);
+                            CurrentState = targetState;
+                            OnRaiseAfterEveryTransition();
+                            t.Complete();
+                        }
                     }
                     else
                     {
@@ -90,7 +93,7 @@
                             throw new Exception(); //to be caught below, refactor
                         }
 
-                        Parent.TriggerTransition(targetState, dto);
+                        Parent.TriggerTransition(targetState, args);
                     }
                 }
             }

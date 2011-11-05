@@ -56,5 +56,9 @@
                        (Description != null ? Description.GetHashCode() : 0);
             }
         }
+
+        public virtual void EntryFunction(dynamic dto) {}
+
+        public virtual void ExitFunction(dynamic dto) {}
     }
 }
