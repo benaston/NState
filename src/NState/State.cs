@@ -45,6 +45,7 @@
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
+            
             return Equals(other.Name, Name) && Equals(other.Description, Description);
         }
 
