@@ -2,29 +2,19 @@
 {
     public class AccountTab : Stateful<UIRoot, LucidState>
     {
-        public AccountTab(IStateMachine<UIRoot, LucidState> stateMachine)
+        public AccountTab(IStateMachine<LucidState> stateMachine)
             : base(stateMachine) {}
 
         public AccountTab Hide()
         {
-            TriggerTransition(this, new AccountTabState.Hidden(),
-                              new
-                                  {
-                                      SearchTabSM = StateMachine.Parent.Children["SearchTab"],
-                                      AccountTabSM = StateMachine,
-                                  });
+            TriggerTransition(this, new AccountTabState.Hidden());
 
             return this;
         }
 
         public AccountTab Show()
         {
-            TriggerTransition(this, new AccountTabState.Visible(),
-                              new
-                                  {
-                                      SearchTabSM = StateMachine.Parent.Children["SearchTab"],
-                                      AccountTabSM = StateMachine,
-                                  });
+            TriggerTransition(this, new AccountTabState.Visible());
 
             return this;
         }

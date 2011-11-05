@@ -2,7 +2,7 @@
 {
     public class Bug : Stateful<Bug, BugState>
     {
-        public Bug(string title, IStateMachine<Bug, BugState> stateMachine)
+        public Bug(string title, IStateMachine<BugState> stateMachine)
             : base(stateMachine)
         {
             Title = title;

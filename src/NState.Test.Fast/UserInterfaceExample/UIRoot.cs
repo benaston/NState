@@ -2,7 +2,7 @@
 {
     public class UIRoot : Stateful<UIRoot, LucidState>
     {
-        public UIRoot(IStateMachine<UIRoot, LucidState> stateMachine)
+        public UIRoot(IStateMachine<LucidState> stateMachine)
             : base(stateMachine) {}
 
         public UIRoot Hide()

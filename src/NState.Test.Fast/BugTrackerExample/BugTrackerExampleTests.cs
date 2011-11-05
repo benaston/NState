@@ -18,12 +18,12 @@ namespace NState.Test.Fast.BugTrackerExample
                                       new BugTransition.Close(BugTransitionFunction.Close),
                                   };
 
-            _stateMachine = new StateMachine<Bug, BugState>("Bug",
+            _stateMachine = new StateMachine<BugState>("Bug",
                                                             bugTransitions,
                                                             startState: new BugState.Open());
         }
 
-        private StateMachine<Bug, BugState> _stateMachine;
+        private StateMachine<BugState> _stateMachine;
 
         [Test]
         public void TriggerTransition_IdentityTransition_NoExceptionThrown()

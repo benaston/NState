@@ -14,12 +14,12 @@
         where TState : State
     {
         protected Stateful(
-            IStateMachine<TStatefulObject, TState> stateMachine)
+            IStateMachine<TState> stateMachine)
         {
             StateMachine = stateMachine;
         }
 
-        public IStateMachine<TStatefulObject, TState> StateMachine { get; set; }
+        public IStateMachine<TState> StateMachine { get; set; }
 
         public TState CurrentState
         {

@@ -12,13 +12,13 @@ namespace NState.Test.Fast.UserInterfaceExample
     [TestFixture]
     public class SearchTabTests
     {
-        private StateMachine<UIRoot, LucidState> _uiRoot;
-        private StateMachine<UIRoot, LucidState> _homePanelStateMachine;
-        private StateMachine<UIRoot, LucidState> _searchTabStateMachine;
-        private StateMachine<UIRoot, LucidState> _accountTabStateMachine;
-        private StateMachine<UIRoot, LucidState> _searchPanelStateMachine;
-        private StateMachine<UIRoot, LucidState> _workingPanelStateMachine;
-        private StateMachine<UIRoot, LucidState> _detailsPanelsStateMachine;
+        private StateMachine<LucidState> _uiRoot;
+        private StateMachine<LucidState> _homePanelStateMachine;
+        private StateMachine<LucidState> _searchTabStateMachine;
+        private StateMachine<LucidState> _accountTabStateMachine;
+        private StateMachine<LucidState> _searchPanelStateMachine;
+        private StateMachine<LucidState> _workingPanelStateMachine;
+        private StateMachine<LucidState> _detailsPanelsStateMachine;
 
         [SetUp]
         public void Setup()
@@ -31,67 +31,67 @@ namespace NState.Test.Fast.UserInterfaceExample
 
             var searchTabTransitions = new IStateTransition<LucidState>[]
                                            {
-                                               new SearchTabTransition.Hide(SearchTabHelper.Hide),
-                                               new SearchTabTransition.Show(SearchTabHelper.Show),
+                                               new SearchTabTransition.Hide(SearchTabTransitionFunction.Hide),
+                                               new SearchTabTransition.Show(SearchTabTransitionFunction.Show),
                                            };
 
             var accountTabTransitions = new IStateTransition<LucidState>[]
                                             {
-                                                new AccountTabTransition.Hide(AccountTabHelper.Hide),
-                                                new AccountTabTransition.Show(AccountTabHelper.Show),
+                                                new AccountTabTransition.Hide(AccountTabTransitionFunction.Hide),
+                                                new AccountTabTransition.Show(AccountTabTransitionFunction.Show),
                                             };
 
             var searchPanelTransitions = new IStateTransition<LucidState>[]
-                                            {
-                                                new SearchAreaTransition.Hide(),
-                                                new SearchAreaTransition.Show(SearchAreaHelper.Show),
-                                            };
+                                             {
+                                                 new SearchAreaTransition.Hide(),
+                                                 new SearchAreaTransition.Show(SearchAreaTransitionFunction.Show),
+                                             };
 
             var workingPanelTransitions =   new IStateTransition<LucidState>[]
-                                            {
-                                                new WorkingPanelTransition.SelectSearchMode(WorkingPanelHelper.SelectSearchMode),
-                                                new WorkingPanelTransition.SelectAccountMode(WorkingPanelHelper.SelectAccountMode),
-                                            };
+                                                {
+                                                    new WorkingPanelTransition.SelectSearchMode(WorkingPanelTransitionFunction.SelectSearchMode),
+                                                    new WorkingPanelTransition.SelectAccountMode(WorkingPanelTransitionFunction.SelectAccountMode),
+                                                };
 
             var detailsPanelsTransitions = new IStateTransition<LucidState>[]
-                                            {
-                                                new DetailsPanelsTransition.SelectSearchMode(),
-                                                new DetailsPanelsTransition.SelectAccountMode(),
-                                            };
+                                               {
+                                                   new DetailsPanelsTransition.SelectSearchMode(),
+                                                   new DetailsPanelsTransition.SelectAccountMode(),
+                                               };
 
-            _uiRoot = new StateMachine<UIRoot, LucidState>("Root",
-                                                        new IStateTransition<LucidState>[0],
-                                                        startState: new UIRootState.Enabled());
+            _uiRoot = new StateMachine<LucidState>("Root",
+                                                           new IStateTransition<LucidState>[0],
+                                                           startState: new UIRootState.Enabled());
 
-            _homePanelStateMachine = new StateMachine<UIRoot, LucidState>("HomePanel",
-                                                                      homePanelTransitions,
-                                                                      startState: new HomePanelState.Visible(),
-                                                                      parentStateMachine: _uiRoot);
+            _homePanelStateMachine = new StateMachine<LucidState>("HomePanel",
+                                                                          homePanelTransitions,
+                                                                          startState: new HomePanelState.Visible(),
+                                                                          parentStateMachine: _uiRoot);
 
-            _searchTabStateMachine = new StateMachine<UIRoot, LucidState>("SearchTab",
-                                                                             searchTabTransitions,
-                                                                             startState: new SearchTabState.Visible(),
-                                                                             parentStateMachine: _homePanelStateMachine);
+            _searchTabStateMachine = new StateMachine<LucidState>("SearchTab",
+                                                                          searchTabTransitions,
+                                                                          startState: new SearchTabState.Visible(),
+                                                                          parentStateMachine: _homePanelStateMachine);
 
-            _accountTabStateMachine = new StateMachine<UIRoot, LucidState>("AccountTab",
-                                                                              accountTabTransitions,
-                                                                              startState: new AccountTabState.Visible(),
-                                                                              parentStateMachine: _homePanelStateMachine);
+            _accountTabStateMachine = new StateMachine<LucidState>("AccountTab",
+                                                                           accountTabTransitions,
+                                                                           startState: new AccountTabState.Visible(),
+                                                                           parentStateMachine: _homePanelStateMachine);
 
-            _searchPanelStateMachine = new StateMachine<UIRoot, LucidState>("SearchArea",
-                                                                              searchPanelTransitions,
-                                                                              startState: new SearchAreaState.Visible(),
-                                                                              parentStateMachine: _accountTabStateMachine);
+            _searchPanelStateMachine = new StateMachine<LucidState>("SearchArea",
+                                                                            searchPanelTransitions,
+                                                                            startState: new SearchAreaState.Visible(),
+                                                                            parentStateMachine: _accountTabStateMachine);
 
-            _workingPanelStateMachine = new StateMachine<UIRoot, LucidState>("WorkingPanel",
-                                                                         workingPanelTransitions,
-                                                                         startState: new WorkingPanelState.SearchMode(),
-                                                                         parentStateMachine: _uiRoot);
+            _workingPanelStateMachine = new StateMachine<LucidState>("WorkingPanel",
+                                                                             workingPanelTransitions,
+                                                                             startState: new WorkingPanelState.SearchMode(),
+                                                                             parentStateMachine: _uiRoot);
 
-            _detailsPanelsStateMachine = new StateMachine<UIRoot, LucidState>("DetailsPanels",
-                                                                         detailsPanelsTransitions,
-                                                                         startState: new DetailsPanelsState.SearchMode(),
-                                                                         parentStateMachine: _uiRoot);
+            _detailsPanelsStateMachine = new StateMachine<LucidState>("DetailsPanels",
+                                                                              detailsPanelsTransitions,
+                                                                              startState: new DetailsPanelsState.SearchMode(),
+                                                                              parentStateMachine: _uiRoot);
         }
 
         [Test]
@@ -259,14 +259,14 @@ namespace NState.Test.Fast.UserInterfaceExample
                                                new HomePanelTransition.Show(),
                                            };
 
-            _homePanelStateMachine = new StateMachine<UIRoot, LucidState>("HomePanel",
+            _homePanelStateMachine = new StateMachine<LucidState>("HomePanel",
                                                                              homePanelTransitions,
                                                                              startState: new HomePanelState.Visible());
         }
 
         #endregion
 
-        private StateMachine<UIRoot, LucidState> _homePanelStateMachine;
+        private StateMachine<LucidState> _homePanelStateMachine;
 
         [Test]
         public void InitialState()

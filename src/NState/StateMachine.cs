@@ -13,9 +13,9 @@
     ///   instances.
     /// </summary>
     [Serializable]
-    public class StateMachine<TStatefulObject, TState> :
-        IStateMachine<TStatefulObject, TState>
-        where TStatefulObject : Stateful<TStatefulObject, TState>
+    public class StateMachine<TState> :
+        IStateMachine<TState>
+        //where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
         /// <summary>
@@ -28,7 +28,7 @@
         public StateMachine(string name,
             IEnumerable<IStateTransition<TState>> stateTransitions,
             TState startState,
-            IStateMachine<TStatefulObject, TState> parentStateMachine = null)
+            IStateMachine<TState> parentStateMachine = null)
         {
             Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
 
@@ -50,10 +50,10 @@
         public TState StartState { get; set; }
 
         [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-        public IStateMachine<TStatefulObject, TState> Parent { get; set; }
+        public IStateMachine<TState> Parent { get; set; }
 
-        private Dictionary<string, IStateMachine<TStatefulObject, TState>> _children = new Dictionary<string, IStateMachine<TStatefulObject, TState>>();
-        public Dictionary<string, IStateMachine<TStatefulObject, TState>> Children
+        private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
+        public Dictionary<string, IStateMachine<TState>> Children
         {
             get { return _children; }
             set { _children = value; }
@@ -79,7 +79,7 @@
                         {
                             OnRaiseBeforeEveryTransition();
                             CurrentState.ExitFunction(args);
-                            matches.First().TransitionFunction(targetState, args);
+                            matches.First().TransitionFunction(targetState, this, args);
                             targetState.EntryFunction(args);
                             CurrentState = targetState;
                             OnRaiseAfterEveryTransition();

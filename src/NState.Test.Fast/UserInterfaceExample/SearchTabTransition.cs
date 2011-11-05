@@ -7,7 +7,7 @@
         [Serializable]
         public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
+            public Hide(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -23,7 +23,7 @@
         [Serializable]
         public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) {}
+            public Show(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {

@@ -9,7 +9,7 @@
         where TStatefulObject : Stateful<TStatefulObject, TState>
         where TState : State
     {
-        IStateMachine<TStatefulObject, TState> StateMachine { get; set; }
+        IStateMachine<TState> StateMachine { get; set; }
 
         TState CurrentState { get; }
 

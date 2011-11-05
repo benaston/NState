@@ -7,7 +7,7 @@
         [Serializable]
         public class SelectSearchMode : StateTransition<LucidState>
         {
-            public SelectSearchMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
+            public SelectSearchMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {
@@ -23,7 +23,7 @@
         [Serializable]
         public class SelectAccountMode : StateTransition<LucidState>
         {
-            public SelectAccountMode(Action<LucidState, object> transitionFunction = null) : base(transitionFunction) { }
+            public SelectAccountMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 
             public override LucidState[] StartStates
             {

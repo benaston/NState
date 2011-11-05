@@ -18,6 +18,6 @@
 
         Func<TState, dynamic, bool> Guard { get; }
 
-        Action<TState, dynamic> TransitionFunction { get; }
+        Action<TState, IStateMachine<TState>, dynamic> TransitionFunction { get; }
     }
 }
