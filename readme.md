@@ -9,7 +9,7 @@ Features:
  - easy construction of trees of interdependent or orthogonal state machines
  - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
- - state conditions, exit and entry actions
+ - transition conditions, exit and entry actions
  - transition actions with arbitrary arguments
  - final state specification
 
