@@ -1,6 +1,9 @@
 ﻿namespace NState
 {
+    using System;
     using System.Dynamic;
+    using NSure;
+    using ArgumentException = NHelpfulException.FrameworkExceptions.ArgumentException;
 
     /// <summary>
     ///   Inherit from this if you want to make your type stateful.
@@ -31,6 +34,9 @@
         public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState,
                                                                   ExpandoObject dto = default(ExpandoObject))
         {
+            Ensure.That<ArgumentException>(statefulObject is ValueType ? true : statefulObject != null, "statefulObject not supplied.")
+                .And<ArgumentException>(targetState != null, "targetState not supplied.");
+
             dto = dto ?? new ExpandoObject();
             ((dynamic) dto).StatefulObject = statefulObject;
             StateMachine.TriggerTransition(targetState, dto);

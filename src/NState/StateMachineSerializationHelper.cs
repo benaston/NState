@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
+    using NBasicExtensionMethod;
     using Newtonsoft.Json.Linq;
     using NSure;
     using ArgumentException = NHelpfulException.FrameworkExceptions.ArgumentException;
@@ -19,7 +20,9 @@
             dynamic dtoNode)
             where TState : State
         {
-            Ensure.That<ArgumentException>(stateMachine.Name == (string) dtoNode.Name,
+            Ensure.That<ArgumentException>(stateMachine.IsNotNull(), "stateMachine not supplied")
+                .And<ArgumentException>(dtoNode != null, "dtoNode notSupplied")
+                .And<ArgumentException>(stateMachine.Name == (string)dtoNode.Name,
                                            "Mismatch between serialized object source and target in memory object.",
                                            new[]
                                                {
@@ -46,6 +49,9 @@
         public static dynamic SerializeToDto<TState>(IStateMachine<TState> node, ExpandoObject dto)
             where TState : State
         {
+            Ensure.That<ArgumentException>(node.IsNotNull(), "node not supplied")
+                .And<ArgumentException>(dto.IsNotNull(), "dto notSupplied");
+
             ((dynamic) dto).Name = node.Name;
             ((dynamic) dto).CurrentState = node.CurrentState;
 

@@ -8,6 +8,7 @@
     using NBasicExtensionMethod;
     using Newtonsoft.Json;
     using NSure;
+    using ArgumentException = NHelpfulException.FrameworkExceptions.ArgumentException;
 
     /// <summary>
     ///   Enables specification of valid state changes to be applied to object
@@ -17,8 +18,6 @@
         IStateMachine<TState>
         where TState : State
     {
-        private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
-
         public StateMachine() {} //for deserialization
 
         public StateMachine(string name,
@@ -26,7 +25,9 @@
                             TState startState,
                             IStateMachine<TState> parentStateMachine = null)
         {
-            Ensure.That(stateTransitions.IsNotNull(), "stateTransitions not supplied.");
+            Ensure.That<ArgumentException>(name.IsNotNullOrWhiteSpace(), "name not supplied.")
+                  .And<ArgumentException>(stateTransitions.IsNotNull(), "stateTransitions not supplied.")
+                  .And<ArgumentException>(startState.IsNotNull(), "startState not supplied");
 
             Name = name;
             StateTransitions = stateTransitions;
@@ -47,6 +48,7 @@
 
         public IStateMachine<TState> Parent { get; set; }
 
+        private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
         public Dictionary<string, IStateMachine<TState>> Children
         {
             get { return _children; }
@@ -63,6 +65,8 @@
         public void TriggerTransition(TState targetState,
                                       dynamic args = default(dynamic))
         {
+            Ensure.That<ArgumentException>(targetState != null, "targetState not supplied.");
+
             try
             {
                 if (CurrentState != targetState) //make this explicit?
