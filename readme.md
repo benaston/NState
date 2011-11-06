@@ -177,7 +177,7 @@ How to use:
 
 ```
 
-**4. Define your transition functions (optional logic run within the transitions)**
+**4. Define any transition actions**
 
 ```C#
 
