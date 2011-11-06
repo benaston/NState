@@ -3,6 +3,13 @@ NState
 
 Simple state machine for .NET. This software is NOT production ready.
 
+Features:
+--------
+
+ - easy construction of trees of interdependent state machines
+ - trivial state machine tree persistence and retrieval to/from JSON
+ - state guards, exit and entry functions
+
 How to use:
 --------
 
@@ -16,7 +23,6 @@ How to use:
 
 ```C#
 
-	[Serializable]
 	public abstract class BugState : State
 	{
 		public class Assigned : BugState {}
@@ -88,10 +94,8 @@ How to use:
 
 ```C#
 
-	[Serializable]
 	public class BugTransition
 	{
-		[Serializable]
 		public class Assign : StateTransition<Bug, BugState>
 		{
 			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
@@ -107,7 +111,6 @@ How to use:
 			}
 		}
 		
-		[Serializable]
 		public class Close : StateTransition<Bug, BugState>
 		{
 			public Close(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
@@ -123,7 +126,6 @@ How to use:
 			}
 		}
 			
-		[Serializable]
 		public class Defer : StateTransition<Bug, BugState>
 		{
 			public Defer(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
@@ -139,7 +141,6 @@ How to use:
 			}
 		}
 		
-		[Serializable]
 		public class Open : StateTransition<Bug, BugState>
 		{
 			public Open(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
@@ -155,7 +156,6 @@ How to use:
 			}
 		}
 		
-		[Serializable]
 		public class Resolve : StateTransition<Bug, BugState>
 		{
 			public Resolve(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
