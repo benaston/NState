@@ -13,7 +13,7 @@
     {
         /// <summary>
         ///   State machine to be hydrated must match the serialized DTO.
-        ///   Static because of recursive nature.
+        ///   NOTE: recursive.
         /// </summary>
         public static IStateMachine<TState> InitializeWithDto<TState>(
             IStateMachine<TState> stateMachine,
@@ -45,6 +45,7 @@
 
         /// <summary>
         ///   Static because of recursive nature.
+        ///   NOTE: recursive.
         /// </summary>
         public static dynamic SerializeToDto<TState>(IStateMachine<TState> node, ExpandoObject dto)
             where TState : State
