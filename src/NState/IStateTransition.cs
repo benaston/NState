@@ -12,12 +12,18 @@
     public interface IStateTransition<TState>
         where TState : State
     {
-        TState[] StartStates { get; }
+        TState[] InitialStates { get; }
 
         TState[] EndStates { get; }
 
-        Func<TState, dynamic, bool> Guard { get; }
+        /// <summary>
+        /// A constraint which will fire the transition only when it is evaluated to true after the trigger occurs.
+        /// </summary>
+        Func<TState, dynamic, bool> Condition { get; }
 
-        Action<TState, IStateMachine<TState>, dynamic> TransitionFunction { get; }
+        /// <summary>
+        /// An action which is executed when performing a certain transition.
+        /// </summary>
+        Action<TState, IStateMachine<TState>, dynamic> TransitionAction { get; }
     }
 }

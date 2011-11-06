@@ -8,10 +8,10 @@
         [Serializable]
         public class Assign : StateTransition<BugState>
         {
-            public Assign(Action<BugState, IStateMachine<BugState>, object> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Assign(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override BugState[] StartStates
+            public override BugState[] InitialStates
             {
                 get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
             }
@@ -25,10 +25,10 @@
         [Serializable]
         public class Close : StateTransition<BugState>
         {
-            public Close(Action<BugState, IStateMachine<BugState>, object> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Close(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override BugState[] StartStates
+            public override BugState[] InitialStates
             {
                 get { return new BugState[] {new BugState.Resolved()}; }
             }
@@ -42,10 +42,10 @@
         [Serializable]
         public class Defer : StateTransition<BugState>
         {
-            public Defer(Action<BugState, IStateMachine<BugState>, object> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Defer(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override BugState[] StartStates
+            public override BugState[] InitialStates
             {
                 get { return new BugState[] {new BugState.Open(), new BugState.Assigned()}; }
             }
@@ -59,10 +59,10 @@
         [Serializable]
         public class Open : StateTransition<BugState>
         {
-            public Open(Action<BugState, IStateMachine<BugState>, object> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Open(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override BugState[] StartStates
+            public override BugState[] InitialStates
             {
                 get { return new[] {new BugState.Closed(),}; }
             }
@@ -76,10 +76,10 @@
         [Serializable]
         public class Resolve : StateTransition<BugState>
         {
-            public Resolve(Action<BugState, IStateMachine<BugState>, object> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Resolve(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override BugState[] StartStates
+            public override BugState[] InitialStates
             {
                 get { return new[] {new BugState.Assigned(),}; }
             }

@@ -7,18 +7,18 @@
         where TState : State
     {
         protected StateTransition(
-            Action<TState, IStateMachine<TState>, dynamic> transitionFunction = null,
-            Func<TState, dynamic, bool> guard = null)
+            Action<TState, IStateMachine<TState>, dynamic> transitionAction = null,
+            Func<TState, dynamic, bool> condition = null)
         {
-            Guard = guard ?? ((s, args) => true);
-            TransitionFunction = transitionFunction ?? ((s, sm, args) => { });
+            Condition = condition ?? ((s, args) => true);
+            TransitionAction = transitionAction ?? ((s, sm, args) => { });
         }
 
-        public Func<TState, dynamic, bool> Guard { get; private set; }
+        public Func<TState, dynamic, bool> Condition { get; private set; }
 
-        public Action<TState, IStateMachine<TState>, dynamic> TransitionFunction { get; private set; }
+        public Action<TState, IStateMachine<TState>, dynamic> TransitionAction { get; private set; }
 
-        public abstract TState[] StartStates { get; }
+        public abstract TState[] InitialStates { get; }
 
         public abstract TState[] EndStates { get; }
     }

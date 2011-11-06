@@ -1,6 +1,6 @@
 ﻿namespace NState.Test.Fast.UserInterfaceExample
 {
-    public class SearchAreaTransitionFunction
+    public class SearchAreaTransitionAction
     {
         /// <summary>
         ///   //when showing the search panel, ensure the working panel is in the home position?

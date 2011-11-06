@@ -1,6 +1,6 @@
 ﻿namespace NState.Test.Fast.UserInterfaceExample
 {
-    public class WorkingPanelTransitionFunction
+    public class WorkingPanelTransitionAction
     {
         public static void SelectSearchMode(LucidState state, IStateMachine<LucidState> stateMachine, dynamic args)
         {

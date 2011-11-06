@@ -16,7 +16,7 @@
 
         IEnumerable<IStateTransition<TState>> StateTransitions { get; }
 
-        TState StartState { get; set; }
+        TState InitialState { get; set; }
 
         IStateMachine<TState> Parent { get; set; }
 

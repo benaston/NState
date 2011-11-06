@@ -7,10 +7,10 @@
         [Serializable]
         public class Hide : StateTransition<LucidState>
         {
-            public Hide(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Hide(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new HomePanelState.Visible(),}; }
             }
@@ -24,10 +24,10 @@
         [Serializable]
         public class Show : StateTransition<LucidState>
         {
-            public Show(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
-                : base(transitionFunction) {}
+            public Show(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new HomePanelState.Hidden(),}; }
             }

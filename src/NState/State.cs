@@ -46,8 +46,8 @@
             }
         }
 
-        public virtual void EntryFunction(dynamic dto) {}
+        public virtual void EntryAction(dynamic dto) {}
 
-        public virtual void ExitFunction(dynamic dto) {}
+        public virtual void ExitAction(dynamic dto) {}
     }
 }

@@ -7,10 +7,10 @@
         [Serializable]
         public class SelectAccountMode : StateTransition<LucidState>
         {
-            public SelectAccountMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
-                : base(transitionFunction) {}
+            public SelectAccountMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new DetailsPanelsState.SearchMode(),}; }
             }
@@ -24,10 +24,10 @@
         [Serializable]
         public class SelectSearchMode : StateTransition<LucidState>
         {
-            public SelectSearchMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
-                : base(transitionFunction) {}
+            public SelectSearchMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
+                : base(transitionAction) {}
 
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new DetailsPanelsState.AccountMode(),}; }
             }

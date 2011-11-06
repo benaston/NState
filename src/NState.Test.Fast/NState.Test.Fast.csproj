@@ -72,13 +72,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BugTrackerExample\Bug.cs" />
-    <Compile Include="BugTrackerExample\BugTransitionFunction.cs" />
+    <Compile Include="BugTrackerExample\BugTransitionAction.cs" />
     <Compile Include="BugTrackerExample\BugState.cs" />
     <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
     <Compile Include="BugTrackerExample\BugTransition.cs" />
     <Compile Include="SerializationExample\SerializationExampleTests.cs" />
     <Compile Include="UserInterfaceExample\AccountTab.cs" />
-    <Compile Include="UserInterfaceExample\AccountTabTransitionFunction.cs" />
+    <Compile Include="UserInterfaceExample\AccountTabTransitionAction.cs" />
     <Compile Include="UserInterfaceExample\AccountTabState.cs" />
     <Compile Include="UserInterfaceExample\AccountTabTransition.cs" />
     <Compile Include="UserInterfaceExample\DetailPanelState.cs" />
@@ -94,17 +94,17 @@
     <Compile Include="UserInterfaceExample\SavedSearchAreaState.cs" />
     <Compile Include="UserInterfaceExample\SavedSearchItemAreaState.cs" />
     <Compile Include="UserInterfaceExample\SearchArea.cs" />
-    <Compile Include="UserInterfaceExample\SearchAreaTransitionFunction.cs" />
+    <Compile Include="UserInterfaceExample\SearchAreaTransitionAction.cs" />
     <Compile Include="UserInterfaceExample\SearchAreaState.cs" />
     <Compile Include="UserInterfaceExample\SearchAreaTransition.cs" />
     <Compile Include="UserInterfaceExample\SearchTab.cs" />
-    <Compile Include="UserInterfaceExample\SearchTabTransitionFunction.cs" />
+    <Compile Include="UserInterfaceExample\SearchTabTransitionAction.cs" />
     <Compile Include="UserInterfaceExample\SearchTabState.cs" />
     <Compile Include="UserInterfaceExample\SearchTabTransition.cs" />
     <Compile Include="UserInterfaceExample\UIRoot.cs" />
     <Compile Include="UserInterfaceExample\UIRootState.cs" />
     <Compile Include="UserInterfaceExample\WorkingPanel.cs" />
-    <Compile Include="UserInterfaceExample\WorkingPanelTransitionFunction.cs" />
+    <Compile Include="UserInterfaceExample\WorkingPanelTransitionAction.cs" />
     <Compile Include="UserInterfaceExample\WorkingPanelState.cs" />
     <Compile Include="UserInterfaceExample\WorkingPanelTransition.cs" />
   </ItemGroup>

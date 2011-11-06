@@ -22,31 +22,43 @@
 
         public StateMachine(string name,
                             IEnumerable<IStateTransition<TState>> stateTransitions,
-                            TState startState,
-                            IStateMachine<TState> parentStateMachine = null)
+                            TState initialState,
+                            TState finalState = null,
+                            IStateMachine<TState> parentStateMachine = null,
+                            bool permitSelfTransition = true,
+                            bool bypassTransitionBehaviorForSelfTransition = true) //if permitted
         {
             Ensure.That<ArgumentException>(name.IsNotNullOrWhiteSpace(), "name not supplied.")
                   .And<ArgumentException>(stateTransitions.IsNotNull(), "stateTransitions not supplied.")
-                  .And<ArgumentException>(startState.IsNotNull(), "startState not supplied");
+                  .And<ArgumentException>(initialState.IsNotNull(), "initialState not supplied");
 
             Name = name;
             StateTransitions = stateTransitions;
-            StartState = startState;
+            InitialState = initialState;
+            FinalState = finalState;
             Parent = parentStateMachine;
+            PermitSelfTransition = permitSelfTransition;
+            BypassTransitionBehaviorForSelfTransition = bypassTransitionBehaviorForSelfTransition;
             if (parentStateMachine != null)
             {
                 Parent.Children.Add(Name, this);
             }
-            CurrentState = startState;
+            CurrentState = initialState;
         }
 
         public string Name { get; set; }
 
         public IEnumerable<IStateTransition<TState>> StateTransitions { get; protected set; }
 
-        public TState StartState { get; set; }
+        public TState InitialState { get; set; }
+        
+        public TState FinalState { get; set; }
 
         public IStateMachine<TState> Parent { get; set; }
+        
+        public bool PermitSelfTransition { get; set; }
+        
+        public bool BypassTransitionBehaviorForSelfTransition { get; set; }
 
         private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
         public Dictionary<string, IStateMachine<TState>> Children
@@ -69,10 +81,16 @@
 
             try
             {
-                if (CurrentState != targetState) //make this explicit?
+                if(CurrentState == targetState && !PermitSelfTransition)
+                {
+                    throw new Exception(); //refactor to refine exception
+                }
+
+                if ((CurrentState != targetState || (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)) 
+                    && CurrentState != FinalState)
                 {
                     var matches = StateTransitions.Where(t =>
-                                                         t.StartStates.Where(s => s == CurrentState).Any() &&
+                                                         t.InitialStates.Where(s => s == CurrentState).Any() &&
                                                          t.EndStates.Where(e => e == targetState).Any());
                     if (matches.Any())
                     {
@@ -80,9 +98,9 @@
                             //this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1)
                         {
                             OnRaiseBeforeEveryTransition();
-                            CurrentState.ExitFunction(args);
-                            matches.First().TransitionFunction(targetState, this, args);
-                            targetState.EntryFunction(args);
+                            CurrentState.ExitAction(args);
+                            matches.First().TransitionAction(targetState, this, args);
+                            targetState.EntryAction(args);
                             CurrentState = targetState;
                             OnRaiseAfterEveryTransition();
                             t.Complete();

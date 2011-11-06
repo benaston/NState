@@ -1,15 +1,15 @@
 ﻿namespace NState.Test.Fast.UserInterfaceExample
 {
-    public class AccountTabTransitionFunction
+    public class SearchTabTransitionAction
     {
         public static void Hide(LucidState state, IStateMachine<LucidState> stateMachine, dynamic args)
         {
-            stateMachine.Parent.Children["SearchTab"].CurrentState = new SearchTabState.Visible();
+            stateMachine.Parent.Children["AccountTab"].CurrentState = new AccountTabState.Visible();
         }
 
         public static void Show(LucidState state, IStateMachine<LucidState> stateMachine, dynamic args)
         {
-            stateMachine.Parent.Children["SearchTab"].CurrentState = new SearchTabState.Hidden();
+            stateMachine.Parent.Children["AccountTab"].CurrentState = new AccountTabState.Hidden();
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class BugTransitionFunction
+    public class BugTransitionAction
     {
         public static void Assign(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
         {

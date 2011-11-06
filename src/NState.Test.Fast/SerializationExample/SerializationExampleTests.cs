@@ -15,7 +15,7 @@ namespace NState.Test.Fast.SerializationExample
     {
         public class Hide : StateTransition<LucidState>
         {
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new SmState.Visible(),}; }
             }
@@ -28,7 +28,7 @@ namespace NState.Test.Fast.SerializationExample
 
         public class Show : StateTransition<LucidState>
         {
-            public override LucidState[] StartStates
+            public override LucidState[] InitialStates
             {
                 get { return new[] {new SmState.Hidden(),}; }
             }
@@ -50,7 +50,7 @@ namespace NState.Test.Fast.SerializationExample
         {
             _stateMachineRoot = new StateMachine<LucidState>("Root",
                                                              new IStateTransition<LucidState>[0],
-                                                             startState: new UIRootState.Enabled());
+                                                             initialState: new UIRootState.Enabled());
 
             _transitions = new IStateTransition<LucidState>[]
                                {
@@ -60,7 +60,7 @@ namespace NState.Test.Fast.SerializationExample
 
             _stateMachine1 = new StateMachine<LucidState>("SM1",
                                                           _transitions,
-                                                          startState: new SmState.Visible(),
+                                                          initialState: new SmState.Visible(),
                                                           parentStateMachine: _stateMachineRoot);
         }
 
@@ -77,7 +77,7 @@ namespace NState.Test.Fast.SerializationExample
             //avoid name clashes when setting parents later in test
             var rootSM2 = new StateMachine<LucidState>("Root",
                                                        new IStateTransition<LucidState>[0],
-                                                       startState: new UIRootState.Enabled());
+                                                       initialState: new UIRootState.Enabled());
 
             Assert.That(_stateMachine1.CurrentState == new SmState.Visible());
 
@@ -90,7 +90,7 @@ namespace NState.Test.Fast.SerializationExample
 
             var sm2 = new StateMachine<LucidState>("SM1",
                                                    _transitions,
-                                                   startState: new SmState.Visible(),
+                                                   initialState: new SmState.Visible(),
                                                    parentStateMachine: rootSM2);
 
             Assert.That(sm2.CurrentState == new SmState.Visible());

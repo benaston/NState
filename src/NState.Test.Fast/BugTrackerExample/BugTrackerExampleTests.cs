@@ -15,15 +15,15 @@ namespace NState.Test.Fast.BugTrackerExample
             var bugTransitions = new IStateTransition<BugState>[]
                                      {
                                          new BugTransition.Open(),
-                                         new BugTransition.Assign(BugTransitionFunction.Assign),
-                                         new BugTransition.Defer(BugTransitionFunction.Defer),
-                                         new BugTransition.Resolve(BugTransitionFunction.Resolve),
-                                         new BugTransition.Close(BugTransitionFunction.Close),
+                                         new BugTransition.Assign(BugTransitionAction.Assign),
+                                         new BugTransition.Defer(BugTransitionAction.Defer),
+                                         new BugTransition.Resolve(BugTransitionAction.Resolve),
+                                         new BugTransition.Close(BugTransitionAction.Close),
                                      };
 
             _stateMachine = new StateMachine<BugState>("Bug",
                                                        bugTransitions,
-                                                       startState: new BugState.Open());
+                                                       initialState: new BugState.Open());
         }
 
         #endregion
