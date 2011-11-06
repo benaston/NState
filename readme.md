@@ -9,6 +9,7 @@ Features:
  - easy construction of trees of interdependent state machines
  - trivial state machine tree persistence and retrieval to/from JSON
  - state guards, exit and entry functions
+ - transition functions with arbitrary arguments
 
 How to use:
 --------
