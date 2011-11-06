@@ -7,9 +7,11 @@ Features:
 --------
 
  - easy construction of trees of interdependent state machines
+ - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
- - state guards, exit and entry functions
- - transition functions with arbitrary arguments
+ - state conditions, exit and entry actions
+ - transition actions with arbitrary arguments
+ - final state specification
 
 How to use:
 --------
@@ -99,9 +101,9 @@ How to use:
 	{
 		public class Assign : StateTransition<Bug, BugState>
 		{
-			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
 			
-			public override BugState[] StartStates
+			public override BugState[] InitialStates
 			{
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(), }; }
 			}
@@ -114,9 +116,9 @@ How to use:
 		
 		public class Close : StateTransition<Bug, BugState>
 		{
-			public Close(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Close(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
 			
-			public override BugState[] StartStates
+			public override BugState[] InitialStates
 			{
 				get { return new BugState[] { new BugState.Resolved() }; }
 			}
@@ -129,9 +131,9 @@ How to use:
 			
 		public class Defer : StateTransition<Bug, BugState>
 		{
-			public Defer(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Defer(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
 			
-			public override BugState[] StartStates
+			public override BugState[] InitialStates
 			{
 				get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
 			}
@@ -144,9 +146,9 @@ How to use:
 		
 		public class Open : StateTransition<Bug, BugState>
 		{
-			public Open(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Open(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
 			
-			public override BugState[] StartStates
+			public override BugState[] InitialStates
 			{
 				get { return new[] {new BugState.Closed(), }; }
 			}
@@ -159,9 +161,9 @@ How to use:
 		
 		public class Resolve : StateTransition<Bug, BugState>
 		{
-			public Resolve(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Resolve(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
 			
-			public override MyAppState[] StartStates
+			public override MyAppState[] InitialStates
 			{
 				get { return new[] { new BugState.Assigned(), }; }
 			}
@@ -179,7 +181,7 @@ How to use:
 
 ```C#
 
-	public class BugTransitionFunction
+	public class BugTransitionAction
 	{
 		public static void Assign(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
 		{
@@ -220,7 +222,7 @@ How to use:
 					new BugTransition.Close(BugHelper.Close),
 				};	
 	
-	var myStateMachine = new StateMachine<Bug, BugState>(transitions, startState:new BugState.Open());
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
 	
 	//...
 
@@ -251,7 +253,7 @@ How to use:
 	
 	//later...
 	
-	var myStateMachine = new StateMachine<Bug, BugState>(transitions, startState:new BugState.Open());
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
 	myStateMachine.InitializeWithJson(json);
 	
 	//continue where you left off...
