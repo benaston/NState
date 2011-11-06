@@ -60,7 +60,7 @@
         public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
 
         /// <summary>
-        ///   NOTE: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx
+        ///   NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx
         /// </summary>
         public void TriggerTransition(TState targetState,
                                       dynamic args = default(dynamic))
@@ -75,7 +75,7 @@
                     if (matches.Any())
                     {
                         using (var t = new TransactionScope())
-                            //this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE)
+                            //this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1)
                         {
                             OnRaiseBeforeEveryTransition();
                             CurrentState.ExitFunction(args);
@@ -154,29 +154,8 @@
         /// </summary>
         public IStateMachine<TState> InitializeWithJson(string json)
         {
-            return StateMachineSerializationHelper.InitializeWithDto<TState>(this, JsonConvert.DeserializeObject
-                                                                                               (json));
+            return StateMachineSerializationHelper.InitializeWithDto(this, JsonConvert.DeserializeObject
+                                                                               (json));
         }
     }
 }
-
-//state machines sharing common transitions need to be part of the same inheritance hierarchy
-//var localTransitions = matchingTransitionsFunction(StateTransitions);
-
-//possibly removal of type return constraint would enable covariance?
-//i think we can say this - each state machine can hold a reference to a parent 
-//state machine, *which is typed in terms of state to the former*
-//may need to refactor the code so the finding of the matching transition function 
-//occurs before the actual "transitionto behavior"?
-
-//statefulObject = localTransitions.Any() ? localTransitions.First()
-//    .TransitionFunction(statefulObject, targetState, dto) : ParentStateMachines.Where(sm => sm)
-
-
-/*pseudocode: test for matching local transitions, then invoke against parent (which should invoke its parent)*/
-/*may need to separat eout the transition function onto the IStateful interface (and remove some of the params like the stateful object
-.Could remove the stateful object and if needed, have it passed in via the dto, but that kind of sucks.*/
-/*perhaps modify the concept of the transition function to not affect the domain object? - investigate by constructing a test with this behavior*/
-
-
-//first  extract the recursive alo from this and start using interfaces/base types instead of concrete states

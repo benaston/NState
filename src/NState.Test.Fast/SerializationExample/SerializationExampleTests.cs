@@ -4,6 +4,43 @@ namespace NState.Test.Fast.SerializationExample
     using BugTrackerExample;
     using Newtonsoft.Json;
     using NUnit.Framework;
+    using UserInterfaceExample;
+
+    public abstract class SmState : LucidState
+    {
+        public class Hidden : SmState { }
+
+        public class Visible : SmState { }
+    }
+
+    public class SmTransition
+    {
+        public class Hide : StateTransition<LucidState>
+        {
+            public override LucidState[] StartStates
+            {
+                get { return new[] { new SmState.Visible(), }; }
+            }
+
+            public override LucidState[] EndStates
+            {
+                get { return new[] { new SmState.Hidden(), }; }
+            }
+        }
+
+        public class Show : StateTransition<LucidState>
+        {
+            public override LucidState[] StartStates
+            {
+                get { return new[] { new SmState.Hidden(), }; }
+            }
+
+            public override LucidState[] EndStates
+            {
+                get { return new[] { new SmState.Visible(), }; }
+            }
+        }
+    }
 
     [TestFixture]
     public class SerializationExampleTests
@@ -11,101 +48,63 @@ namespace NState.Test.Fast.SerializationExample
         [SetUp]
         public void Setup()
         {
-            var bugTransitions = new IStateTransition<BugState>[]
-                                  {
-                                      new BugTransition.Open(),
-                                      new BugTransition.Assign(BugTransitionFunction.Assign),
-                                      new BugTransition.Defer(BugTransitionFunction.Defer),
-                                      new BugTransition.Resolve(BugTransitionFunction.Resolve),
-                                      new BugTransition.Close(BugTransitionFunction.Close),
-                                  };
+            _stateMachineRoot = new StateMachine<LucidState>("Root",
+                                                      new IStateTransition<LucidState>[0],
+                                                      startState: new UIRootState.Enabled());
 
-            _stateMachine = new StateMachine<BugState>("Bug",
-                                                                     bugTransitions,
-                                                                     startState: new BugState.Open());
+            _transitions = new IStateTransition<LucidState>[]
+                                           {
+                                               new SmTransition.Hide(),
+                                               new SmTransition.Show(),
+                                           };
+
+            _stateMachine1 = new StateMachine<LucidState>("SM1",
+                                                    _transitions,
+                                                    startState: new SmState.Visible(),
+                                                    parentStateMachine: _stateMachineRoot);
         }
 
-        private StateMachine<BugState> _stateMachine;
+        private StateMachine<LucidState> _stateMachine1;
+        private StateMachine<LucidState> _stateMachineRoot;
+        private IStateTransition<LucidState>[] _transitions;
 
-        [Test, Ignore("WIP")]
-        public void Serialize_ValidStateMachine_NoExceptionThrown()
+        [Test]
+        public void SerializeTest()
         {
             //arrange
-            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
-
-            JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
-
-            //act/assert
-            //Assert.DoesNotThrow(() => JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings));
+            Assert.DoesNotThrow(() => _stateMachineRoot.SerializeToJsonDto());
         }
 
-        ////these fail due to inability to deserialize the generic type constraint BugState (it would appear)
-        //[Test, Ignore]
-        //public void DeSerialize_ValidStateMachine_NoExceptionThrown()
-        //{
-        //    //arrange
-        //    var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
-        //    var serializedStateMachine = JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
+        
 
-        //    //act/assert
-        //    Assert.DoesNotThrow(() => JsonConvert.DeserializeObject<StateMachine<IMyAppStateful, MyAppState>>(serializedStateMachine));
-        //}
+        [Test]
+        public void DeserializeTest()
+        {
+            //avoid name clashes when setting parents later in test
+            var rootSM2 = new StateMachine<LucidState>("Root",
+                                                      new IStateTransition<LucidState>[0],
+                                                      startState: new UIRootState.Enabled());
 
-        //[Test, Ignore]
-        //public void Serialization_RoundTrip_StateMaintainedCorrectly()
-        //{
-        //    //arrange
-        //    var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
-        //    var serializedStateMachine = JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
+            Assert.That(_stateMachine1.CurrentState == new SmState.Visible());
 
-        //    //act
-        //    var stateMachine = JsonConvert.DeserializeObject<StateMachine<IMyAppStateful, MyAppState>>(serializedStateMachine);
+            _stateMachine1.TriggerTransition(new SmState.Hidden());
 
-        //    //assert
-        //    Assert.That(stateMachine.ChildStateMachines.Count == 0);
-        //    Assert.That(stateMachine.CurrentState == new BugState.Open());
-        //}
+            Assert.That(_stateMachine1.CurrentState == new SmState.Hidden());
 
-        //[Test, Ignore]
-        //public void Serialization_RoundTrip_StateMaintainedCorrectly2()
-        //{
-        //    //arrange
-        //    var bug = new Bug("bug1", _stateMachine);
-        //    bug.TransitionTo(new BugState.Assigned(), new { AssigneeEmail = "example@example.com" });
+            //arrange
+            var json = _stateMachine1.SerializeToJsonDto();
 
-        //    //assert
-        //    Assert.That(_stateMachine.CurrentState == new BugState.Assigned());
+            var sm2 = new StateMachine<LucidState>("SM1",
+                                                    _transitions,
+                                                    startState: new SmState.Visible(),
+                                                    parentStateMachine: rootSM2);
 
-        //    var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
-        //    var serializedStateMachine = JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
+            Assert.That(sm2.CurrentState == new SmState.Visible());
 
-        //    //act
-        //    var stateMachine = JsonConvert.DeserializeObject<StateMachine<IMyAppStateful, MyAppState>>(serializedStateMachine);
+            sm2.InitializeWithJson(json);
 
-        //    //assert
-        //    Assert.That(stateMachine.ChildStateMachines.Count == 0);
-        //    Assert.That(stateMachine.CurrentState == new BugState.Assigned());
-        //}
-
-        //[Test, Ignore]
-        //public void Serialization_RoundTrip_TransitionsMayStillBePerformedAfterDeserialization()
-        //{
-        //    //arrange
-        //    var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
-        //    var serializedStateMachine = JsonConvert.SerializeObject(_stateMachine, Formatting.Indented, settings);
-
-        //    //act
-        //    var stateMachine = JsonConvert.DeserializeObject<StateMachine<IMyAppStateful, MyAppState>>(serializedStateMachine);
-        //    var bug = new Bug("bug1", stateMachine);
-
-        //    //assert
-        //    Assert.That(bug.CurrentState ==  new BugState.Open());
-
-        //    //act
-        //    bug.TransitionTo(new BugState.Assigned(), new { AssigneeEmail = "example@example.com", });
-
-        //    Assert.That(bug.CurrentState == new BugState.Assigned());
-        //}
+            Assert.That(sm2.CurrentState == new SmState.Hidden());
+        }
     }
 }
 

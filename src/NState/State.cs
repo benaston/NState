@@ -3,25 +3,18 @@
     using System;
 
     [Serializable]
-    public abstract class 
+    public abstract class
         State
     {
         private string _name;
 
         public string Name
         {
-            get
-            {
-                return _name ?? GetType().AssemblyQualifiedName; //assembly qualified for (de)serialization
+            get { return _name ?? GetType().AssemblyQualifiedName; //assembly qualified for (de)serialization
             }
 
-            set
-            {
-                _name = value;
-            }
+            set { _name = value; }
         }
-
-        //public string Description { get; protected set; }
 
         public static bool operator ==(State a, State b)
         {
@@ -46,15 +39,14 @@
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Name, Name);// && Equals(other.Description, Description);
+            return Equals(other.Name, Name);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0)*397)
-                       ;//(Description != null ? Description.GetHashCode() : 0);
+                return ((Name != null ? Name.GetHashCode() : 0)*397);
             }
         }
 
