@@ -94,16 +94,16 @@ How to use:
 		[Serializable]
 		public class Assign : StateTransition<Bug, BugState>
 		{
-			public Assign(Action<MyAppState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
 			
 			public override BugState[] StartStates
 			{
-				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
+				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(), }; }
 			}
 			
 			public override BugState[] EndStates
 			{
-				get { return new[] {new BugState.Assigned(),}; }
+				get { return new[] {new BugState.Assigned(), }; }
 			}
 		}
 		
@@ -146,12 +146,12 @@ How to use:
 			
 			public override BugState[] StartStates
 			{
-				get { return new[] {new BugState.Closed(),}; }
+				get { return new[] {new BugState.Closed(), }; }
 			}
 			
 			public override BugState[] EndStates
 			{
-				get { return new[] {new BugState.Open(),}; }
+				get { return new[] {new BugState.Open(), }; }
 			}
 		}
 		
