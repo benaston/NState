@@ -80,6 +80,7 @@
     <Compile Include="State.cs" />
     <Compile Include="Stateful.cs" />
     <Compile Include="StateMachine.cs" />
+    <Compile Include="StateMachineSerializationHelper.cs" />
     <Compile Include="StateTransition.cs" />
   </ItemGroup>
   <ItemGroup>

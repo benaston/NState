@@ -1,6 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace NState.Test.Fast.UserInterfaceExample
 {
+    using System;
+    using System.Dynamic;
     using NUnit.Framework;
 
     /// <summary>
@@ -81,7 +83,7 @@ namespace NState.Test.Fast.UserInterfaceExample
             _searchPanelStateMachine = new StateMachine<LucidState>("SearchArea",
                                                                             searchPanelTransitions,
                                                                             startState: new SearchAreaState.Visible(),
-                                                                            parentStateMachine: _accountTabStateMachine);
+                                                                            parentStateMachine: _searchTabStateMachine);
 
             _workingPanelStateMachine = new StateMachine<LucidState>("WorkingPanel",
                                                                              workingPanelTransitions,
@@ -106,6 +108,92 @@ namespace NState.Test.Fast.UserInterfaceExample
             Assert.That(s.CurrentState == new SearchTabState.Visible());
             Assert.That(a.CurrentState == new AccountTabState.Visible());
             Assert.That(w.CurrentState == new WorkingPanelState.SearchMode());
+        }
+
+        [Test]
+        public void SerializeTest()
+        {
+            //arrange
+            Assert.DoesNotThrow(() => _searchTabStateMachine.SerializeToJsonDto());
+        }
+
+        public abstract class SmState : LucidState
+        {
+            public class Hidden : SmState {}
+
+            public class Visible : SmState {}
+        }
+
+        public class SmTransition
+        {
+            public class Hide : StateTransition<LucidState>
+            {
+                public override LucidState[] StartStates
+                {
+                    get { return new[] {new SmState.Visible(),}; }
+                }
+
+                public override LucidState[] EndStates
+                {
+                    get { return new[] {new SmState.Hidden(),}; }
+                }
+            }
+
+            public class Show : StateTransition<LucidState>
+            {
+                public override LucidState[] StartStates
+                {
+                    get { return new[] {new SmState.Hidden(),}; }
+                }
+
+                public override LucidState[] EndStates
+                {
+                    get { return new[] {new SmState.Visible(),}; }
+                }
+            }
+        }
+        [Test]
+        public void DeserializeTest()
+        {
+            var rootSM = new StateMachine<LucidState>("Root",
+                                                      new IStateTransition<LucidState>[0],
+                                                      startState: new UIRootState.Enabled());
+
+            //avoid name clashes when setting parents later in test
+            var rootSM2 = new StateMachine<LucidState>("Root",
+                                                      new IStateTransition<LucidState>[0],
+                                                      startState: new UIRootState.Enabled());
+
+            var sm1Transitions = new IStateTransition<LucidState>[]
+                                           {
+                                               new SmTransition.Hide(),
+                                               new SmTransition.Show(),
+                                           };
+
+            var sm1 = new StateMachine<LucidState>("SM1",
+                                                    sm1Transitions,
+                                                    startState: new SmState.Visible(),
+                                                    parentStateMachine: rootSM);
+
+            Assert.That(sm1.CurrentState == new SmState.Visible());
+
+            sm1.TriggerTransition(new SmState.Hidden());
+
+            Assert.That(sm1.CurrentState == new SmState.Hidden());
+
+            //arrange
+            var json = sm1.SerializeToJsonDto();
+
+            var sm2 = new StateMachine<LucidState>("SM1",
+                                                    sm1Transitions,
+                                                    startState: new SmState.Visible(),
+                                                    parentStateMachine: rootSM2);
+
+            Assert.That(sm2.CurrentState == new SmState.Visible());
+
+            sm2.InitializeWithJson(json);
+
+            Assert.That(sm2.CurrentState == new SmState.Hidden());
         }
 
         [Test]

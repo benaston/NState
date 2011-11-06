@@ -26,6 +26,8 @@ namespace NState.Test.Fast.BugTrackerExample
 
         private StateMachine<BugState> _stateMachine;
 
+        
+
         [Test]
         public void TriggerTransition_IdentityTransition_NoExceptionThrown()
         {
