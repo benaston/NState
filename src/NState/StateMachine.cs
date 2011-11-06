@@ -86,8 +86,12 @@
                     throw new Exception(); //refactor to refine exception
                 }
 
-                if ((CurrentState != targetState || (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)) 
-                    && CurrentState != FinalState)
+                if (CurrentState == FinalState)
+                {
+                    throw new Exception(); //refactor to refine exception
+                }
+
+                if ((CurrentState != targetState || (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
                 {
                     var matches = StateTransitions.Where(t =>
                                                          t.InitialStates.Where(s => s == CurrentState).Any() &&
