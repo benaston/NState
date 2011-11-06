@@ -238,5 +238,24 @@ How to use:
 
 ```
 
+**7. Persist and restore your state machine**
+
+
+```C#
+
+	//...
+	
+	var json = _myStateMachine.SerializeToJsonDto();
+	//send json to Couch or somewhere...
+	
+	//later...
+	
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, startState:new BugState.Open());
+	myStateMachine.InitializeWithJson(json);
+	
+	//continue where you left off...
+
+```
+
 
 
