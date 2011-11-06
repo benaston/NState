@@ -11,7 +11,7 @@ Features:
  - trivial state machine tree persistence and retrieval to/from JSON
  - transition conditions, exit and entry actions
  - transition actions with arbitrary arguments
- - final state specification
+ - initial and final state specification
 
 How to use:
 --------
