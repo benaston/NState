@@ -6,7 +6,7 @@ Simple state machine for .NET. This software is NOT production ready.
 Features:
 --------
 
- - easy construction of trees of interdependent state machines
+ - easy construction of trees of interdependent or orthogonal state machines
  - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
  - state conditions, exit and entry actions
