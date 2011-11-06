@@ -5,34 +5,36 @@
     public class DetailsPanelsTransition
     {
         [Serializable]
-        public class SelectSearchMode : StateTransition<LucidState>
+        public class SelectAccountMode : StateTransition<LucidState>
         {
-            public SelectSearchMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectAccountMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
+                : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
-                get { return new[] { new DetailsPanelsState.AccountMode(), }; }
+                get { return new[] {new DetailsPanelsState.SearchMode(),}; }
             }
 
             public override LucidState[] EndStates
             {
-                get { return new[] { new DetailsPanelsState.SearchMode(), }; }
+                get { return new[] {new DetailsPanelsState.AccountMode(),}; }
             }
         }
 
         [Serializable]
-        public class SelectAccountMode : StateTransition<LucidState>
+        public class SelectSearchMode : StateTransition<LucidState>
         {
-            public SelectAccountMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null) : base(transitionFunction) { }
+            public SelectSearchMode(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionFunction = null)
+                : base(transitionFunction) {}
 
             public override LucidState[] StartStates
             {
-                get { return new[] { new DetailsPanelsState.SearchMode(), }; }
+                get { return new[] {new DetailsPanelsState.AccountMode(),}; }
             }
 
             public override LucidState[] EndStates
             {
-                get { return new[] { new DetailsPanelsState.AccountMode(), }; }
+                get { return new[] {new DetailsPanelsState.SearchMode(),}; }
             }
         }
     }

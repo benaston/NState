@@ -2,8 +2,8 @@
 {
     public abstract class DetailsPanelsState : LucidState
     {
-        public class SearchMode : DetailsPanelsState { }
+        public class AccountMode : DetailsPanelsState {}
 
-        public class AccountMode : DetailsPanelsState { }
+        public class SearchMode : DetailsPanelsState {}
     }
 }

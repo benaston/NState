@@ -3,7 +3,7 @@
     public class WorkingPanel : Stateful<UIRoot, LucidState>
     {
         public WorkingPanel(IStateMachine<LucidState> stateMachine)
-            : base(stateMachine) { }
+            : base(stateMachine) {}
 
         public WorkingPanel SelectSearchMode()
         {

@@ -3,7 +3,7 @@
     public class HomePanel : Stateful<UIRoot, LucidState>
     {
         public HomePanel(IStateMachine<LucidState> stateMachine)
-            : base(stateMachine) { }
+            : base(stateMachine) {}
 
         public HomePanel Hide()
         {

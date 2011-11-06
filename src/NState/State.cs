@@ -1,10 +1,6 @@
 ﻿namespace NState
 {
-    using System;
-
-    [Serializable]
-    public abstract class
-        State
+    public abstract class State
     {
         private string _name;
 

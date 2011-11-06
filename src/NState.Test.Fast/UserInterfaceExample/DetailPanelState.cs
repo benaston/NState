@@ -2,10 +2,10 @@
 {
     public abstract class DetailPanelState : LucidState
     {
-        public class Hidden : DetailPanelState { }
+        public class Hidden : DetailPanelState {}
 
-        public class SideA : DetailPanelState { }
+        public class SideA : DetailPanelState {}
 
-        public class SideB : DetailPanelState { }
+        public class SideB : DetailPanelState {}
     }
 }

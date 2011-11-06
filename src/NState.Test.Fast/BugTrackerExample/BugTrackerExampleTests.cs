@@ -7,26 +7,29 @@ namespace NState.Test.Fast.BugTrackerExample
     [TestFixture]
     public class BugTrackerExampleTests
     {
+        #region Setup/Teardown
+
         [SetUp]
         public void Setup()
         {
             var bugTransitions = new IStateTransition<BugState>[]
-                                  {
-                                      new BugTransition.Open(),
-                                      new BugTransition.Assign(BugTransitionFunction.Assign),
-                                      new BugTransition.Defer(BugTransitionFunction.Defer),
-                                      new BugTransition.Resolve(BugTransitionFunction.Resolve),
-                                      new BugTransition.Close(BugTransitionFunction.Close),
-                                  };
+                                     {
+                                         new BugTransition.Open(),
+                                         new BugTransition.Assign(BugTransitionFunction.Assign),
+                                         new BugTransition.Defer(BugTransitionFunction.Defer),
+                                         new BugTransition.Resolve(BugTransitionFunction.Resolve),
+                                         new BugTransition.Close(BugTransitionFunction.Close),
+                                     };
 
             _stateMachine = new StateMachine<BugState>("Bug",
-                                                            bugTransitions,
-                                                            startState: new BugState.Open());
+                                                       bugTransitions,
+                                                       startState: new BugState.Open());
         }
+
+        #endregion
 
         private StateMachine<BugState> _stateMachine;
 
-        
 
         [Test]
         public void TriggerTransition_IdentityTransition_NoExceptionThrown()
@@ -99,4 +102,5 @@ namespace NState.Test.Fast.BugTrackerExample
         }
     }
 }
+
 // ReSharper restore InconsistentNaming

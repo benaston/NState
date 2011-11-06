@@ -13,7 +13,6 @@
     ///   Enables specification of valid state changes to be applied to object
     ///   instances.
     /// </summary>
-    [Serializable]
     public class StateMachine<TState> :
         IStateMachine<TState>
         where TState : State
@@ -46,7 +45,6 @@
 
         public TState StartState { get; set; }
 
-        [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
         public IStateMachine<TState> Parent { get; set; }
 
         public Dictionary<string, IStateMachine<TState>> Children

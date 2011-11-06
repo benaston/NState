@@ -1,16 +1,14 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace NState.Test.Fast.SerializationExample
 {
-    using BugTrackerExample;
-    using Newtonsoft.Json;
     using NUnit.Framework;
     using UserInterfaceExample;
 
     public abstract class SmState : LucidState
     {
-        public class Hidden : SmState { }
+        public class Hidden : SmState {}
 
-        public class Visible : SmState { }
+        public class Visible : SmState {}
     }
 
     public class SmTransition
@@ -19,12 +17,12 @@ namespace NState.Test.Fast.SerializationExample
         {
             public override LucidState[] StartStates
             {
-                get { return new[] { new SmState.Visible(), }; }
+                get { return new[] {new SmState.Visible(),}; }
             }
 
             public override LucidState[] EndStates
             {
-                get { return new[] { new SmState.Hidden(), }; }
+                get { return new[] {new SmState.Hidden(),}; }
             }
         }
 
@@ -32,12 +30,12 @@ namespace NState.Test.Fast.SerializationExample
         {
             public override LucidState[] StartStates
             {
-                get { return new[] { new SmState.Hidden(), }; }
+                get { return new[] {new SmState.Hidden(),}; }
             }
 
             public override LucidState[] EndStates
             {
-                get { return new[] { new SmState.Visible(), }; }
+                get { return new[] {new SmState.Visible(),}; }
             }
         }
     }
@@ -45,45 +43,41 @@ namespace NState.Test.Fast.SerializationExample
     [TestFixture]
     public class SerializationExampleTests
     {
+        #region Setup/Teardown
+
         [SetUp]
         public void Setup()
         {
             _stateMachineRoot = new StateMachine<LucidState>("Root",
-                                                      new IStateTransition<LucidState>[0],
-                                                      startState: new UIRootState.Enabled());
+                                                             new IStateTransition<LucidState>[0],
+                                                             startState: new UIRootState.Enabled());
 
             _transitions = new IStateTransition<LucidState>[]
-                                           {
-                                               new SmTransition.Hide(),
-                                               new SmTransition.Show(),
-                                           };
+                               {
+                                   new SmTransition.Hide(),
+                                   new SmTransition.Show(),
+                               };
 
             _stateMachine1 = new StateMachine<LucidState>("SM1",
-                                                    _transitions,
-                                                    startState: new SmState.Visible(),
-                                                    parentStateMachine: _stateMachineRoot);
+                                                          _transitions,
+                                                          startState: new SmState.Visible(),
+                                                          parentStateMachine: _stateMachineRoot);
         }
+
+        #endregion
 
         private StateMachine<LucidState> _stateMachine1;
         private StateMachine<LucidState> _stateMachineRoot;
         private IStateTransition<LucidState>[] _transitions;
 
-        [Test]
-        public void SerializeTest()
-        {
-            //arrange
-            Assert.DoesNotThrow(() => _stateMachineRoot.SerializeToJsonDto());
-        }
-
-        
 
         [Test]
         public void DeserializeTest()
         {
             //avoid name clashes when setting parents later in test
             var rootSM2 = new StateMachine<LucidState>("Root",
-                                                      new IStateTransition<LucidState>[0],
-                                                      startState: new UIRootState.Enabled());
+                                                       new IStateTransition<LucidState>[0],
+                                                       startState: new UIRootState.Enabled());
 
             Assert.That(_stateMachine1.CurrentState == new SmState.Visible());
 
@@ -95,15 +89,22 @@ namespace NState.Test.Fast.SerializationExample
             var json = _stateMachine1.SerializeToJsonDto();
 
             var sm2 = new StateMachine<LucidState>("SM1",
-                                                    _transitions,
-                                                    startState: new SmState.Visible(),
-                                                    parentStateMachine: rootSM2);
+                                                   _transitions,
+                                                   startState: new SmState.Visible(),
+                                                   parentStateMachine: rootSM2);
 
             Assert.That(sm2.CurrentState == new SmState.Visible());
 
             sm2.InitializeWithJson(json);
 
             Assert.That(sm2.CurrentState == new SmState.Hidden());
+        }
+
+        [Test]
+        public void SerializeTest()
+        {
+            //arrange
+            Assert.DoesNotThrow(() => _stateMachineRoot.SerializeToJsonDto());
         }
     }
 }

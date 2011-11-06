@@ -3,7 +3,7 @@
     public class DetailsPanels : Stateful<UIRoot, LucidState>
     {
         public DetailsPanels(IStateMachine<LucidState> stateMachine)
-            : base(stateMachine) { }
+            : base(stateMachine) {}
 
         public DetailsPanels SelectSearchMode()
         {

@@ -3,7 +3,7 @@
     public class SearchArea : Stateful<UIRoot, LucidState>
     {
         public SearchArea(IStateMachine<LucidState> stateMachine)
-            : base(stateMachine) { }
+            : base(stateMachine) {}
 
         public SearchArea Hide()
         {

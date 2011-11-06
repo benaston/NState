@@ -5,14 +5,14 @@
     [Serializable]
     public abstract class BugState : State
     {
-        public class Assigned : BugState { }
+        public class Assigned : BugState {}
 
-        public class Closed : BugState { }
+        public class Closed : BugState {}
 
-        public class Deferred : BugState { }
+        public class Deferred : BugState {}
 
-        public class Open : BugState { }
+        public class Open : BugState {}
 
-        public class Resolved : BugState { }
+        public class Resolved : BugState {}
     }
 }

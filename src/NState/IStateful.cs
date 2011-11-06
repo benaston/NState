@@ -15,6 +15,7 @@
 
         TState CurrentState { get; }
 
-        TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState, ExpandoObject dto);
+        TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState,
+                                                           ExpandoObject dto);
     }
 }

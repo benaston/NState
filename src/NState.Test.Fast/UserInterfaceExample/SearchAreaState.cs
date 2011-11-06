@@ -2,8 +2,8 @@
 {
     public abstract class SearchAreaState : LucidState
     {
-        public class Hidden : SearchAreaState { }
+        public class Hidden : SearchAreaState {}
 
-        public class Visible : SearchAreaState { }
+        public class Visible : SearchAreaState {}
     }
 }

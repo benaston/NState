@@ -2,8 +2,8 @@
 {
     public abstract class WorkingPanelState : LucidState
     {
-        public class SearchMode : WorkingPanelState { }
+        public class AccountMode : WorkingPanelState {}
 
-        public class AccountMode : WorkingPanelState { }
+        public class SearchMode : WorkingPanelState {}
     }
 }

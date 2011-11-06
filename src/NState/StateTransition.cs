@@ -7,7 +7,8 @@
         where TState : State
     {
         protected StateTransition(
-            Action<TState, IStateMachine<TState>, dynamic> transitionFunction = null, Func<TState, dynamic, bool> guard = null)
+            Action<TState, IStateMachine<TState>, dynamic> transitionFunction = null,
+            Func<TState, dynamic, bool> guard = null)
         {
             Guard = guard ?? ((s, args) => true);
             TransitionFunction = transitionFunction ?? ((s, sm, args) => { });
