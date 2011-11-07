@@ -229,7 +229,7 @@ How to use:
 ```
 
 
-**6. Work with you stateful object**
+**6. Work with your stateful object**
 
 
 ```C#
