@@ -51,13 +51,13 @@
         public IEnumerable<IStateTransition<TState>> StateTransitions { get; protected set; }
 
         public TState InitialState { get; set; }
-        
+
         public TState FinalState { get; set; }
 
         public IStateMachine<TState> Parent { get; set; }
-        
+
         public bool PermitSelfTransition { get; set; }
-        
+
         public bool BypassTransitionBehaviorForSelfTransition { get; set; }
 
         private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
@@ -172,8 +172,8 @@
         }
 
         /// <summary>
-        ///   Not in constructor because SM tree may not be 
-        ///   completely initialized by constructor in current 
+        ///   Not in constructor because SM tree may not be
+        ///   completely initialized by constructor in current
         ///   implementation.
         /// </summary>
         public IStateMachine<TState> InitializeWithJson(string json)

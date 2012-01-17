@@ -24,8 +24,8 @@ echo Running slow tests...
 )
 FOR /F "DELIMS==" %%d in ('DIR "!repositoryRoot!src\" /AD /B') DO (
 	set directory=!repositoryRoot!src\%%d\bin\Debug\
-	
-	for /F "delims==" %%f in ('DIR "!directory!" /B') do (	
+
+	for /F "delims==" %%f in ('DIR "!directory!" /B') do (
     echo %%f|findstr /i !suffix! >nul:
     if not !errorlevel!==1 (
 	   echo %%f|findstr /i !suffix!.config >nul:

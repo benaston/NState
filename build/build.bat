@@ -1,6 +1,6 @@
 @echo off
 REM NuGet.exe must be in the path for the nuget functionality to work here.
-cd /d %0\.. 
+cd /d %0\..
 
 setlocal enabledelayedexpansion
 set solutionAndMainProjectName=NState
@@ -52,13 +52,13 @@ goto resume
 :nugetpack
 cd %CD%\..
 nuget pack %CD%\src\!solutionAndMainProjectName!\!solutionAndMainProjectName!.csproj -Prop Configuration=Release -Symbols
-cd /d %0\.. 
+cd /d %0\..
 goto resume
 
 :clean
 call %CD%\..\src\clean.bat
 ::return working directory to the location of this script
-cd /d %0\.. 
+cd /d %0\..
 goto resume
 
 :fasttests
