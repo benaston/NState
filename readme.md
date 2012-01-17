@@ -216,10 +216,10 @@ How to use:
 	var transitions = new IStateTransition<BugState>[]
 				{
 					new BugTransition.Open(),
-					new BugTransition.Assign(BugHelper.Assign),
-					new BugTransition.Defer(BugHelper.Defer),
-					new BugTransition.Resolve(BugHelper.Resolve),
-					new BugTransition.Close(BugHelper.Close),
+					new BugTransition.Assign(BugTransitionAction.Assign),
+					new BugTransition.Defer(BugTransitionAction.Defer),
+					new BugTransition.Resolve(BugTransitionAction.Resolve),
+					new BugTransition.Close(BugTransitionAction.Close),
 				};	
 	
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
