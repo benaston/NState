@@ -264,5 +264,5 @@ How to use:
 License & Copyright
 --------
 
-This software is released under the GNU Lesser GPL. It is Copright 2011, Ben Aston. I may be contacted at ben@bj.ma.
+This software is released under the GNU Lesser GPL. It is Copyright 2011, Ben Aston. I may be contacted at ben@bj.ma.
 
