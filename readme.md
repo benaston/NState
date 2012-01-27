@@ -6,12 +6,12 @@ Simple state machine for .NET. This software is NOT production ready.
 Features:
 --------
 
- - easy construction of trees of interdependent state machines
+ - easy construction of trees of interdependent or orthogonal state machines
  - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
- - state conditions, exit and entry actions
+ - transition conditions, exit and entry actions
  - transition actions with arbitrary arguments
- - final state specification
+ - initial and final state specification
 
 How to use:
 --------
@@ -177,7 +177,7 @@ How to use:
 
 ```
 
-**4. Define your transition functions (optional logic run within the transitions)**
+**4. Define any transition actions**
 
 ```C#
 
@@ -216,10 +216,10 @@ How to use:
 	var transitions = new IStateTransition<BugState>[]
 				{
 					new BugTransition.Open(),
-					new BugTransition.Assign(BugHelper.Assign),
-					new BugTransition.Defer(BugHelper.Defer),
-					new BugTransition.Resolve(BugHelper.Resolve),
-					new BugTransition.Close(BugHelper.Close),
+					new BugTransition.Assign(BugTransitionAction.Assign),
+					new BugTransition.Defer(BugTransitionAction.Defer),
+					new BugTransition.Resolve(BugTransitionAction.Resolve),
+					new BugTransition.Close(BugTransitionAction.Close),
 				};	
 	
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
@@ -229,7 +229,7 @@ How to use:
 ```
 
 
-**6. Work with you stateful object**
+**6. Work with your stateful object**
 
 
 ```C#
