@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 // ReSharper disable InconsistentNaming
 
@@ -28,16 +28,14 @@ namespace NState.Test.Fast.BugTrackerExample
 		#region Setup/Teardown
 
 		[SetUp]
-		public void Setup()
-		{
-			var bugTransitions = new IStateTransition<BugState>[]
-			                     	{
-			                     		new BugTransition.Open(),
-			                     		new BugTransition.Assign(BugTransitionAction.Assign),
-			                     		new BugTransition.Defer(BugTransitionAction.Defer),
-			                     		new BugTransition.Resolve(BugTransitionAction.Resolve),
-			                     		new BugTransition.Close(BugTransitionAction.Close),
-			                     	};
+		public void Setup() {
+			var bugTransitions = new IStateTransition<BugState>[] {
+				new BugTransition.Open(),
+				new BugTransition.Assign(BugTransitionAction.Assign),
+				new BugTransition.Defer(BugTransitionAction.Defer),
+				new BugTransition.Resolve(BugTransitionAction.Resolve),
+				new BugTransition.Close(BugTransitionAction.Close),
+			};
 
 			_stateMachine = new StateMachine<BugState>("Bug",
 			                                           bugTransitions,
@@ -50,8 +48,7 @@ namespace NState.Test.Fast.BugTrackerExample
 
 
 		[Test]
-		public void TriggerTransition_IdentityTransition_NoExceptionThrown()
-		{
+		public void TriggerTransition_IdentityTransition_NoExceptionThrown() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 
@@ -62,8 +59,7 @@ namespace NState.Test.Fast.BugTrackerExample
 		}
 
 		[Test]
-		public void TriggerTransition_InvalidTransition_ExceptionThrown()
-		{
+		public void TriggerTransition_InvalidTransition_ExceptionThrown() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 
@@ -72,8 +68,7 @@ namespace NState.Test.Fast.BugTrackerExample
 		}
 
 		[Test]
-		public void TriggerTransition_TwoSuccessiveValidTransitions_NoExceptionThrown()
-		{
+		public void TriggerTransition_TwoSuccessiveValidTransitions_NoExceptionThrown() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 
@@ -83,8 +78,7 @@ namespace NState.Test.Fast.BugTrackerExample
 		}
 
 		[Test]
-		public void TriggerTransition_UnexpectedDtoSupplied_NoExceptionThrown()
-		{
+		public void TriggerTransition_UnexpectedDtoSupplied_NoExceptionThrown() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 			dynamic args = new ExpandoObject();
@@ -95,8 +89,7 @@ namespace NState.Test.Fast.BugTrackerExample
 		}
 
 		[Test]
-		public void TriggerTransition_ValidTransitionWithArgument_ArgumentSetInTargetObjectCorrectly()
-		{
+		public void TriggerTransition_ValidTransitionWithArgument_ArgumentSetInTargetObjectCorrectly() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 			const string assigneeEmail = "example@example.com";
@@ -108,8 +101,7 @@ namespace NState.Test.Fast.BugTrackerExample
 		}
 
 		[Test]
-		public void TriggerTransition_ValidTransition_NoExceptionThrown()
-		{
+		public void TriggerTransition_ValidTransition_NoExceptionThrown() {
 			//arrange
 			var bug = new Bug("bug1", _stateMachine);
 			dynamic args = new ExpandoObject();

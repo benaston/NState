@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState
 {
@@ -25,9 +25,13 @@ namespace NState
 	{
 		private const string DefaultMessage = "Unable to transition state from {0} to {1}.";
 
-		public InvalidStateTransitionException(TState initialState, TState endState,
+		public InvalidStateTransitionException(TState initialState,
+		                                       TState endState,
 		                                       string[] resolutionSuggestions = default (string[]),
 		                                       Exception innerException = default(Exception))
-			: base(string.Format(DefaultMessage, initialState.Name, endState.Name), resolutionSuggestions, innerException) {}
+			: base(
+				string.Format(DefaultMessage, initialState.Name, endState.Name),
+				resolutionSuggestions,
+				innerException) {}
 	}
 }

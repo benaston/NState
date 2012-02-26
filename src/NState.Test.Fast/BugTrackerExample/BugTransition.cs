@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.BugTrackerExample
 {
@@ -28,13 +28,11 @@ namespace NState.Test.Fast.BugTrackerExample
 			public Assign(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override BugState[] InitialStates
-			{
+			public override BugState[] InitialStates {
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(),}; }
 			}
 
-			public override BugState[] EndStates
-			{
+			public override BugState[] EndStates {
 				get { return new[] {new BugState.Assigned(),}; }
 			}
 		}
@@ -45,13 +43,11 @@ namespace NState.Test.Fast.BugTrackerExample
 			public Close(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override BugState[] InitialStates
-			{
+			public override BugState[] InitialStates {
 				get { return new BugState[] {new BugState.Resolved()}; }
 			}
 
-			public override BugState[] EndStates
-			{
+			public override BugState[] EndStates {
 				get { return new[] {new BugState.Closed(),}; }
 			}
 		}
@@ -62,13 +58,11 @@ namespace NState.Test.Fast.BugTrackerExample
 			public Defer(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override BugState[] InitialStates
-			{
+			public override BugState[] InitialStates {
 				get { return new BugState[] {new BugState.Open(), new BugState.Assigned()}; }
 			}
 
-			public override BugState[] EndStates
-			{
+			public override BugState[] EndStates {
 				get { return new[] {new BugState.Deferred(),}; }
 			}
 		}
@@ -79,13 +73,11 @@ namespace NState.Test.Fast.BugTrackerExample
 			public Open(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override BugState[] InitialStates
-			{
+			public override BugState[] InitialStates {
 				get { return new[] {new BugState.Closed(),}; }
 			}
 
-			public override BugState[] EndStates
-			{
+			public override BugState[] EndStates {
 				get { return new[] {new BugState.Open(),}; }
 			}
 		}
@@ -96,13 +88,11 @@ namespace NState.Test.Fast.BugTrackerExample
 			public Resolve(Action<BugState, IStateMachine<BugState>, object> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override BugState[] InitialStates
-			{
+			public override BugState[] InitialStates {
 				get { return new[] {new BugState.Assigned(),}; }
 			}
 
-			public override BugState[] EndStates
-			{
+			public override BugState[] EndStates {
 				get { return new[] {new BugState.Resolved(),}; }
 			}
 		}

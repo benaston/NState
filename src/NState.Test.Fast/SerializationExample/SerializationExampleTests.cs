@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,9 +13,10 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 // ReSharper disable InconsistentNaming
+
 namespace NState.Test.Fast.SerializationExample
 {
 	using NUnit.Framework;
@@ -32,26 +33,22 @@ namespace NState.Test.Fast.SerializationExample
 	{
 		public class Hide : StateTransition<LucidState>
 		{
-			public override LucidState[] InitialStates
-			{
+			public override LucidState[] InitialStates {
 				get { return new[] {new SmState.Visible(),}; }
 			}
 
-			public override LucidState[] EndStates
-			{
+			public override LucidState[] EndStates {
 				get { return new[] {new SmState.Hidden(),}; }
 			}
 		}
 
 		public class Show : StateTransition<LucidState>
 		{
-			public override LucidState[] InitialStates
-			{
+			public override LucidState[] InitialStates {
 				get { return new[] {new SmState.Hidden(),}; }
 			}
 
-			public override LucidState[] EndStates
-			{
+			public override LucidState[] EndStates {
 				get { return new[] {new SmState.Visible(),}; }
 			}
 		}
@@ -63,17 +60,15 @@ namespace NState.Test.Fast.SerializationExample
 		#region Setup/Teardown
 
 		[SetUp]
-		public void Setup()
-		{
+		public void Setup() {
 			_stateMachineRoot = new StateMachine<LucidState>("Root",
 			                                                 new IStateTransition<LucidState>[0],
 			                                                 initialState: new UIRootState.Enabled());
 
-			_transitions = new IStateTransition<LucidState>[]
-			               	{
-			               		new SmTransition.Hide(),
-			               		new SmTransition.Show(),
-			               	};
+			_transitions = new IStateTransition<LucidState>[] {
+				new SmTransition.Hide(),
+				new SmTransition.Show(),
+			};
 
 			_stateMachine1 = new StateMachine<LucidState>("SM1",
 			                                              _transitions,
@@ -89,8 +84,7 @@ namespace NState.Test.Fast.SerializationExample
 
 
 		[Test]
-		public void DeserializeTest()
-		{
+		public void DeserializeTest() {
 			//avoid name clashes when setting parents later in test
 			var rootSM2 = new StateMachine<LucidState>("Root",
 			                                           new IStateTransition<LucidState>[0],
@@ -103,7 +97,7 @@ namespace NState.Test.Fast.SerializationExample
 			Assert.That(_stateMachine1.CurrentState == new SmState.Hidden());
 
 			//arrange
-			var json = _stateMachine1.SerializeToJsonDto();
+			string json = _stateMachine1.SerializeToJsonDto();
 
 			var sm2 = new StateMachine<LucidState>("SM1",
 			                                       _transitions,
@@ -118,11 +112,11 @@ namespace NState.Test.Fast.SerializationExample
 		}
 
 		[Test]
-		public void SerializeTest()
-		{
+		public void SerializeTest() {
 			//arrange
 			Assert.DoesNotThrow(() => _stateMachineRoot.SerializeToJsonDto());
 		}
 	}
 }
+
 // ReSharper restore InconsistentNaming

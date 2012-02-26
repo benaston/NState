@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState
 {
@@ -34,7 +34,9 @@ namespace NState
 		IStateMachine<TState>
 		where TState : State
 	{
-		private Dictionary<string, IStateMachine<TState>> _children = new Dictionary<string, IStateMachine<TState>>();
+		private Dictionary<string, IStateMachine<TState>> _children =
+			new Dictionary<string, IStateMachine<TState>>();
+
 		public StateMachine() {} //for deserialization
 
 		public StateMachine(string name,
@@ -56,8 +58,7 @@ namespace NState
 			Parent = parentStateMachine;
 			PermitSelfTransition = permitSelfTransition;
 			BypassTransitionBehaviorForSelfTransition = bypassTransitionBehaviorForSelfTransition;
-			if (parentStateMachine != null)
-			{
+			if (parentStateMachine != null) {
 				Parent.Children.Add(Name, this);
 			}
 			CurrentState = initialState;
@@ -76,8 +77,7 @@ namespace NState
 
 		public IStateMachine<TState> Parent { get; set; }
 
-		public Dictionary<string, IStateMachine<TState>> Children
-		{
+		public Dictionary<string, IStateMachine<TState>> Children {
 			get { return _children; }
 			set { _children = value; }
 		}
@@ -90,31 +90,32 @@ namespace NState
 		/// 	NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx
 		/// </summary>
 		public void TriggerTransition(TState targetState,
-		                              dynamic args = default(dynamic))
-		{
+		                              dynamic args = default(dynamic)) {
 			Ensure.That<ArgumentException>(targetState != null, "targetState not supplied.");
 
-			try
-			{
-				if (CurrentState == targetState && !PermitSelfTransition)
-				{
+			try {
+				if (CurrentState == targetState && !PermitSelfTransition) {
 					throw new Exception(); //refactor to refine exception
 				}
 
-				if (CurrentState == FinalState)
-				{
+				if (CurrentState == FinalState) {
 					throw new Exception(); //refactor to refine exception
 				}
 
-				if ((CurrentState != targetState || (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
-				{
-					var matches = StateTransitions.Where(t =>
-					                                     t.InitialStates.Where(s => s == CurrentState).Any() &&
-					                                     t.EndStates.Where(e => e == targetState).Any());
-					if (matches.Any())
-					{
-						using (var t = new TransactionScope())
-							//this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1)
+				if ((CurrentState != targetState ||
+				     (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition))) {
+					IEnumerable<IStateTransition<TState>> matches = StateTransitions.Where(t =>
+					                                                                       t.InitialStates.
+					                                                                       	Where(
+					                                                                       		s =>
+					                                                                       		s == CurrentState)
+					                                                                       	.Any() &&
+					                                                                       t.EndStates.Where(
+					                                                                       	e =>
+					                                                                       	e == targetState).
+					                                                                       	Any());
+					if (matches.Any()) {
+						using (var t = new TransactionScope()) //this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1)
 						{
 							OnRaiseBeforeEveryTransition();
 							CurrentState.ExitAction(args);
@@ -124,21 +125,18 @@ namespace NState
 							OnRaiseAfterEveryTransition();
 							t.Complete();
 						}
-					}
-					else
-					{
-						if (Parent == null)
-						{
+					} else {
+						if (Parent == null) {
 							throw new Exception(); //to be caught below, refactor
 						}
 
 						Parent.TriggerTransition(targetState, args);
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				throw new InvalidStateTransitionException<TState>(CurrentState, targetState, innerException: e);
+			} catch (Exception e) {
+				throw new InvalidStateTransitionException<TState>(CurrentState,
+				                                                  targetState,
+				                                                  innerException: e);
 			}
 		}
 
@@ -148,16 +146,14 @@ namespace NState
 
 		// Wrap event invocations inside a protected virtual method
 		// to allow derived classes to override the event invocation behavior
-		protected virtual void OnRaiseBeforeEveryTransition()
-		{
+		protected virtual void OnRaiseBeforeEveryTransition() {
 			// Make a temporary copy of the event to avoid possibility of
 			// a race condition if the last subscriber unsubscribes
 			// immediately after the null check and before the event is raised.
-			var handler = RaiseBeforeEveryTransitionEvent;
+			EventHandler handler = RaiseBeforeEveryTransitionEvent;
 
 			// Event will be null if there are no subscribers
-			if (handler != null)
-			{
+			if (handler != null) {
 				// Format the string to send inside the CustomEventArgs parameter
 				//e.Message += String.Format(" at {0}", DateTime.Now.ToString());
 
@@ -166,9 +162,8 @@ namespace NState
 			}
 		}
 
-		protected virtual void OnRaiseAfterEveryTransition()
-		{
-			var handler = RaiseAfterEveryTransitionEvent;
+		protected virtual void OnRaiseAfterEveryTransition() {
+			EventHandler handler = RaiseAfterEveryTransitionEvent;
 
 			if (handler != null) // Event will be null if there are no subscribers
 			{
@@ -176,12 +171,14 @@ namespace NState
 			}
 		}
 
-		public string SerializeToJsonDto()
-		{
-			var dto = StateMachineSerializationHelper.SerializeToDto(this, new ExpandoObject());
-			var s = JsonConvert.SerializeObject(dto, Formatting.Indented,
-			                                    new JsonSerializerSettings
-			                                    	{ObjectCreationHandling = ObjectCreationHandling.Replace});
+		public string SerializeToJsonDto() {
+			dynamic dto = StateMachineSerializationHelper.SerializeToDto(this, new ExpandoObject());
+			dynamic s = JsonConvert.SerializeObject(dto,
+			                                        Formatting.Indented,
+			                                        new JsonSerializerSettings {
+			                                        	ObjectCreationHandling =
+			                                        	ObjectCreationHandling.Replace
+			                                        });
 
 			return s;
 		}
@@ -189,10 +186,10 @@ namespace NState
 		/// <summary>
 		/// 	Not in constructor because SM tree may not be completely initialized by constructor in current implementation.
 		/// </summary>
-		public IStateMachine<TState> InitializeWithJson(string json)
-		{
-			return StateMachineSerializationHelper.InitializeWithDto(this, JsonConvert.DeserializeObject
-			                                                               	(json));
+		public IStateMachine<TState> InitializeWithJson(string json) {
+			return StateMachineSerializationHelper.InitializeWithDto(this,
+			                                                         JsonConvert.DeserializeObject
+			                                                         	(json));
 		}
 	}
 }

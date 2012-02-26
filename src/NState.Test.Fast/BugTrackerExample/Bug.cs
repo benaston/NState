@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.BugTrackerExample
 {
@@ -22,8 +22,7 @@ namespace NState.Test.Fast.BugTrackerExample
 	public class Bug : Stateful<Bug, BugState>
 	{
 		public Bug(string title, IStateMachine<BugState> stateMachine)
-			: base(stateMachine)
-		{
+			: base(stateMachine) {
 			Title = title;
 		}
 
@@ -33,31 +32,26 @@ namespace NState.Test.Fast.BugTrackerExample
 
 		public string ClosedByName { get; set; }
 
-		public Bug Open()
-		{
+		public Bug Open() {
 			return TriggerTransition(this, new BugState.Open());
 		}
 
-		public Bug Assign(string assigneeEmail)
-		{
+		public Bug Assign(string assigneeEmail) {
 			dynamic args = new ExpandoObject();
 			args.AssigneeEmail = assigneeEmail;
 
 			return TriggerTransition(this, new BugState.Assigned(), args);
 		}
 
-		public Bug Defer()
-		{
+		public Bug Defer() {
 			return TriggerTransition(this, new BugState.Deferred());
 		}
 
-		public Bug Resolve()
-		{
+		public Bug Resolve() {
 			return TriggerTransition(this, new BugState.Resolved());
 		}
 
-		public Bug Close(string closedByName)
-		{
+		public Bug Close(string closedByName) {
 			dynamic args = new ExpandoObject();
 			args.ClosedByName = closedByName;
 

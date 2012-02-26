@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState
 {
@@ -34,24 +34,20 @@ namespace NState
 		public static IStateMachine<TState> InitializeWithDto<TState>(
 			IStateMachine<TState> stateMachine,
 			dynamic dtoNode)
-			where TState : State
-		{
+			where TState : State {
 			Ensure.That<ArgumentException>(stateMachine.IsNotNull(), "stateMachine not supplied")
 				.And<ArgumentException>(dtoNode != null, "dtoNode notSupplied")
 				.And<ArgumentException>(stateMachine.Name == (string) dtoNode.Name,
 				                        "Mismatch between serialized object source and target in memory object.",
-				                        new[]
-				                        	{
-				                        		"Ensure you are hydrating a state machine of the same type used to create the serialized object source."
-				                        	});
+				                        new[] {
+				                        	"Ensure you are hydrating a state machine of the same type used to create the serialized object source."
+				                        });
 
 			stateMachine.CurrentState =
 				(TState) Activator.CreateInstance(Type.GetType((string) dtoNode.CurrentState.Name));
 
-			if (dtoNode.Children != null && ((JEnumerable<JToken>) dtoNode.Children).Any())
-			{
-				foreach (var c in dtoNode.Children)
-				{
+			if (dtoNode.Children != null && ((JEnumerable<JToken>) dtoNode.Children).Any()) {
+				foreach (dynamic c in dtoNode.Children) {
 					InitializeWithDto<TState>(stateMachine.Children[c.Name], c.Value);
 				}
 			}
@@ -63,19 +59,16 @@ namespace NState
 		/// 	Static because of recursive nature.
 		/// </summary>
 		public static dynamic SerializeToDto<TState>(IStateMachine<TState> node, ExpandoObject dto)
-			where TState : State
-		{
+			where TState : State {
 			Ensure.That<ArgumentException>(node.IsNotNull(), "node not supplied")
 				.And<ArgumentException>(dto.IsNotNull(), "dto notSupplied");
 
 			((dynamic) dto).Name = node.Name;
 			((dynamic) dto).CurrentState = node.CurrentState;
 
-			if (node.Children.Any())
-			{
+			if (node.Children.Any()) {
 				var children = new List<object>();
-				foreach (var c in node.Children)
-				{
+				foreach (var c in node.Children) {
 					children.Add(SerializeToDto(c.Value, new ExpandoObject()));
 				}
 

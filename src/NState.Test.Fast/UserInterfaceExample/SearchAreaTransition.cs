@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.UserInterfaceExample
 {
@@ -27,13 +27,11 @@ namespace NState.Test.Fast.UserInterfaceExample
 			public Hide(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override LucidState[] InitialStates
-			{
+			public override LucidState[] InitialStates {
 				get { return new[] {new SearchAreaState.Visible(),}; }
 			}
 
-			public override LucidState[] EndStates
-			{
+			public override LucidState[] EndStates {
 				get { return new[] {new SearchAreaState.Hidden(),}; }
 			}
 		}
@@ -44,13 +42,11 @@ namespace NState.Test.Fast.UserInterfaceExample
 			public Show(Action<LucidState, IStateMachine<LucidState>, dynamic> transitionAction = null)
 				: base(transitionAction) {}
 
-			public override LucidState[] InitialStates
-			{
+			public override LucidState[] InitialStates {
 				get { return new[] {new SearchAreaState.Hidden(),}; }
 			}
 
-			public override LucidState[] EndStates
-			{
+			public override LucidState[] EndStates {
 				get { return new[] {new SearchAreaState.Visible(),}; }
 			}
 		}

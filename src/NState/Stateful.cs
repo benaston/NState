@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState
 {
@@ -31,26 +31,24 @@ namespace NState
 		where TState : State
 	{
 		protected Stateful(
-			IStateMachine<TState> stateMachine)
-		{
+			IStateMachine<TState> stateMachine) {
 			StateMachine = stateMachine;
 		}
 
-		public TState ParentState
-		{
+		public TState ParentState {
 			get { return StateMachine.Parent.CurrentState; }
 		}
 
 		public IStateMachine<TState> StateMachine { get; set; }
 
-		public TState CurrentState
-		{
+		public TState CurrentState {
 			get { return StateMachine.CurrentState; }
 		}
 
-		public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject, TState targetState,
-		                                                          ExpandoObject dto = default(ExpandoObject))
-		{
+		public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject,
+		                                                          TState targetState,
+		                                                          ExpandoObject dto =
+		                                                          	default(ExpandoObject)) {
 			Ensure.That<ArgumentException>(statefulObject is ValueType ? true : statefulObject != null,
 			                               "statefulObject not supplied.")
 				.And<ArgumentException>(targetState != null, "targetState not supplied.");

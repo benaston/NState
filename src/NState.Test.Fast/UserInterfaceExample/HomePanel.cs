@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.UserInterfaceExample
 {
@@ -22,13 +22,11 @@ namespace NState.Test.Fast.UserInterfaceExample
 		public HomePanel(IStateMachine<LucidState> stateMachine)
 			: base(stateMachine) {}
 
-		public HomePanel Hide()
-		{
+		public HomePanel Hide() {
 			return TriggerTransition(this, new HomePanelState.Hidden());
 		}
 
-		public HomePanel Show()
-		{
+		public HomePanel Show() {
 			return TriggerTransition(this, new HomePanelState.Visible());
 		}
 	}

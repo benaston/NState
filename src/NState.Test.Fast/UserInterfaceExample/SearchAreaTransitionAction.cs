@@ -1,6 +1,6 @@
 ﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
 // 
-// This file is part of NFeature.
+// This file is part of NState.
 // 
 // NFeature is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -13,7 +13,7 @@
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NFeature.  If not, see <http://www.gnu.org/licenses/>.
+// along with NState.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.UserInterfaceExample
 {
@@ -22,8 +22,9 @@ namespace NState.Test.Fast.UserInterfaceExample
 		/// <summary>
 		/// 	//when showing the search panel, ensure the working panel is in the home position?
 		/// </summary>
-		public static void Show(LucidState state, IStateMachine<LucidState> stateMachine, dynamic args)
-		{
+		public static void Show(LucidState state,
+		                        IStateMachine<LucidState> stateMachine,
+		                        dynamic args) {
 			//       search panel search tab         home panel         root
 			stateMachine.Parent.Parent.Parent.Children["WorkingPanel"].TriggerTransition(
 				new WorkingPanelState.SearchMode());
