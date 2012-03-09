@@ -13,6 +13,24 @@ Features:
  - transition actions with arbitrary arguments
  - initial and final state specification
 
+Quick example of use:
+
+```C#
+
+	//state machine and transitions might be supplied by service locator in real-life
+	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());	
+	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
+	bug.Assign("example@example.com"); //triggers a transition of the state machine
+	
+	Assert.That(bug.CurrentState == new BugState.Assigned());
+	
+	var json = myStateMachine.SerializeToJsonDto();
+	var myDeserializedStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
+	myDeserializedStateMachine.InitializeWithJson(json);
+
+```
+
+
 How to use:
 --------
 
