@@ -3,17 +3,7 @@ NState
 
 Simple state machine for .NET. This software is NOT production ready.
 
-Features:
---------
-
- - easy construction of trees of interdependent or orthogonal state machines
- - supports making domain objects stateful
- - trivial state machine tree persistence and retrieval to/from JSON
- - transition conditions, exit and entry actions
- - transition actions with arbitrary arguments
- - initial and final state specification
-
-Quick example of use:
+Example of use:
 
 ```C#
 
@@ -29,6 +19,16 @@ Quick example of use:
 	myDeserializedStateMachine.InitializeWithJson(json);
 
 ```
+
+Features:
+--------
+
+ - easy construction of trees of interdependent or orthogonal state machines
+ - supports making domain objects stateful
+ - trivial state machine tree persistence and retrieval to/from JSON
+ - transition conditions, exit and entry actions
+ - transition actions with arbitrary arguments
+ - initial and final state specification
 
 
 How to use:
