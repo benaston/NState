@@ -10,9 +10,12 @@ Example of use:
 	//state machine and transitions might be supplied by service locator in real-life
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());	
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
+	
+	Assert.That(bug.CurrentState == new BugState.Open()); //true
+	
 	bug.Assign("example@example.com"); //triggers a transition of the state machine
 	
-	Assert.That(bug.CurrentState == new BugState.Assigned());
+	Assert.That(bug.CurrentState == new BugState.Assigned()); //true
 	
 	var json = myStateMachine.SerializeToJsonDto();
 	var myDeserializedStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
