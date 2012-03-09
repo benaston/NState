@@ -1,21 +1,19 @@
-﻿// Copyright 2011, Ben Aston (ben@bj.ma.)
+﻿// Copyright 2012, Ben Aston (ben@bj.ma).
 // 
 // This file is part of NState.
 // 
-// NFeature is free software: you can redistribute it and/or modify
+// NState is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// NFeature is distributed in the hope that it will be useful,
+// NState is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with NState.  If not, see <http://www.gnu.org/licenses/>.
-
-// ReSharper disable InconsistentNaming
+// along with NState. If not, see <http://www.gnu.org/licenses/>.
 
 namespace NState.Test.Fast.SerializationExample
 {
@@ -57,8 +55,6 @@ namespace NState.Test.Fast.SerializationExample
 	[TestFixture]
 	public class SerializationExampleTests
 	{
-		#region Setup/Teardown
-
 		[SetUp]
 		public void Setup() {
 			_stateMachineRoot = new StateMachine<LucidState>("Root",
@@ -75,8 +71,6 @@ namespace NState.Test.Fast.SerializationExample
 			                                              initialState: new SmState.Visible(),
 			                                              parentStateMachine: _stateMachineRoot);
 		}
-
-		#endregion
 
 		private StateMachine<LucidState> _stateMachine1;
 		private StateMachine<LucidState> _stateMachineRoot;
@@ -97,7 +91,7 @@ namespace NState.Test.Fast.SerializationExample
 			Assert.That(_stateMachine1.CurrentState == new SmState.Hidden());
 
 			//arrange
-			string json = _stateMachine1.SerializeToJsonDto();
+			string json = _stateMachine1.ToJson();
 
 			var sm2 = new StateMachine<LucidState>("SM1",
 			                                       _transitions,
@@ -106,7 +100,7 @@ namespace NState.Test.Fast.SerializationExample
 
 			Assert.That(sm2.CurrentState == new SmState.Visible());
 
-			sm2.InitializeWithJson(json);
+			sm2.InitializeFromJson(json);
 
 			Assert.That(sm2.CurrentState == new SmState.Hidden());
 		}
@@ -114,7 +108,7 @@ namespace NState.Test.Fast.SerializationExample
 		[Test]
 		public void SerializeTest() {
 			//arrange
-			Assert.DoesNotThrow(() => _stateMachineRoot.SerializeToJsonDto());
+			Assert.DoesNotThrow(() => _stateMachineRoot.ToJson());
 		}
 	}
 }
