@@ -1,7 +1,7 @@
 NState
 =====
 
-Simple state machine for .NET. This software is NOT production ready.
+Simple state machine for .NET.
 
 Example of use:
 
