@@ -7,14 +7,14 @@ Example of use:
 
 ```C#
 
-        //NOTE: state machine and transitions might be supplied by service locator in real-life
-        var transitions = new IStateTransition<BugState>[] {
-				new BugTransition.Open(),
-				new BugTransition.Assign(BugTransitionAction.Assign),
-				new BugTransition.Defer(BugTransitionAction.Defer),
-				new BugTransition.Resolve(BugTransitionAction.Resolve),
-				new BugTransition.Close(BugTransitionAction.Close),
-			  };
+	//NOTE: state machine and transitions might be supplied by service locator in real-life
+	var transitions = new IStateTransition<BugState>[] {
+		new BugTransition.Open(),
+		new BugTransition.Assign(BugTransitionAction.Assign),
+		new BugTransition.Defer(BugTransitionAction.Defer),
+		new BugTransition.Resolve(BugTransitionAction.Resolve),
+		new BugTransition.Close(BugTransitionAction.Close),
+	};
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());	
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
