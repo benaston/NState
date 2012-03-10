@@ -276,13 +276,13 @@ How to use:
 
 	//...
 	
-	var json = _myStateMachine.SerializeToJsonDto();
+	var json = _myStateMachine.ToJson();
 	//send json to Couch or somewhere...
 	
 	//later...
 	
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
-	myStateMachine.InitializeWithJson(json);
+	myStateMachine.InitializeFromJson(json);
 	
 	//continue where you left off...
 
