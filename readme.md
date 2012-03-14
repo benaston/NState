@@ -24,9 +24,9 @@ Example of use:
 	
 	Assert.That(bug.CurrentState == new BugState.Assigned()); //true
 	
-	var json = myStateMachine.SerializeToJsonDto();
+	var json = myStateMachine.ToJson();
 	var myDeserializedStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
-	myDeserializedStateMachine.InitializeWithJson(json);
+	myDeserializedStateMachine.InitializeFromJson(json);
 
 ```
 
