@@ -1,7 +1,7 @@
 NState
 =====
 
-![NState](bj.ma/nstate.png "NState")
+![NState](http://bj.ma/nstate.png "NState")
 
 Simple state machine for .NET.
 
