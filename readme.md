@@ -9,7 +9,6 @@ Example of use:
 
 ```C#
 
-	//NOTE: state machine and transitions might be supplied by service locator in real-life
 	var transitions = new IStateTransition<BugState>[] {
 		new BugTransition.Open(),
 		new BugTransition.Assign(BugTransitionAction.Assign),
