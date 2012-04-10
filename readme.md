@@ -1,8 +1,6 @@
 NState
 =====
 
-![NState](http://bj.ma/nstate.png "NState")
-
 A simple state machine for .NET.
 
 Example of use:
