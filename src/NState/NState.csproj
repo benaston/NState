@@ -48,17 +48,21 @@
     <Reference Include="MoreLinq">
       <HintPath>..\packages\morelinq.1.0\lib\net35\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="NBasicExtensionMethod">
-      <HintPath>..\packages\NBasicExtensionMethod.1.0.4292.32667\lib\net40\NBasicExtensionMethod.dll</HintPath>
+    <Reference Include="NBasicExtensionMethod, Version=1.0.4554.34582, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NBasicExtensionMethod.1.0.4554.34582\lib\net40\NBasicExtensionMethod.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NHelpfulException">
-      <HintPath>..\packages\NHelpfulException.1.0.4409.2007\lib\net40\NHelpfulException.dll</HintPath>
+    <Reference Include="NHelpfulException, Version=1.0.4554.34109, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NHelpfulException.1.0.4554.34109\lib\net40\NHelpfulException.dll</HintPath>
     </Reference>
-    <Reference Include="NSure">
-      <HintPath>..\packages\NSure.1.0.4409.2144\lib\net40\NSure.dll</HintPath>
+    <Reference Include="NSure, Version=1.0.4554.34428, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NSure.1.0.4554.34428\lib\net40\NSure.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
