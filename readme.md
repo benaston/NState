@@ -1,13 +1,19 @@
 NState
 =====
 
-Simple state machine for .NET.
+A simple state machine for .NET.
 
 Example of use:
 
 ```C#
 
-	//state machine and transitions might be supplied by service locator in real-life
+	var transitions = new IStateTransition<BugState>[] {
+		new BugTransition.Open(),
+		new BugTransition.Assign(BugTransitionAction.Assign),
+		new BugTransition.Defer(BugTransitionAction.Defer),
+		new BugTransition.Resolve(BugTransitionAction.Resolve),
+		new BugTransition.Close(BugTransitionAction.Close),
+	};
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());	
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
@@ -17,9 +23,9 @@ Example of use:
 	
 	Assert.That(bug.CurrentState == new BugState.Assigned()); //true
 	
-	var json = myStateMachine.SerializeToJsonDto();
+	var json = myStateMachine.ToJson();
 	var myDeserializedStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
-	myDeserializedStateMachine.InitializeWithJson(json);
+	myDeserializedStateMachine.InitializeFromJson(json);
 
 ```
 
@@ -269,21 +275,31 @@ How to use:
 
 	//...
 	
-	var json = _myStateMachine.SerializeToJsonDto();
+	var json = _myStateMachine.ToJson();
 	//send json to Couch or somewhere...
 	
 	//later...
 	
 	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
-	myStateMachine.InitializeWithJson(json);
+	myStateMachine.InitializeFromJson(json);
 	
 	//continue where you left off...
 
 ```
 
+How to build and/or run the tests:
+--------
+
+1. Run `/build/build.bat`
+1. Type in the desired option
+1. Hit return
 
 License & Copyright
 --------
 
-This software is released under the GNU Lesser GPL. It is Copyright 2011, Ben Aston. I may be contacted at ben@bj.ma.
+This software is released under the GNU Lesser GPL. It is Copyright 2012, Ben Aston. I may be contacted at ben@bj.ma.
 
+How to Contribute
+--------
+
+Pull requests including bug fixes, new features and improved test coverage are welcomed. Please do your best, where possible, to follow the style of code found in the existing codebase.
