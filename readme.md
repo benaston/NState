@@ -1,6 +1,9 @@
 NState
 =====
 
+*Please note: the instructions below are now out of date (but should still be of some use). Transition actions are now fully fledged types and there have been some type parameterization changes in the latest commit. I will update the documentation and example code when I find the time.*
+
+
 A simple state machine for .NET.
 
 Example of use:
