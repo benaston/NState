@@ -75,35 +75,6 @@
     <Compile Include="BugTrackerExample\BugTransition.cs" />
     <Compile Include="SerializationExample\SerializationExampleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserInterfaceExample\AccountTab.cs" />
-    <Compile Include="UserInterfaceExample\AccountTabState.cs" />
-    <Compile Include="UserInterfaceExample\AccountTabTransition.cs" />
-    <Compile Include="UserInterfaceExample\AccountTabTransitionAction.cs" />
-    <Compile Include="UserInterfaceExample\DetailPanelState.cs" />
-    <Compile Include="UserInterfaceExample\DetailsPanels.cs" />
-    <Compile Include="UserInterfaceExample\DetailsPanelsState.cs" />
-    <Compile Include="UserInterfaceExample\DetailsPanelsTransition.cs" />
-    <Compile Include="UserInterfaceExample\HomePanel.cs" />
-    <Compile Include="UserInterfaceExample\HomePanelState.cs" />
-    <Compile Include="UserInterfaceExample\HomePanelTransition.cs" />
-    <Compile Include="UserInterfaceExample\LucidExampleTests.cs" />
-    <Compile Include="UserInterfaceExample\LucidState.cs" />
-    <Compile Include="UserInterfaceExample\SavedSearchAreaState.cs" />
-    <Compile Include="UserInterfaceExample\SavedSearchItemAreaState.cs" />
-    <Compile Include="UserInterfaceExample\SearchArea.cs" />
-    <Compile Include="UserInterfaceExample\SearchAreaState.cs" />
-    <Compile Include="UserInterfaceExample\SearchAreaTransition.cs" />
-    <Compile Include="UserInterfaceExample\SearchAreaTransitionAction.cs" />
-    <Compile Include="UserInterfaceExample\SearchTab.cs" />
-    <Compile Include="UserInterfaceExample\SearchTabState.cs" />
-    <Compile Include="UserInterfaceExample\SearchTabTransition.cs" />
-    <Compile Include="UserInterfaceExample\SearchTabTransitionAction.cs" />
-    <Compile Include="UserInterfaceExample\UIRoot.cs" />
-    <Compile Include="UserInterfaceExample\UIRootState.cs" />
-    <Compile Include="UserInterfaceExample\WorkingPanel.cs" />
-    <Compile Include="UserInterfaceExample\WorkingPanelState.cs" />
-    <Compile Include="UserInterfaceExample\WorkingPanelTransition.cs" />
-    <Compile Include="UserInterfaceExample\WorkingPanelTransitionAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

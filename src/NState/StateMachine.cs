@@ -1,195 +1,205 @@
-﻿// Copyright 2012, Ben Aston (ben@bj.ma).
-// 
-// This file is part of NState.
-// 
-// NState is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// NState is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with NState. If not, see <http://www.gnu.org/licenses/>.
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Transactions;
+using NState.Exceptions;
+using Newtonsoft.Json;
 
 namespace NState
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Dynamic;
-	using System.Linq;
-	using System.Transactions;
-	using NBasicExtensionMethod;
-	using NSure;
-	using Newtonsoft.Json;
-	using ArgumentException = NHelpfulException.FrameworkExceptions.ArgumentException;
+    /// <summary>
+    /// Enables specification of valid state changes to be applied to object instances.
+    /// </summary>
+    public class StateMachine<TState, TTransitionStatus> : IStateMachine<TState, TTransitionStatus> where TState : State
+    {
+        private Dictionary<string, IStateMachine<TState, TTransitionStatus>> _children =
+            new Dictionary<string, IStateMachine<TState, TTransitionStatus>>();
 
-	/// <summary>
-	/// 	Enables specification of valid state changes to be applied to object instances.
-	/// </summary>
-	public class StateMachine<TState> :
-		IStateMachine<TState>
-		where TState : State
-	{
-		private Dictionary<string, IStateMachine<TState>> _children =
-			new Dictionary<string, IStateMachine<TState>>();
+        public StateMachine() { } //for deserialization
 
-		public StateMachine() {} //for deserialization
+        public StateMachine(string name,
+                            IEnumerable<IStateTransition<TState, TTransitionStatus>> stateTransitions,
+                            TState initialState,
+                            TState finalState = null,
+                            IStateMachine<TState, TTransitionStatus> parentStateMachine = null,
+                            bool permitSelfTransition = true,
+                            bool bypassTransitionBehaviorForSelfTransition = true) //if permitted
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
 
-		public StateMachine(string name,
-												IEnumerable<IStateTransition<TState>> stateTransitions,
-												TState initialState,
-												TState finalState = null,
-												IStateMachine<TState> parentStateMachine = null,
-												bool permitSelfTransition = true,
-												bool bypassTransitionBehaviorForSelfTransition = true) //if permitted
-		{
-			Ensure.That<ArgumentException>(name.IsNotNullOrWhiteSpace(), "name not supplied.")
-				.And<ArgumentException>(stateTransitions.IsNotNull(), "stateTransitions not supplied.")
-				.And<ArgumentException>(initialState.IsNotNull(), "initialState not supplied");
+            if (stateTransitions == null)
+            {
+                throw new ArgumentNullException("stateTransitions");
+            }
 
-			Name = name;
-			StateTransitions = stateTransitions;
-			InitialState = initialState;
-			FinalState = finalState;
-			Parent = parentStateMachine;
-			PermitSelfTransition = permitSelfTransition;
-			BypassTransitionBehaviorForSelfTransition = bypassTransitionBehaviorForSelfTransition;
-			if (parentStateMachine != null) {
-				Parent.Children.Add(Name, this);
-			}
-			CurrentState = initialState;
-		}
+            if (initialState == null)
+            {
+                throw new ArgumentNullException("initialState");
+            }
 
-		public TState FinalState { get; set; }
-		public bool PermitSelfTransition { get; set; }
+            Name = name;
+            StateTransitions = stateTransitions;
+            InitialState = initialState;
+            FinalState = finalState;
+            Parent = parentStateMachine;
+            PermitSelfTransition = permitSelfTransition;
+            BypassTransitionBehaviorForSelfTransition = bypassTransitionBehaviorForSelfTransition;
 
-		public bool BypassTransitionBehaviorForSelfTransition { get; set; }
+            if (parentStateMachine != null)
+            {
+                Parent.Children.Add(Name, this);
+            }
 
-		public string Name { get; set; }
+            CurrentState = initialState;
+        }
 
-		public IEnumerable<IStateTransition<TState>> StateTransitions { get; protected set; }
+        public TState FinalState { get; set; }
 
-		public TState InitialState { get; set; }
+        public bool PermitSelfTransition { get; set; }
 
-		public IStateMachine<TState> Parent { get; set; }
+        public bool BypassTransitionBehaviorForSelfTransition { get; set; }
 
-		public Dictionary<string, IStateMachine<TState>> Children {
-			get { return _children; }
-			set { _children = value; }
-		}
+        public string Name { get; set; }
 
-		public TState CurrentState { get; set; }
+        public IEnumerable<IStateTransition<TState, TTransitionStatus>> StateTransitions { get; protected set; }
 
-		public Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
+        public TState InitialState { get; set; }
 
-		/// <summary>
-		/// 	NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx
-		/// </summary>
-		public void TriggerTransition(TState targetState,
-																	dynamic args = default(dynamic)) {
-			Ensure.That<ArgumentException>(targetState != null, "targetState not supplied.");
+        public IStateMachine<TState, TTransitionStatus> Parent { get; set; }
 
-			try {
-				if (CurrentState == targetState && !PermitSelfTransition) {
-					throw new Exception(); //refactor to refine exception
-				}
+        public Dictionary<string, IStateMachine<TState, TTransitionStatus>> Children
+        {
+            get { return _children; }
+            set { _children = value; }
+        }
 
-				if (CurrentState == FinalState) {
-					throw new Exception(); //refactor to refine exception
-				}
+        public TState CurrentState { get; set; }
 
-				if ((CurrentState != targetState ||
-				     (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition))) {
-					IEnumerable<IStateTransition<TState>> matches = StateTransitions.Where(t =>
-																																								 t.InitialStates.
-																																								 Where(
-																																								 	s =>
-																																								 	s == CurrentState)
-																																								 .Any() &&
-																																								 t.EndStates.Where(
-																																								 e =>
-																																								 e == targetState).
-																																								 Any());
-					if (matches.Any()) {
-						using (var t = new TransactionScope()) //this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1)
-						{
-							OnRaiseBeforeEveryTransition();
-							CurrentState.ExitAction(args);
-							matches.First().TransitionAction(targetState, this, args);
-							targetState.EntryAction(args);
-							CurrentState = targetState;
-							OnRaiseAfterEveryTransition();
-							t.Complete();
-						}
-					} else {
-						if (Parent == null) {
-							throw new Exception(); //to be caught below, refactor
-						}
+        public Dictionary<DateTime, IStateTransition<TState, TTransitionStatus>> History { get; set; }
 
-						Parent.TriggerTransition(targetState, args);
-					}
-				}
-			} catch (Exception e) {
-				throw new InvalidStateTransitionException<TState>(CurrentState,
-																													targetState,
-																													innerException: e);
-			}
-		}
+        /// <summary>
+        /// NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx.
+        /// NOTE 2: this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1).
+        /// </summary>
+        public virtual TTransitionStatus TriggerTransition(TState targetState,
+                                              dynamic statefulObject,
+                                              dynamic args = default(dynamic))
+        {
+            var result = default(TTransitionStatus);
+            if (targetState == null)
+            {
+                throw new ArgumentNullException("targetState");
+            }
+            
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
 
-		public event EventHandler RaiseBeforeEveryTransitionEvent;
+            if (CurrentState == targetState && !PermitSelfTransition)
+            {
+                throw new SelfTransitionException();
+            }
 
-		public event EventHandler RaiseAfterEveryTransitionEvent;
+            if (CurrentState == FinalState)
+            {
+                throw new FinalStateTransitionException();
+            }
 
-		// Wrap event invocations inside a protected virtual method
-		// to allow derived classes to override the event invocation behavior
-		protected virtual void OnRaiseBeforeEveryTransition() {
-			// Make a temporary copy of the event to avoid possibility of
-			// a race condition if the last subscriber unsubscribes
-			// immediately after the null check and before the event is raised.
-			EventHandler handler = RaiseBeforeEveryTransitionEvent;
+            if ((CurrentState != targetState ||
+                (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
+            {
+                var matches = StateTransitions.Where(t => t.InitialStates.Any(s => s == CurrentState) &&
+                                                            t.EndStates.Any(e => e == targetState)).ToList();
+                var match = matches.Count > 0 ? matches[0] : null;
+                if (match != null && match.Condition(targetState, statefulObject, args))
+                {
+                    using (var t = new TransactionScope()) //see note 2
+                    {
+                        OnRaiseBeforeEveryTransition();
+                        CurrentState.ExitAction(args);
+                        result = match.TransitionAction.Run(targetState, this, statefulObject, args);
+                        targetState.EntryAction(args);
+                        CurrentState = targetState;
+                        OnRaiseAfterEveryTransition();
+                        t.Complete();
+                    }
+                }
+                else
+                {
+                    if (Parent == null)
+                    {
+                        throw new InvalidStateTransitionException<TState>(CurrentState,
+                                                                targetState);
+                    }
 
-			// Event will be null if there are no subscribers
-			if (handler != null) {
-				// Format the string to send inside the CustomEventArgs parameter
-				//e.Message += String.Format(" at {0}", DateTime.Now.ToString());
+                    Parent.TriggerTransition(targetState, args);
+                }
+            }
 
-				// Use the () operator to raise the event.
-				handler(this, new EventArgs());
-			}
-		}
+            return result;
+        }
 
-		protected virtual void OnRaiseAfterEveryTransition() {
-			EventHandler handler = RaiseAfterEveryTransitionEvent;
+        public event EventHandler RaiseBeforeEveryTransitionEvent;
 
-			if (handler != null) // Event will be null if there are no subscribers
-			{
-				handler(this, new EventArgs());
-			}
-		}
+        public event EventHandler RaiseAfterEveryTransitionEvent;
 
-		public string ToJson() {
-			dynamic dto = StateMachineSerializationHelper.SerializeToDto(this, new ExpandoObject());
-			dynamic s = JsonConvert.SerializeObject(dto,
-																							Formatting.Indented,
-																							new JsonSerializerSettings {
-																								ObjectCreationHandling =
-																								ObjectCreationHandling.Replace
-																							});
+        // Wrap event invocations inside a protected virtual method
+        // to allow derived classes to override the event invocation behavior
+        protected virtual void OnRaiseBeforeEveryTransition()
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler handler = RaiseBeforeEveryTransitionEvent;
 
-			return s;
-		}
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Format the string to send inside the CustomEventArgs parameter
+                //e.Message += String.Format(" at {0}", DateTime.Now.ToString());
 
-		/// <summary>
-		/// 	Not in constructor because SM tree may not be completely initialized by constructor in current implementation.
-		/// </summary>
-		public IStateMachine<TState> InitializeFromJson(string json) {
-			return StateMachineSerializationHelper.InitializeWithDto(this,
-																															 JsonConvert.DeserializeObject
-																															 (json));
-		}
-	}
+                // Use the () operator to raise the event.
+                handler(this, new EventArgs());
+            }
+        }
+
+        protected virtual void OnRaiseAfterEveryTransition()
+        {
+            EventHandler handler = RaiseAfterEveryTransitionEvent;
+
+            if (handler != null) // Event will be null if there are no subscribers
+            {
+                handler(this, new EventArgs());
+            }
+        }
+
+        public string ToJson()
+        {
+            dynamic dto = StateMachineSerializationHelper.SerializeToDto(this, new ExpandoObject());
+            dynamic s = JsonConvert.SerializeObject(dto,
+                                                    Formatting.Indented,
+                                                    new JsonSerializerSettings
+                                                    {
+                                                        ObjectCreationHandling =
+                                                            ObjectCreationHandling.Replace
+                                                    });
+
+            return s;
+        }
+
+        /// <summary>
+        /// Not in constructor because SM tree may not be completely initialized by constructor in current implementation.
+        /// </summary>
+        public IStateMachine<TState, TTransitionStatus> InitializeFromJson(string json)
+        {
+            return StateMachineSerializationHelper.InitializeWithDto(this,
+                                                                     JsonConvert.DeserializeObject
+                                                                         (json));
+        }
+    }
 }

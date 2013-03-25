@@ -1,41 +1,24 @@
-﻿// Copyright 2012, Ben Aston (ben@bj.ma).
-// 
-// This file is part of NState.
-// 
-// NState is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// NState is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with NState. If not, see <http://www.gnu.org/licenses/>.
+﻿using System;
 
 namespace NState
 {
-	using System;
+    public abstract class StateTransition<TState, TTransitionStatus> :
+        IStateTransition<TState, TTransitionStatus>
+        where TState : State
+    {
+        protected StateTransition(Func<TState, dynamic, dynamic, bool> condition = null,
+                                  TransitionAction<TState, TTransitionStatus> transitionAction = null)
+        {
+            Condition = condition ?? ((s, statefulObject, dto) => true);
+            TransitionAction = transitionAction ?? new NullTransitionAction<TState, TTransitionStatus>();
+        }
 
-	public abstract class StateTransition<TState> :
-		IStateTransition<TState>
-		where TState : State
-	{
-		protected StateTransition(
-			Action<TState, IStateMachine<TState>, dynamic> transitionAction = null,
-			Func<TState, dynamic, bool> condition = null) {
-			Condition = condition ?? ((s, args) => true);
-			TransitionAction = transitionAction ?? ((s, sm, args) => { });
-		}
+        public abstract TState[] InitialStates { get; }
 
-		public Func<TState, dynamic, bool> Condition { get; private set; }
+        public abstract TState[] EndStates { get; }
 
-		public Action<TState, IStateMachine<TState>, dynamic> TransitionAction { get; private set; }
+        public TransitionAction<TState, TTransitionStatus> TransitionAction { get; private set; }
 
-		public abstract TState[] InitialStates { get; }
-
-		public abstract TState[] EndStates { get; }
-	}
+        public Func<TState, dynamic, dynamic, bool> Condition { get; private set; }
+    }
 }

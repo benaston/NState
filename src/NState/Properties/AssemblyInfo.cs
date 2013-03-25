@@ -1,4 +1,4 @@
-﻿// Copyright 2012, Ben Aston (ben@bj.ma).
+﻿// Copyright 2013, Ben Aston (ben@bj.ma).
 // 
 // This file is part of NState.
 // 
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("09b7aff0-16aa-480c-ab07-e4397aab5912")]
-[assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("2.0.*")]

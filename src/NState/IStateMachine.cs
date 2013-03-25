@@ -1,50 +1,33 @@
-﻿// Copyright 2012, Ben Aston (ben@bj.ma).
-// 
-// This file is part of NState.
-// 
-// NState is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// NState is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with NState. If not, see <http://www.gnu.org/licenses/>.
+﻿using System;
+using System.Collections.Generic;
 
 namespace NState
 {
-	using System;
-	using System.Collections.Generic;
+    public interface IStateMachine {}
 
-	public interface IStateMachine {}
+    /// <summary>
+    /// Responsible for defining the interface for types 
+    /// that control the transitions between state machine states.
+    /// </summary>
+    public interface IStateMachine<TState, TTransitionStatus> : IStateMachine where TState : State
+    {
+        string Name { get; set; }
 
-	/// <summary>
-	/// 	Responsible for defining the interface for types that control the transitions between state machine states.
-	/// </summary>
-	public interface IStateMachine<TState> : IStateMachine
-		where TState : State
-	{
-		string Name { get; set; }
+        IEnumerable<IStateTransition<TState, TTransitionStatus>> StateTransitions { get; }
 
-		IEnumerable<IStateTransition<TState>> StateTransitions { get; }
+        TState InitialState { get; set; }
 
-		TState InitialState { get; set; }
+        IStateMachine<TState, TTransitionStatus> Parent { get; set; }
 
-		IStateMachine<TState> Parent { get; set; }
+        /// <summary>
+        /// Key is SM name.
+        /// </summary>
+        Dictionary<string, IStateMachine<TState, TTransitionStatus>> Children { get; set; }
 
-		/// <summary>
-		/// 	Key is SM name.
-		/// </summary>
-		Dictionary<string, IStateMachine<TState>> Children { get; set; }
+        TState CurrentState { get; set; }
 
-		TState CurrentState { get; set; }
+        Dictionary<DateTime, IStateTransition<TState, TTransitionStatus>> History { get; set; }
 
-		Dictionary<DateTime, IStateTransition<TState>> History { get; set; }
-
-		void TriggerTransition(TState targetState, dynamic dto = default(dynamic));
-	}
+        TTransitionStatus TriggerTransition(TState targetState, dynamic statefulObject, dynamic dto = default(dynamic));
+    }
 }
