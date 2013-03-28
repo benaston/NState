@@ -1,9 +1,6 @@
 NState
 =====
 
-*Please note: the instructions below are now out of date (but should still be of some use). Transition actions are now fully fledged types and there have been some type parameterization changes in the latest commit. I will update the documentation and example code when I find the time.*
-
-
 A simple state machine for .NET.
 
 Example of use:
@@ -23,7 +20,7 @@ Example of use:
                                                                              initialState: new BugState.Open());
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
-	Assert.That(bug.CurrentState == new BugState.Open()); //true
+	Assert.That(myDeserializedStateMachine.CurrentState, Is.TypeOf<BugState.Open>()); //true	
 	
 	bug.Assign("example@example.com", out transitionStatus); //triggers a transition of the state machine
 	
@@ -97,35 +94,35 @@ How to use:
 		
 		public string ClosedByName { get; set; }
 		
-		public Bug Open()
+		public Bug Open(out BugTransitionStatus transitionStatus)
 		{
-			return TriggerTransition(this, new BugState.Open());
+			return TriggerTransition(this, new BugState.Open(), out transitionStatus);
 		}
         
-		public Bug Assign(string assigneeEmail)
+		public Bug Assign(string assigneeEmail, out BugTransitionStatus transitionStatus)
+		{
+			dynamic dto = new ExpandoObject();
+            		dto.AssigneeEmail = assigneeEmail;
+
+            		return TriggerTransition(this, new BugState.Assigned(), out transitionStatus, dto);
+		}
+		
+		public void Defer(out BugTransitionStatus transitionStatus)
+		{
+			return TriggerTransition(this, new BugState.Deferred(), out transitionStatus);
+		}
+		
+		public void Resolve(out BugTransitionStatus transitionStatus)
+		{
+			return TriggerTransition(this, new BugState.Resolved(), out transitionStatus);
+		}
+		
+		public Bug Close(string closedByName, out BugTransitionStatus transitionStatus)
 		{
 			dynamic args = new ExpandoObject();
-			args.AssigneeEmail = assigneeEmail;
-			
-			return TriggerTransition(this, new BugState.Assigned(), args);
-		}
-		
-		public void Defer()
-		{
-			TriggerTransition(this, new BugState.Deferred());
-		}
-		
-		public void Resolve()
-		{
-			TriggerTransition(this, new BugState.Resolved());
-		}
-		
-		public Bug Close(string closedByName)
-		{
-			dynamic args = new ExpandoObject();
-			args.ClosedByName = closedByName;
-		
-			return TriggerTransition(this, new BugState.Closed(), args);
+            		args.ClosedByName = closedByName;
+
+            		return TriggerTransition(this, new BugState.Closed(), out transitionStatus, args);
 		}
 	}
 
@@ -135,83 +132,31 @@ How to use:
 
 ```C#
 
-	public class BugTransition
+	public partial class BugTransition
 	{
-		public class Assign : StateTransition<Bug, BugState>
+		public class Resolve : StateTransition<BugState, BugTransitionStatus>
 		{
-			public Assign(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
-			
-			public override BugState[] InitialStates
-			{
-				get { return new BugState[] {new BugState.Open(), new BugState.Assigned(), }; }
-			}
-			
-			public override BugState[] EndStates
-			{
-				get { return new[] {new BugState.Assigned(), }; }
-			}
+		    public Resolve(BugTransitionAction.Resolve transitionAction)
+		        : base(transitionAction: transitionAction) { }
+		
+		    public override BugState[] StartStates
+		    {
+		        get { return new[] { new BugState.Assigned(), }; }
+		    }
+		
+		    public override BugState[] EndStates
+		    {
+		        get { return new[] { new BugState.Resolved(), }; }
+		    }
 		}
 		
-		public class Close : StateTransition<Bug, BugState>
+		public class Assign : StateTransition<BugState, BugTransitionStatus>
 		{
-			public Close(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
-			
-			public override BugState[] InitialStates
-			{
-				get { return new BugState[] { new BugState.Resolved() }; }
-			}
-			
-			public override BugState[] EndStates
-			{
-				get { return new[] { new BugState.Closed(), }; }
-			}
-		}
-			
-		public class Defer : StateTransition<Bug, BugState>
-		{
-			public Defer(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
-			
-			public override BugState[] InitialStates
-			{
-				get { return new BugState[] { new BugState.Open(), new BugState.Assigned() }; }
-			}
-			
-			public override BugState[] EndStates
-			{
-				get { return new[] { new BugState.Deferred(), }; }
-			}
+			//...
 		}
 		
-		public class Open : StateTransition<Bug, BugState>
-		{
-			public Open(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
-			
-			public override BugState[] InitialStates
-			{
-				get { return new[] {new BugState.Closed(), }; }
-			}
-			
-			public override BugState[] EndStates
-			{
-				get { return new[] {new BugState.Open(), }; }
-			}
-		}
-		
-		public class Resolve : StateTransition<Bug, BugState>
-		{
-			public Resolve(Action<BugState, IStateMachine<BugState>, dynamic> transitionAction = null) : base(transitionAction) { }
-			
-			public override MyAppState[] InitialStates
-			{
-				get { return new[] { new BugState.Assigned(), }; }
-			}
-			
-			public override MyAppState[] EndStates
-			{
-				get { return new[] { new BugState.Resolved(), }; }			
-			}
-		}
-	}
+		//etc.
+	}	
 
 ```
 
@@ -219,27 +164,31 @@ How to use:
 
 ```C#
 
-	public class BugTransitionAction
+	public partial class BugTransitionAction
 	{
-		public static void Assign(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
+		public class Assign : TransitionAction<BugState, BugTransitionStatus>
 		{
-			args.StatefulObject.AssigneeEmail = args.AssigneeEmail;
+		    public override BugTransitionStatus Run(BugState targetState,
+		                                            IStateMachine<BugState, BugTransitionStatus> stateMachine,
+		                                            dynamic statefulObject, dynamic dto = null)
+		    {
+		        if (dto == null)
+		        {
+		            throw new ArgumentNullException("dto");
+		        }
+		
+		        if (dto.AssigneeEmail == null)
+		        {
+		            throw new Exception("AssigneeEmail not supplied.");
+		        }
+		
+		        statefulObject.Bug.AssigneeEmail = dto.AssigneeEmail;
+		
+		        return BugTransitionStatus.Success;
+		    }
 		}
 		
-		public static void Defer(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
-		{
-			args.StatefulObject.AssigneeEmail = String.Empty;
-		}
-		
-		public static void Resolve(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
-		{
-			args.StatefulObject.AssigneeEmail = String.Empty;
-		}
-		
-		public static void Close(BugState state, IStateMachine<BugState> stateMachine, dynamic args)
-		{
-			args.StatefulObject.ClosedByName = args.ClosedByName;
-		}
+		//etc.
 	}
 
 ```
@@ -251,16 +200,18 @@ How to use:
 
 	//...
 	
-	var transitions = new IStateTransition<BugState>[]
+	var transitions = new IStateTransition<BugState, BugTransitionStatus>[]
 				{
 					new BugTransition.Open(),
-					new BugTransition.Assign(BugTransitionAction.Assign),
-					new BugTransition.Defer(BugTransitionAction.Defer),
-					new BugTransition.Resolve(BugTransitionAction.Resolve),
-					new BugTransition.Close(BugTransitionAction.Close),
+					new BugTransition.Assign(new BugTransitionAction.Assign()),
+					new BugTransition.Defer(new BugTransitionAction.Defer()),
+					new BugTransition.Resolve(new BugTransitionAction.Resolve()),
+					new BugTransition.Close(new BugTransitionAction.Close()),
 				};	
 	
-	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
+	var myStateMachine = new StateMachine<BugState, BugTransitionStatus>("Bug",
+                                                                            transitions,
+                                                                            initialState: new BugState.Open());
 	
 	//...
 
@@ -275,7 +226,9 @@ How to use:
 	var bug = new Bug("my bug name", _stateMachine);	
 	bug.Assign("example@example.com");
 	
-	Assert.That(bug.CurrentState == new BugState.Assigned());
+	Assert.That(bug.CurrentState, Is.TypeOf(BugState.Assigned)); //true
+	Assert.That(transitionStatus, Is.EqualTo(BugTransitionStatus.Success)); //true
+	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
 
 ```
 
@@ -291,7 +244,9 @@ How to use:
 	
 	//later...
 	
-	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
+	var myStateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
+                                                                            _transitions,
+                                                                            initialState: new BugState.Open());
 	myStateMachine.InitializeFromJson(json);
 	
 	//continue where you left off...
