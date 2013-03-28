@@ -9,7 +9,7 @@ namespace NState
     public class StateMachineSerializationHelper
     {
         /// <summary>
-        /// State machine to be hydrated must match the serialized DTO. Static because of recursive nature.
+        /// State machine to be hydrated must match the serialized DTO.
         /// </summary>
         public static IStateMachine<TState, TTransitionStatus> InitializeWithDto<TState, TTransitionStatus>(
             IStateMachine<TState, TTransitionStatus> stateMachine,
@@ -45,9 +45,6 @@ namespace NState
             return stateMachine;
         }
 
-        /// <summary>
-        /// Static because of recursive nature.
-        /// </summary>
         public static dynamic SerializeToDto<TState, TTransitionStatus>(IStateMachine<TState, TTransitionStatus> node, ExpandoObject dto)
             where TState : State
         {

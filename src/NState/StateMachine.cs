@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Transactions;
 using NState.Exceptions;
 using Newtonsoft.Json;
 
@@ -112,19 +111,8 @@ namespace NState
             if ((CurrentState != targetState ||
                 (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
             {
-                Func<object, object, bool> equalityExpression;
-
-                if (typeof(TState).IsValueType)
-                {
-                    equalityExpression = (o1, o2) => o1 == o2;
-                }
-                else
-                {
-                    equalityExpression = (o1, o2) => o1.GetType() == o2.GetType();
-                }
-
-                var matches = StateTransitions.Where(t => t.StartStates.Any(s => equalityExpression(s, CurrentState)) &&
-                                                            t.EndStates.Any(e => equalityExpression(e, targetState))).ToList();
+                var matches = StateTransitions.Where(t => t.StartStates.Any(s => s == CurrentState) &&
+                                                            t.EndStates.Any(e => e == targetState)).ToList();
                 var match = matches.Count > 0 ? matches[0] : null;
                 if (match != null && match.Condition(targetState, statefulObject, args))
                 {
