@@ -16,8 +16,8 @@ Example of use:
 				             new BugTransition.Close(new BugTransitionAction.Close()),
 				         };
 	var myStateMachine = new StateMachine<BugState, TransitionStatus>("Bug",
-                                                                         bugTransitions,
-                                                                         initialState: new BugState.Open());
+                                                                       bugTransitions,
+                                                                       initialState: new BugState.Open());
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Open>()); //true	
