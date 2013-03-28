@@ -1,8 +1,5 @@
 ﻿namespace NState.Test.Fast.BugTrackerExample
 {
-    using System;
-
-    [Serializable]
     public abstract class BugState : State
     {
         public class Assigned : BugState {}

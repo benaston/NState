@@ -1,12 +1,10 @@
-using System;
 using NState.Test.Fast.BugTrackerExample.TransitionActions;
 
 namespace NState.Test.Fast.BugTrackerExample.Transitions
 {
     public partial class BugTransition
     {
-        [Serializable]
-        public class Resolve : StateTransition<BugState, BugTransitionStatus>
+        public class Resolve : StateTransition<BugState, TransitionStatus>
         {
             public Resolve(BugTransitionAction.Resolve transitionAction)
                 : base(transitionAction: transitionAction) { }

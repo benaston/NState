@@ -14,7 +14,7 @@ namespace NState.Test.Fast.BugTrackerExample
         [SetUp]
         public void Setup()
         {
-            var bugTransitions = new IStateTransition<BugState, BugTransitionStatus>[]
+            var transitions = new IStateTransition<BugState, TransitionStatus>[]
             {
                 new BugTransition.Open(),
                 new BugTransition.Assign(new BugTransitionAction.Assign()),
@@ -23,13 +23,13 @@ namespace NState.Test.Fast.BugTrackerExample
                 new BugTransition.Close(new BugTransitionAction.Close()),
             };
 
-            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("Bug",
-                                                                            bugTransitions,
+            _stateMachine = new StateMachine<BugState, TransitionStatus>("Bug",
+                                                                            transitions,
                                                                             initialState: new BugState.Open());
             _bug = new Bug("bug1");
         }
 
-        private StateMachine<BugState, BugTransitionStatus> _stateMachine;
+        private StateMachine<BugState, TransitionStatus> _stateMachine;
         private Bug _bug;
 
 
@@ -38,14 +38,14 @@ namespace NState.Test.Fast.BugTrackerExample
         {
             //arrange
             var bug = new BugStateful(_bug, _stateMachine);
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
 
             //act
             bug.Assign("assignee", out transitionStatus);
 
             //assert
             Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>());
-            Assert.That(transitionStatus, Is.EqualTo(BugTransitionStatus.Success));
+            Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace NState.Test.Fast.BugTrackerExample
         {
             //arrange
             var bug = new BugStateful(_bug, _stateMachine);
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
 
             //act & assert
             Assert.Throws<InvalidStateTransitionException<BugState>>(() => bug.Resolve(out transitionStatus));
@@ -64,7 +64,7 @@ namespace NState.Test.Fast.BugTrackerExample
         {
             //arrange
             var bug = new BugStateful(_bug, _stateMachine);
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
 
             //act
             bug.Assign("example@example.com", out transitionStatus)
@@ -72,7 +72,7 @@ namespace NState.Test.Fast.BugTrackerExample
 
             //assert
             Assert.That(bug.CurrentState, Is.TypeOf<BugState.Deferred>());
-            Assert.That(transitionStatus, Is.EqualTo(BugTransitionStatus.Success));
+            Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace NState.Test.Fast.BugTrackerExample
             var bug = new BugStateful(_bug, _stateMachine);
             dynamic args = new ExpandoObject();
             args.Blah = "blah";
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
 
             //act/assert
             Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Deferred(), out transitionStatus, args));
@@ -94,7 +94,7 @@ namespace NState.Test.Fast.BugTrackerExample
             //arrange
             var bug = new BugStateful(_bug, _stateMachine);
             const string assigneeEmail = "example@example.com";
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
 
             //act
             bug.Assign(assigneeEmail, out transitionStatus);
@@ -112,7 +112,7 @@ namespace NState.Test.Fast.BugTrackerExample
             args.AssigneeEmail = "example@example.com";
 
             //act/assert
-            BugTransitionStatus transitionStatus;
+            TransitionStatus transitionStatus;
             Assert.DoesNotThrow(() => bug.TriggerTransition(bug, new BugState.Assigned(), out transitionStatus, args));
         }
     }

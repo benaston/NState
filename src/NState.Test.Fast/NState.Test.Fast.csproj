@@ -64,7 +64,6 @@
     <Compile Include="BugTrackerExample\BugState.cs" />
     <Compile Include="BugTrackerExample\BugStateful.cs" />
     <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
-    <Compile Include="BugTrackerExample\BugTransitionStatus.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Assign.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Close.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Defer.cs" />

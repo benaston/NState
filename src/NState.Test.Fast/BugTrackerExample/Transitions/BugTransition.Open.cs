@@ -1,11 +1,8 @@
-using System;
-
 namespace NState.Test.Fast.BugTrackerExample.Transitions
 {
     public partial class BugTransition
     {
-        [Serializable]
-        public class Open : StateTransition<BugState, BugTransitionStatus>
+        public class Open : StateTransition<BugState, TransitionStatus>
         {
             public override BugState[] StartStates
             {

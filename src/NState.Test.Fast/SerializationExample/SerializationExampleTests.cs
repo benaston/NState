@@ -10,18 +10,18 @@ namespace NState.Test.Fast.SerializationExample
     [TestFixture]
     public class SerializationExampleTests
     {
-        private StateMachine<BugState, BugTransitionStatus> _stateMachine;
-        private IStateTransition<BugState, BugTransitionStatus>[] _transitions;
+        private StateMachine<BugState, TransitionStatus> _stateMachine;
+        private IStateTransition<BugState, TransitionStatus>[] _transitions;
 
         [SetUp]
         public void Setup()
         {
-            _transitions = new IStateTransition<BugState, BugTransitionStatus>[]
+            _transitions = new IStateTransition<BugState, TransitionStatus>[]
             {
                 new BugTransition.Assign(new BugTransitionAction.Assign()),
             };
 
-            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
+            _stateMachine = new StateMachine<BugState, TransitionStatus>("example",
                                                                             _transitions,
                                                                             initialState: new BugState.Open());
         }
@@ -39,7 +39,7 @@ namespace NState.Test.Fast.SerializationExample
             //arrange
             string json = _stateMachine.ToJson();
 
-            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
+            _stateMachine = new StateMachine<BugState, TransitionStatus>("example",
                                                                             _transitions,
                                                                             initialState: new BugState.Open());
 
@@ -47,7 +47,7 @@ namespace NState.Test.Fast.SerializationExample
 
             _stateMachine.InitializeFromJson(json);
 
-            Assert.That(_stateMachine.CurrentState == new BugState.Assigned());
+            Assert.That(_stateMachine.CurrentState, Is.TypeOf<BugState.Assigned>());
         }
 
         [Test]

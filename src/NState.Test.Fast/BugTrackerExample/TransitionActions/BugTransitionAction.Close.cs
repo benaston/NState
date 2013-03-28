@@ -4,10 +4,10 @@ namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 {
     public partial class BugTransitionAction
     {
-        public class Close : TransitionAction<BugState, BugTransitionStatus>
+        public class Close : TransitionAction<BugState, TransitionStatus>
         {
-            public override BugTransitionStatus Run(BugState targetState,
-                                                    IStateMachine<BugState, BugTransitionStatus> stateMachine,
+            public override TransitionStatus Run(BugState targetState,
+                                                    IStateMachine<BugState, TransitionStatus> stateMachine,
                                                     dynamic statefulObject, dynamic dto = null)
             {
                 if (dto == null)
@@ -22,7 +22,7 @@ namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 
                 statefulObject.StatefulObject.Bug.ClosedByName = dto.ClosedByName;
 
-                return BugTransitionStatus.Success;
+                return TransitionStatus.Success;
             }
         }
     }
