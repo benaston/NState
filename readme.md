@@ -7,6 +7,7 @@ Example of use:
 
 ```C#
 
+	//arrange
 	var bugTransitions = new IStateTransition<BugState, TransitionStatus>[]
 				         {
 				             new BugTransition.Open(),
@@ -15,24 +16,32 @@ Example of use:
 				             new BugTransition.Resolve(new BugTransitionAction.Resolve()),
 				             new BugTransition.Close(new BugTransitionAction.Close()),
 				         };
-	var myStateMachine = new StateMachine<BugState, TransitionStatus>("Bug",
-                                                                       bugTransitions,
-                                                                       initialState: new BugState.Open());
+	var myStateMachine = new StateMachine<BugState, TransitionStatus>("example",
+                                                                      bugTransitions,
+                                                                      initialState: new BugState.Open());
+	
+	//act
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Open>()); //true	
 	
+	//act
 	bug.Assign("example@example.com", out transitionStatus); //triggers a transition of the state machine
 	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
 	Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success)); //true
+	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
 	
+	//act
 	var json = myStateMachine.ToJson();
 	var myDeserializedStateMachine = new StateMachine<BugState, TransitionStatus>("example",
                                                                                          _transitions,
                                                                                          initialState: new BugState.Open());
 	myDeserializedStateMachine.InitializeFromJson(json);
 	
+	//assert
 	Assert.That(myDeserializedStateMachine.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
 
 ```
@@ -82,11 +91,10 @@ How to use:
 
 	public class Bug : Stateful<Bug, BugState>
 	{
-		public Bug(string title, IStateMachine<BugState> stateMachine)
-		: base(stateMachine)
-		{
-			Title = title;
-		}
+		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
+										 		{
+													Title = title;
+										 		}
 		
 		public string Title { get; set; }
 		
@@ -102,9 +110,9 @@ How to use:
 		public Bug Assign(string assigneeEmail, out TransitionStatus transitionStatus)
 		{
 			dynamic dto = new ExpandoObject();
-            		dto.AssigneeEmail = assigneeEmail;
+			dto.AssigneeEmail = assigneeEmail;
 
-            		return TriggerTransition(this, new BugState.Assigned(), out transitionStatus, dto);
+			return TriggerTransition(this, new BugState.Assigned(), out transitionStatus, dto);
 		}
 		
 		public void Defer(out TransitionStatus transitionStatus)
@@ -119,10 +127,10 @@ How to use:
 		
 		public Bug Close(string closedByName, out TransitionStatus transitionStatus)
 		{
-			dynamic args = new ExpandoObject();
-            		args.ClosedByName = closedByName;
+			dynamic dto = new ExpandoObject();
+			dto.ClosedByName = closedByName;
 
-            		return TriggerTransition(this, new BugState.Closed(), out transitionStatus, args);
+			return TriggerTransition(this, new BugState.Closed(), out transitionStatus, dto);
 		}
 	}
 
@@ -209,8 +217,9 @@ How to use:
 					new BugTransition.Close(new BugTransitionAction.Close()),
 				};	
 	
-                                                                            transitions,
-                                                                            initialState: new BugState.Open());
+	_stateMachine = new StateMachine<BugState, TransitionStatus>("example",
+                                                                  transitions,
+                                                                  initialState: new BugState.Open());
 	
 	//...
 
@@ -222,9 +231,13 @@ How to use:
 
 ```C#
 
+	//arrange
 	var bug = new Bug("my bug name", _stateMachine);	
-	bug.Assign("example@example.com");
 	
+	//act
+	bug.Assign("example@example.com", out transitionStatus);
+	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf(BugState.Assigned)); //true
 	Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success)); //true
 	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
@@ -244,8 +257,8 @@ How to use:
 	//later...
 	
 	var myStateMachine = new StateMachine<BugState, TransitionStatus>("example",
-                                                                            _transitions,
-                                                                            initialState: new BugState.Open());
+                                                                         _transitions,
+                                                                         initialState: new BugState.Open());
 	myStateMachine.InitializeFromJson(json);
 	
 	//continue where you left off...
