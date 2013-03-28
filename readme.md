@@ -15,9 +15,9 @@ Example of use:
 				             new BugTransition.Resolve(new BugTransitionAction.Resolve()),
 				             new BugTransition.Close(new BugTransitionAction.Close()),
 				         };
-	var myStateMachine = new StateMachine<BugState, TransitionStatus>("Bug",
-                                                                       bugTransitions,
-                                                                       initialState: new BugState.Open());
+	var myStateMachine = new StateMachine<BugState, TransitionStatus>("example",
+                                                                      bugTransitions,
+                                                                      initialState: new BugState.Open());
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Open>()); //true	
@@ -82,11 +82,10 @@ How to use:
 
 	public class Bug : Stateful<Bug, BugState>
 	{
-		public Bug(string title, IStateMachine<BugState> stateMachine)
-		: base(stateMachine)
-		{
-			Title = title;
-		}
+		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
+										 {
+											Title = title;
+										 }
 		
 		public string Title { get; set; }
 		
@@ -119,10 +118,10 @@ How to use:
 		
 		public Bug Close(string closedByName, out TransitionStatus transitionStatus)
 		{
-			dynamic args = new ExpandoObject();
-            		args.ClosedByName = closedByName;
+			dynamic dto = new ExpandoObject();
+            		dto.ClosedByName = closedByName;
 
-            		return TriggerTransition(this, new BugState.Closed(), out transitionStatus, args);
+            		return TriggerTransition(this, new BugState.Closed(), out transitionStatus, dto);
 		}
 	}
 
@@ -209,8 +208,9 @@ How to use:
 					new BugTransition.Close(new BugTransitionAction.Close()),
 				};	
 	
-                                                                            transitions,
-                                                                            initialState: new BugState.Open());
+	_stateMachine = new StateMachine<BugState, TransitionStatus>("example",
+                                                                  transitions,
+                                                                  initialState: new BugState.Open());
 	
 	//...
 
@@ -222,9 +222,13 @@ How to use:
 
 ```C#
 
+	//arrange
 	var bug = new Bug("my bug name", _stateMachine);	
+	
+	//act
 	bug.Assign("example@example.com");
 	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf(BugState.Assigned)); //true
 	Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success)); //true
 	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
