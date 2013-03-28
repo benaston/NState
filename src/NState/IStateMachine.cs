@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace NState
 {
@@ -25,8 +24,6 @@ namespace NState
         Dictionary<string, IStateMachine<TState, TTransitionStatus>> Children { get; set; }
 
         TState CurrentState { get; set; }
-
-        Dictionary<DateTime, IStateTransition<TState, TTransitionStatus>> History { get; set; }
 
         TTransitionStatus TriggerTransition(TState targetState, dynamic statefulObject, dynamic dto = default(dynamic));
     }

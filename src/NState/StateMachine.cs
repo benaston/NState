@@ -79,8 +79,6 @@ namespace NState
 
         public TState CurrentState { get; set; }
 
-        public Dictionary<DateTime, IStateTransition<TState, TTransitionStatus>> History { get; set; }
-
         /// <summary>
         /// NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx.
         /// NOTE 2: this could be in-memory transactionalised using the 
@@ -114,19 +112,28 @@ namespace NState
             if ((CurrentState != targetState ||
                 (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
             {
-                var matches = StateTransitions.Where(t => t.StartStates.Any(s => s == CurrentState) &&
-                                                            t.EndStates.Any(e => e == targetState)).ToList();
+                Func<object, object, bool> equalityExpression;
+
+                if (typeof(TState).IsValueType)
+                {
+                    equalityExpression = (o1, o2) => o1 == o2;
+                }
+                else
+                {
+                    equalityExpression = (o1, o2) => o1.GetType() == o2.GetType();
+                }
+
+                var matches = StateTransitions.Where(t => t.StartStates.Any(s => equalityExpression(s, CurrentState)) &&
+                                                            t.EndStates.Any(e => equalityExpression(e, targetState))).ToList();
                 var match = matches.Count > 0 ? matches[0] : null;
                 if (match != null && match.Condition(targetState, statefulObject, args))
                 {
                     //see note 2
                     {
-                        OnRaiseBeforeEveryTransition();
                         CurrentState.ExitAction(args);
                         result = match.TransitionAction.Run(targetState, this, statefulObject, args);
                         targetState.EntryAction(args);
                         CurrentState = targetState;
-                        OnRaiseAfterEveryTransition();
                     }
                 }
                 else
@@ -142,40 +149,6 @@ namespace NState
             }
 
             return result;
-        }
-
-        public event EventHandler RaiseBeforeEveryTransitionEvent;
-
-        public event EventHandler RaiseAfterEveryTransitionEvent;
-
-        // Wrap event invocations inside a protected virtual method
-        // to allow derived classes to override the event invocation behavior
-        protected virtual void OnRaiseBeforeEveryTransition()
-        {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler handler = RaiseBeforeEveryTransitionEvent;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Format the string to send inside the CustomEventArgs parameter
-                //e.Message += String.Format(" at {0}", DateTime.Now.ToString());
-
-                // Use the () operator to raise the event.
-                handler(this, new EventArgs());
-            }
-        }
-
-        protected virtual void OnRaiseAfterEveryTransition()
-        {
-            EventHandler handler = RaiseAfterEveryTransitionEvent;
-
-            if (handler != null) // Event will be null if there are no subscribers
-            {
-                handler(this, new EventArgs());
-            }
         }
 
         public string ToJson()
