@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NState", "NState\NState.csproj", "{CD3850FF-96DA-441D-804F-2F56E7A3104E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NState.Test.Fast", "NState.Test.Fast\NState.Test.Fast.csproj", "{A9F4845F-A091-4B62-8209-00776C109845}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,6 +18,12 @@ Global
 		{CD3850FF-96DA-441D-804F-2F56E7A3104E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD3850FF-96DA-441D-804F-2F56E7A3104E}.Staging|Any CPU.ActiveCfg = Staging|Any CPU
 		{CD3850FF-96DA-441D-804F-2F56E7A3104E}.Staging|Any CPU.Build.0 = Staging|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Staging|Any CPU.ActiveCfg = Staging|Any CPU
+		{A9F4845F-A091-4B62-8209-00776C109845}.Staging|Any CPU.Build.0 = Staging|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

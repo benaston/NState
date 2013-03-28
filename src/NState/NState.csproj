@@ -62,6 +62,7 @@
     <Compile Include="Exceptions\InvalidStateTransitionException.cs" />
     <Compile Include="Exceptions\ParentStateNotAvailableException.cs" />
     <Compile Include="Exceptions\SelfTransitionException.cs" />
+    <Compile Include="Exceptions\TransitionActionException.cs" />
     <Compile Include="IStateful.cs" />
     <Compile Include="IStateMachine.cs" />
     <Compile Include="IStateTransition.cs" />
