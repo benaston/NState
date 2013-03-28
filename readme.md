@@ -92,9 +92,9 @@ How to use:
 	public class Bug : Stateful<Bug, BugState>
 	{
 		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
-										 {
-											Title = title;
-										 }
+										 		{
+													Title = title;
+										 		}
 		
 		public string Title { get; set; }
 		
@@ -110,9 +110,9 @@ How to use:
 		public Bug Assign(string assigneeEmail, out TransitionStatus transitionStatus)
 		{
 			dynamic dto = new ExpandoObject();
-            		dto.AssigneeEmail = assigneeEmail;
+			dto.AssigneeEmail = assigneeEmail;
 
-            		return TriggerTransition(this, new BugState.Assigned(), out transitionStatus, dto);
+			return TriggerTransition(this, new BugState.Assigned(), out transitionStatus, dto);
 		}
 		
 		public void Defer(out TransitionStatus transitionStatus)
@@ -128,9 +128,9 @@ How to use:
 		public Bug Close(string closedByName, out TransitionStatus transitionStatus)
 		{
 			dynamic dto = new ExpandoObject();
-            		dto.ClosedByName = closedByName;
+			dto.ClosedByName = closedByName;
 
-            		return TriggerTransition(this, new BugState.Closed(), out transitionStatus, dto);
+			return TriggerTransition(this, new BugState.Closed(), out transitionStatus, dto);
 		}
 	}
 
