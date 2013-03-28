@@ -235,7 +235,7 @@ How to use:
 	var bug = new Bug("my bug name", _stateMachine);	
 	
 	//act
-	bug.Assign("example@example.com");
+	bug.Assign("example@example.com", out transitionStatus);
 	
 	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf(BugState.Assigned)); //true
