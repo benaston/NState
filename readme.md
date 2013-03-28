@@ -10,25 +10,33 @@ Example of use:
 
 ```C#
 
-	var transitions = new IStateTransition<BugState>[] {
-		new BugTransition.Open(),
-		new BugTransition.Assign(BugTransitionAction.Assign),
-		new BugTransition.Defer(BugTransitionAction.Defer),
-		new BugTransition.Resolve(BugTransitionAction.Resolve),
-		new BugTransition.Close(BugTransitionAction.Close),
-	};
-	var myStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());	
+	var bugTransitions = new IStateTransition<BugState, BugTransitionStatus>[]
+            {
+                new BugTransition.Open(),
+                new BugTransition.Assign(new BugTransitionAction.Assign()),
+                new BugTransition.Defer(new BugTransitionAction.Defer()),
+                new BugTransition.Resolve(new BugTransitionAction.Resolve()),
+                new BugTransition.Close(new BugTransitionAction.Close()),
+            };
+	var myStateMachine = new StateMachine<BugState, BugTransitionStatus>("Bug",
+                                                                             bugTransitions,
+                                                                             initialState: new BugState.Open());
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
 	Assert.That(bug.CurrentState == new BugState.Open()); //true
 	
-	bug.Assign("example@example.com"); //triggers a transition of the state machine
+	bug.Assign("example@example.com", out transitionStatus); //triggers a transition of the state machine
 	
-	Assert.That(bug.CurrentState == new BugState.Assigned()); //true
+	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
+	Assert.That(transitionStatus, Is.EqualTo(BugTransitionStatus.Success)); //true
 	
 	var json = myStateMachine.ToJson();
-	var myDeserializedStateMachine = new StateMachine<Bug, BugState>(transitions, initialState:new BugState.Open());
+	var myDeserializedStateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
+                                                                                         _transitions,
+                                                                                         initialState: new BugState.Open());
 	myDeserializedStateMachine.InitializeFromJson(json);
+	
+	Assert.That(myDeserializedStateMachine.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
 
 ```
 
