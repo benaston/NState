@@ -8,16 +8,16 @@ Example of use:
 ```C#
 
 	var bugTransitions = new IStateTransition<BugState, BugTransitionStatus>[]
-            {
-                new BugTransition.Open(),
-                new BugTransition.Assign(new BugTransitionAction.Assign()),
-                new BugTransition.Defer(new BugTransitionAction.Defer()),
-                new BugTransition.Resolve(new BugTransitionAction.Resolve()),
-                new BugTransition.Close(new BugTransitionAction.Close()),
-            };
+			         {
+			             new BugTransition.Open(),
+			             new BugTransition.Assign(new BugTransitionAction.Assign()),
+			             new BugTransition.Defer(new BugTransitionAction.Defer()),
+			             new BugTransition.Resolve(new BugTransitionAction.Resolve()),
+			             new BugTransition.Close(new BugTransitionAction.Close()),
+			         };
 	var myStateMachine = new StateMachine<BugState, BugTransitionStatus>("Bug",
-                                                                             bugTransitions,
-                                                                             initialState: new BugState.Open());
+                                                                           bugTransitions,
+                                                                           initialState: new BugState.Open());
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
 	Assert.That(myDeserializedStateMachine.CurrentState, Is.TypeOf<BugState.Open>()); //true	
