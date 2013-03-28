@@ -7,6 +7,7 @@ Example of use:
 
 ```C#
 
+	//arrange
 	var bugTransitions = new IStateTransition<BugState, TransitionStatus>[]
 				         {
 				             new BugTransition.Open(),
@@ -18,21 +19,29 @@ Example of use:
 	var myStateMachine = new StateMachine<BugState, TransitionStatus>("example",
                                                                       bugTransitions,
                                                                       initialState: new BugState.Open());
+	
+	//act
 	var bug = new Bug("my bug name", myStateMachine); //Bug type inherits from Stateful base type
 	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Open>()); //true	
 	
+	//act
 	bug.Assign("example@example.com", out transitionStatus); //triggers a transition of the state machine
 	
+	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
 	Assert.That(transitionStatus, Is.EqualTo(TransitionStatus.Success)); //true
+	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
 	
+	//act
 	var json = myStateMachine.ToJson();
 	var myDeserializedStateMachine = new StateMachine<BugState, TransitionStatus>("example",
                                                                                          _transitions,
                                                                                          initialState: new BugState.Open());
 	myDeserializedStateMachine.InitializeFromJson(json);
 	
+	//assert
 	Assert.That(myDeserializedStateMachine.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
 
 ```
@@ -248,8 +257,8 @@ How to use:
 	//later...
 	
 	var myStateMachine = new StateMachine<BugState, TransitionStatus>("example",
-                                                                            _transitions,
-                                                                            initialState: new BugState.Open());
+                                                                         _transitions,
+                                                                         initialState: new BugState.Open());
 	myStateMachine.InitializeFromJson(json);
 	
 	//continue where you left off...
