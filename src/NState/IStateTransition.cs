@@ -8,7 +8,7 @@ namespace NState
     /// </summary>
     public interface IStateTransition<TState, TTransitionStatus> where TState : State
     {
-        TState[] InitialStates { get; }
+        TState[] StartStates { get; }
 
         TState[] EndStates { get; }
 

@@ -60,15 +60,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BugTrackerExample\BugTransitionAction.Resolve.cs" />
-    <Compile Include="BugTrackerExample\BugTransitionAction.Defer.cs" />
     <Compile Include="BugTrackerExample\Bug.cs" />
     <Compile Include="BugTrackerExample\BugState.cs" />
+    <Compile Include="BugTrackerExample\BugStateful.cs" />
     <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
-    <Compile Include="BugTrackerExample\BugTransition.cs" />
     <Compile Include="BugTrackerExample\BugTransitionStatus.cs" />
-    <Compile Include="BugTrackerExample\BugTransitionAction.Assign.cs" />
-    <Compile Include="BugTrackerExample\BugTransitionAction.Close.cs" />
+    <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Assign.cs" />
+    <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Close.cs" />
+    <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Defer.cs" />
+    <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Resolve.cs" />
+    <Compile Include="BugTrackerExample\Transitions\BugTransition.Assign.cs" />
+    <Compile Include="BugTrackerExample\Transitions\BugTransition.Close.cs" />
+    <Compile Include="BugTrackerExample\Transitions\BugTransition.Defer.cs" />
+    <Compile Include="BugTrackerExample\Transitions\BugTransition.Open.cs" />
+    <Compile Include="BugTrackerExample\Transitions\BugTransition.Resolve.cs" />
     <Compile Include="SerializationExample\SerializationExampleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

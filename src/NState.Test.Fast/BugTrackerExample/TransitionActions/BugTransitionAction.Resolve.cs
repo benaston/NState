@@ -1,6 +1,6 @@
 using System;
 
-namespace NState.Test.Fast.BugTrackerExample
+namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 {
     public partial class BugTransitionAction
     {
@@ -10,7 +10,7 @@ namespace NState.Test.Fast.BugTrackerExample
                                                     IStateMachine<BugState, BugTransitionStatus> stateMachine,
                                                     dynamic statefulObject, dynamic dto = null)
             {
-                statefulObject.AssigneeEmail = String.Empty;
+                statefulObject.Bug.AssigneeEmail = String.Empty;
 
                 return BugTransitionStatus.Success;
             }

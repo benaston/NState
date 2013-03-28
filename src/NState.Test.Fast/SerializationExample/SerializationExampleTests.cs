@@ -1,5 +1,7 @@
 ﻿using System.Dynamic;
 using NState.Test.Fast.BugTrackerExample;
+using NState.Test.Fast.BugTrackerExample.TransitionActions;
+using NState.Test.Fast.BugTrackerExample.Transitions;
 
 namespace NState.Test.Fast.SerializationExample
 {
@@ -19,7 +21,7 @@ namespace NState.Test.Fast.SerializationExample
                 new BugTransition.Assign(new BugTransitionAction.Assign()),
             };
 
-            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("Root",
+            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
                                                                             _transitions,
                                                                             initialState: new BugState.Open());
         }
@@ -29,13 +31,15 @@ namespace NState.Test.Fast.SerializationExample
         public void DeserializeTest()
         {
             Assert.That(_stateMachine.CurrentState == new BugState.Open());
-            _stateMachine.TriggerTransition(new BugState.Assigned(), new ExpandoObject(), new { AssigneeEmail = "example@example.com" });
+            dynamic statefulObject = new ExpandoObject();
+            statefulObject.Bug = new Bug("foo");
+            _stateMachine.TriggerTransition(new BugState.Assigned(), statefulObject, new { AssigneeEmail = "example@example.com" });
             Assert.That(_stateMachine.CurrentState == new BugState.Assigned());
 
             //arrange
             string json = _stateMachine.ToJson();
 
-            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("Root",
+            _stateMachine = new StateMachine<BugState, BugTransitionStatus>("example",
                                                                             _transitions,
                                                                             initialState: new BugState.Open());
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace NState.Test.Fast.BugTrackerExample
+namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 {
     public partial class BugTransitionAction
     {
@@ -20,7 +20,7 @@ namespace NState.Test.Fast.BugTrackerExample
                     throw new Exception("AssigneeEmail not supplied.");
                 }
 
-                statefulObject.AssigneeEmail = dto.AssigneeEmail;
+                statefulObject.Bug.AssigneeEmail = dto.AssigneeEmail;
 
                 return BugTransitionStatus.Success;
             }

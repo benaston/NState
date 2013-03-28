@@ -1,6 +1,6 @@
 using System;
 
-namespace NState.Test.Fast.BugTrackerExample
+namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 {
     public partial class BugTransitionAction
     {
@@ -20,7 +20,7 @@ namespace NState.Test.Fast.BugTrackerExample
                     throw new Exception("ClosedByName not supplied.");
                 }
 
-                statefulObject.StatefulObject.ClosedByName = dto.ClosedByName;
+                statefulObject.StatefulObject.Bug.ClosedByName = dto.ClosedByName;
 
                 return BugTransitionStatus.Success;
             }

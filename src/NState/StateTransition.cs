@@ -13,7 +13,7 @@ namespace NState
             TransitionAction = transitionAction ?? new NullTransitionAction<TState, TTransitionStatus>();
         }
 
-        public abstract TState[] InitialStates { get; }
+        public abstract TState[] StartStates { get; }
 
         public abstract TState[] EndStates { get; }
 

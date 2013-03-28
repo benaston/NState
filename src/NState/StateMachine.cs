@@ -24,7 +24,7 @@ namespace NState
                             TState finalState = null,
                             IStateMachine<TState, TTransitionStatus> parentStateMachine = null,
                             bool permitSelfTransition = true,
-                            bool bypassTransitionBehaviorForSelfTransition = true) //if permitted
+                            bool bypassTransitionBehaviorForSelfTransition = false) //if permitted
         {
             if (name == null)
             {
@@ -83,7 +83,8 @@ namespace NState
 
         /// <summary>
         /// NOTE 1: http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx.
-        /// NOTE 2: this could be in-memory transactionalised using the memento pattern, or information could be sent to F# (see NOTE 1).
+        /// NOTE 2: this could be in-memory transactionalised using the 
+        /// memento pattern, or information could be sent to F# (see NOTE 1).
         /// </summary>
         public virtual TTransitionStatus TriggerTransition(TState targetState,
                                               dynamic statefulObject,
@@ -113,12 +114,12 @@ namespace NState
             if ((CurrentState != targetState ||
                 (CurrentState == targetState && !BypassTransitionBehaviorForSelfTransition)))
             {
-                var matches = StateTransitions.Where(t => t.InitialStates.Any(s => s == CurrentState) &&
+                var matches = StateTransitions.Where(t => t.StartStates.Any(s => s == CurrentState) &&
                                                             t.EndStates.Any(e => e == targetState)).ToList();
                 var match = matches.Count > 0 ? matches[0] : null;
                 if (match != null && match.Condition(targetState, statefulObject, args))
                 {
-                    using (var t = new TransactionScope()) //see note 2
+                    //see note 2
                     {
                         OnRaiseBeforeEveryTransition();
                         CurrentState.ExitAction(args);
@@ -126,7 +127,6 @@ namespace NState
                         targetState.EntryAction(args);
                         CurrentState = targetState;
                         OnRaiseAfterEveryTransition();
-                        t.Complete();
                     }
                 }
                 else
