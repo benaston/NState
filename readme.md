@@ -235,11 +235,11 @@ How to use:
 	var bug = new Bug("my bug name", _stateMachine);	
 	
 	//act
-	bug.Assign("example@example.com", out TransitionActionStatus);
+	bug.Assign("example@example.com", out transitionActionStatus);
 	
 	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf(BugState.Assigned)); //true
-	Assert.That(TransitionActionStatus, Is.EqualTo(TransitionActionStatus.Success)); //true
+	Assert.That(transitionActionStatus, Is.EqualTo(TransitionActionStatus.Success)); //true
 	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
 
 ```
