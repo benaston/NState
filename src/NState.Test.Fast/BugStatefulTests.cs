@@ -75,7 +75,7 @@ namespace NState.Test.Fast
         }
 
         [Test]
-        public void Assign_BugIsAlreadyAssignedAndSelfTransitionNotPermitted_TransitionFails()
+        public void Assign_BugIsAlreadyAssignedAndSelfTransitionNotPermitted_TransitionNotRun()
         {
             //arrange
             _stateMachine = new StateMachine<BugState, TransitionActionStatus>("state machine name",
@@ -104,7 +104,7 @@ namespace NState.Test.Fast
             Assert.That(exceptionCaught, Is.EqualTo(true));
             Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>());
             Assert.That(bug.Bug.AssigneeEmail, Is.EqualTo(assigneeEmail1));
-            Assert.That(transitionActionStatus, Is.EqualTo(TransitionActionStatus.Failed));
+            Assert.That(transitionActionStatus, Is.EqualTo(TransitionActionStatus.NotRun));
         }
 
         [Test]
