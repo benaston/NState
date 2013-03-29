@@ -190,7 +190,7 @@ How to use:
 		            throw new Exception("AssigneeEmail not supplied.");
 		        }
 		
-		        statefulObject.Bug.AssigneeEmail = dto.AssigneeEmail;
+		        statefulObject.AssigneeEmail = dto.AssigneeEmail;
 		
 		        return TransitionStatus.Success;
 		    }
