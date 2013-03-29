@@ -3,7 +3,7 @@ NState
 
 A simple state machine for .NET.
 
-Please <a href="https://twitter.com/share?text=Check%20out%20NState%2C%20a%20simple%20.NET%20state%20machine.%20%23nstate" target="_blank">send a tweet to support NState</a> (opens a form in a new window to send a tweet).
+Please <a href="https://twitter.com/share?text=Check%20out%20NState%2C%20a%20simple%20.NET%20state%20machine.%20%23nstate" target="_blank">send a tweet to let other people know about NState</a> (opens a form in a new window to send a tweet).
 
 Example of use:
 
