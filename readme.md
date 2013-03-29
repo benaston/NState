@@ -89,12 +89,12 @@ How to use:
 
 ```C#
 
-	public class Bug : Stateful<Bug, BugState>
+	public class Bug : Stateful<BugState, TransitionStatus>
 	{
-		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
-										 		{
-													Title = title;
-										 		}
+		public Bug(string title, IStateMachine<BugState, TransitionStatus> stateMachine) : base(stateMachine)
+		{
+			Title = title;
+		}
 		
 		public string Title { get; set; }
 		
@@ -190,7 +190,7 @@ How to use:
 		            throw new Exception("AssigneeEmail not supplied.");
 		        }
 		
-		        statefulObject.Bug.AssigneeEmail = dto.AssigneeEmail;
+		        statefulObject.AssigneeEmail = dto.AssigneeEmail;
 		
 		        return TransitionStatus.Success;
 		    }
