@@ -4,11 +4,12 @@ namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 {
     public partial class BugTransitionAction
     {
-        public class Assign : TransitionAction<BugState, TransitionStatus>
+        public class Assign : TransitionAction<BugState, TransitionActionStatus>
         {
-            public override TransitionStatus Run(BugState targetState,
-                                                    IStateMachine<BugState, TransitionStatus> stateMachine,
-                                                    dynamic statefulObject, dynamic dto = null)
+            public override TransitionActionStatus Run(BugState targetState,
+                                                       IStateMachine<BugState, TransitionActionStatus> stateMachine,
+                                                       dynamic statefulObject, 
+                                                       dynamic dto = null)
             {
                 if (dto == null)
                 {
@@ -22,7 +23,7 @@ namespace NState.Test.Fast.BugTrackerExample.TransitionActions
 
                 statefulObject.Bug.AssigneeEmail = dto.AssigneeEmail;
 
-                return TransitionStatus.Success;
+                return TransitionActionStatus.Success;
             }
         }
     }

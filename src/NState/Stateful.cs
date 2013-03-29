@@ -7,9 +7,9 @@ namespace NState
     /// <summary>
     /// Inherit from this if you want to make your type stateful.
     /// </summary>
-    public abstract class Stateful<TState, TTransitionStatus> : IStateful<TState, TTransitionStatus> where TState : State
+    public abstract class Stateful<TState, TTransitionActionStatus> : IStateful<TState, TTransitionActionStatus> where TState : State
     {
-        protected Stateful(IStateMachine<TState, TTransitionStatus> stateMachine)
+        protected Stateful(IStateMachine<TState, TTransitionActionStatus> stateMachine)
         {
             StateMachine = stateMachine;
         }
@@ -27,7 +27,7 @@ namespace NState
             }
         }
 
-        public IStateMachine<TState, TTransitionStatus> StateMachine { get; set; }
+        public IStateMachine<TState, TTransitionActionStatus> StateMachine { get; set; }
 
         public TState CurrentState
         {
@@ -36,9 +36,10 @@ namespace NState
 
         public TExpectedReturn TriggerTransition<TExpectedReturn>(TExpectedReturn statefulObject,
                                                                   TState targetState,
-                                                                  out TTransitionStatus transitionStatus,
+                                                                  out TTransitionActionStatus transitionActionStatus,
                                                                   ExpandoObject  dto = default(ExpandoObject))
         {
+            transitionActionStatus = default(TTransitionActionStatus); //ensures transitionActionStatus is reset before the transition
             if (!(statefulObject is ValueType) && statefulObject == null)
             {
                 throw new ArgumentNullException("statefulObject");
@@ -50,7 +51,7 @@ namespace NState
             }
 
             dto = dto ?? new ExpandoObject();
-            transitionStatus = StateMachine.TriggerTransition(targetState, statefulObject, dto);
+            transitionActionStatus = StateMachine.TriggerTransition(targetState, statefulObject, dto);
 
             return statefulObject;
         }

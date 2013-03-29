@@ -6,7 +6,7 @@ namespace NState
     /// Defines the interface for a state transition for 
     /// a type that supports "workflow".
     /// </summary>
-    public interface IStateTransition<TState, TTransitionStatus> where TState : State
+    public interface IStateTransition<TState, TTransitionActionStatus> where TState : State
     {
         TState[] StartStates { get; }
 
@@ -15,7 +15,7 @@ namespace NState
         /// <summary>
         /// Logic to be run when the transition occurs.
         /// </summary>
-        TransitionAction<TState, TTransitionStatus> TransitionAction { get; }
+        TransitionAction<TState, TTransitionActionStatus> TransitionAction { get; }
 
         /// <summary>
         /// A constraint which will permit the transition only 

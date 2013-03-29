@@ -2,22 +2,22 @@
 
 namespace NState
 {
-    public abstract class StateTransition<TState, TTransitionStatus> :
-        IStateTransition<TState, TTransitionStatus>
+    public abstract class StateTransition<TState, TTransitionActionStatus> :
+        IStateTransition<TState, TTransitionActionStatus>
         where TState : State
     {
         protected StateTransition(Func<TState, dynamic, dynamic, bool> condition = null,
-                                  TransitionAction<TState, TTransitionStatus> transitionAction = null)
+                                  TransitionAction<TState, TTransitionActionStatus> transitionAction = null)
         {
             Condition = condition ?? ((s, statefulObject, dto) => true);
-            TransitionAction = transitionAction ?? new NullTransitionAction<TState, TTransitionStatus>();
+            TransitionAction = transitionAction ?? new NullTransitionAction<TState, TTransitionActionStatus>();
         }
 
         public abstract TState[] StartStates { get; }
 
         public abstract TState[] EndStates { get; }
 
-        public TransitionAction<TState, TTransitionStatus> TransitionAction { get; private set; }
+        public TransitionAction<TState, TTransitionActionStatus> TransitionAction { get; private set; }
 
         public Func<TState, dynamic, dynamic, bool> Condition { get; private set; }
     }

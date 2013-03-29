@@ -56,10 +56,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BugStatefulTests.cs" />
     <Compile Include="BugTrackerExample\Bug.cs" />
     <Compile Include="BugTrackerExample\BugState.cs" />
     <Compile Include="BugTrackerExample\BugStateful.cs" />
-    <Compile Include="BugTrackerExample\BugTrackerExampleTests.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Assign.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Close.cs" />
     <Compile Include="BugTrackerExample\TransitionActions\BugTransitionAction.Defer.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="BugTrackerExample\Transitions\BugTransition.Defer.cs" />
     <Compile Include="BugTrackerExample\Transitions\BugTransition.Open.cs" />
     <Compile Include="BugTrackerExample\Transitions\BugTransition.Resolve.cs" />
-    <Compile Include="SerializationExample\SerializationExampleTests.cs" />
+    <Compile Include="StateMachineSerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

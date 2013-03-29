@@ -2,17 +2,40 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace NState
 {
-    public class StateMachineSerializationHelper
+    public static class StateMachineSerializationHelper
     {
+        public static string ToJson<TState, TTransitionActionStatus>(this IStateMachine<TState, TTransitionActionStatus> stateMachine) where TState : State
+        {
+            dynamic dto = SerializeToDto(stateMachine, new ExpandoObject());
+            dynamic s = JsonConvert.SerializeObject(dto, Formatting.Indented,
+                                                    new JsonSerializerSettings
+                                                    {
+                                                        ObjectCreationHandling =
+                                                            ObjectCreationHandling.Replace
+                                                    });
+
+            return s;
+        }
+
+        /// <summary>
+        /// Not in constructor because SM tree may not be completely initialized by constructor in current implementation.
+        /// </summary>
+        public static IStateMachine<TState, TTransitionActionStatus> InitializeFromJson<TState, TTransitionActionStatus>(this IStateMachine<TState, TTransitionActionStatus> stateMachine, string json) 
+            where TState : State 
+        {
+            return InitializeWithDto(stateMachine, JsonConvert.DeserializeObject(json));
+        }
+
         /// <summary>
         /// State machine to be hydrated must match the serialized DTO.
         /// </summary>
-        public static IStateMachine<TState, TTransitionStatus> InitializeWithDto<TState, TTransitionStatus>(
-            IStateMachine<TState, TTransitionStatus> stateMachine,
+        private static IStateMachine<TState, TTransitionActionStatus> InitializeWithDto<TState, TTransitionActionStatus>(
+            IStateMachine<TState, TTransitionActionStatus> stateMachine,
             dynamic dtoNode)
             where TState : State
         {
@@ -38,14 +61,15 @@ namespace NState
             {
                 foreach (dynamic c in dtoNode.Children)
                 {
-                    InitializeWithDto<TState, TTransitionStatus>(stateMachine.Children[c.Name], c.Value);
+                    InitializeWithDto<TState, TTransitionActionStatus>(stateMachine.Children[c.Name], c.Value);
                 }
             }
 
             return stateMachine;
         }
 
-        public static dynamic SerializeToDto<TState, TTransitionStatus>(IStateMachine<TState, TTransitionStatus> node, ExpandoObject dto)
+        private static dynamic SerializeToDto<TState, TTransitionActionStatus>(
+            IStateMachine<TState, TTransitionActionStatus> node, ExpandoObject dto)
             where TState : State
         {
             if (node == null)

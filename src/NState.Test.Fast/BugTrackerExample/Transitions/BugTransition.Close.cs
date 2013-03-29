@@ -4,7 +4,7 @@ namespace NState.Test.Fast.BugTrackerExample.Transitions
 {
     public partial class BugTransition
     {
-        public class Close : StateTransition<BugState, TransitionStatus>
+        public class Close : StateTransition<BugState, TransitionActionStatus>
         {
             public Close(BugTransitionAction.Close transitionAction)
                 : base(transitionAction: transitionAction) { }

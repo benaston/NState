@@ -8,23 +8,26 @@ namespace NState
     /// Responsible for defining the interface for types 
     /// that control the transitions between state machine states.
     /// </summary>
-    public interface IStateMachine<TState, TTransitionStatus> : IStateMachine where TState : State
+    public interface IStateMachine<TState, TTransitionActionStatus> : IStateMachine where TState : State
     {
         string Name { get; set; }
 
-        IEnumerable<IStateTransition<TState, TTransitionStatus>> StateTransitions { get; }
+        IEnumerable<IStateTransition<TState, TTransitionActionStatus>> StateTransitions { get; }
 
         TState InitialState { get; set; }
 
-        IStateMachine<TState, TTransitionStatus> Parent { get; set; }
+        IStateMachine<TState, TTransitionActionStatus> Parent { get; set; }
 
         /// <summary>
         /// Key is SM name.
         /// </summary>
-        Dictionary<string, IStateMachine<TState, TTransitionStatus>> Children { get; set; }
+        Dictionary<string, IStateMachine<TState, TTransitionActionStatus>> Children { get; set; }
 
         TState CurrentState { get; set; }
 
-        TTransitionStatus TriggerTransition(TState targetState, dynamic statefulObject, dynamic dto = default(dynamic));
+        /// <summary>
+        /// Kept as a method on the interface (rather than extension method) to permit easier extension.
+        /// </summary>
+        TTransitionActionStatus TriggerTransition(TState targetState, dynamic statefulObject, dynamic dto = default(dynamic));
     }
 }

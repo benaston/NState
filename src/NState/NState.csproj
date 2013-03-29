@@ -53,6 +53,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StateMachineTransitionHelper.cs" />
     <Compile Include="Exceptions\FinalStateTransitionException.cs" />
     <Compile Include="Exceptions\InvalidStateTransitionException.cs" />
     <Compile Include="Exceptions\ParentStateNotAvailableException.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="StateMachineSerializationHelper.cs" />
     <Compile Include="StateTransition.cs" />
     <Compile Include="TransitionAction.cs" />
-    <Compile Include="TransitionStatus.cs" />
+    <Compile Include="TransitionActionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
