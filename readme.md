@@ -8,7 +8,7 @@ Example of use:
 ```C#
 
 	//arrange
-	var bugTransitions = new IStateTransition<BugState, TransitionActionStatus>[]
+	var transitions = new IStateTransition<BugState, TransitionActionStatus>[]
 				         {
 				             new BugTransition.Open(),
 				             new BugTransition.Assign(new BugTransitionAction.Assign()),
@@ -17,7 +17,7 @@ Example of use:
 				             new BugTransition.Close(new BugTransitionAction.Close()),
 				         };
 	var myStateMachine = new StateMachine<BugState, TransitionActionStatus>("example",
-                                                                      bugTransitions,
+                                                                      transitions,
                                                                       initialState: new BugState.Open());
 	
 	//act
