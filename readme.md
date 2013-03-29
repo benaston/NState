@@ -53,7 +53,7 @@ Features:
  - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
  - transition conditions, exit and entry actions
- - transition actions with arbitrary arguments
+ - arbitrarily complex transition actions
  - initial and final state specification
 
 
