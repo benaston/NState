@@ -92,9 +92,9 @@ How to use:
 	public class Bug : Stateful<Bug, BugState>
 	{
 		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
-										 		{
-													Title = title;
-										 		}
+		{
+			Title = title;
+		}
 		
 		public string Title { get; set; }
 		
