@@ -89,9 +89,9 @@ How to use:
 
 ```C#
 
-	public class Bug : Stateful<Bug, BugState>
+	public class Bug : Stateful<BugState, TransitionStatus>
 	{
-		public Bug(string title, IStateMachine<BugState> stateMachine) : base(stateMachine)
+		public Bug(string title, IStateMachine<BugState, TransitionStatus> stateMachine) : base(stateMachine)
 		{
 			Title = title;
 		}
