@@ -27,11 +27,11 @@ Example of use:
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Open>()); //true	
 	
 	//act
-	bug.Assign("example@example.com", out TransitionActionStatus); //triggers a transition of the state machine
+	bug.Assign("example@example.com", out transitionActionStatus); //triggers a transition of the state machine
 	
 	//assert
 	Assert.That(bug.CurrentState, Is.TypeOf<BugState.Assigned>()); //true
-	Assert.That(TransitionActionStatus, Is.EqualTo(TransitionActionStatus.Success)); //true
+	Assert.That(transitionActionStatus, Is.EqualTo(TransitionActionStatus.Success)); //true
 	Assert.That(bug.AssigneeEmail, Is.EqualTo("example@example.com")); //true
 	
 	//act
@@ -102,35 +102,35 @@ How to use:
 		
 		public string ClosedByName { get; set; }
 		
-		public Bug Open(out TransitionActionStatus TransitionActionStatus)
+		public Bug Open(out TransitionActionStatus transitionActionStatus)
 		{
-			return TriggerTransition(this, new BugState.Open(), out TransitionActionStatus);
+			return TriggerTransition(this, new BugState.Open(), out transitionActionStatus);
 		}
         
-		public Bug Assign(string assigneeEmail, out TransitionActionStatus TransitionActionStatus)
+		public Bug Assign(string assigneeEmail, out TransitionActionStatus transitionActionStatus)
 		{
 			dynamic dto = new ExpandoObject();
 			dto.AssigneeEmail = assigneeEmail;
 
-			return TriggerTransition(this, new BugState.Assigned(), out TransitionActionStatus, dto);
+			return TriggerTransition(this, new BugState.Assigned(), out transitionActionStatus, dto);
 		}
 		
-		public void Defer(out TransitionActionStatus TransitionActionStatus)
+		public void Defer(out TransitionActionStatus transitionActionStatus)
 		{
-			return TriggerTransition(this, new BugState.Deferred(), out TransitionActionStatus);
+			return TriggerTransition(this, new BugState.Deferred(), out transitionActionStatus);
 		}
 		
-		public void Resolve(out TransitionActionStatus TransitionActionStatus)
+		public void Resolve(out TransitionActionStatus transitionActionStatus)
 		{
-			return TriggerTransition(this, new BugState.Resolved(), out TransitionActionStatus);
+			return TriggerTransition(this, new BugState.Resolved(), out transitionActionStatus);
 		}
 		
-		public Bug Close(string closedByName, out TransitionActionStatus TransitionActionStatus)
+		public Bug Close(string closedByName, out TransitionActionStatus transitionActionStatus)
 		{
 			dynamic dto = new ExpandoObject();
 			dto.ClosedByName = closedByName;
 
-			return TriggerTransition(this, new BugState.Closed(), out TransitionActionStatus, dto);
+			return TriggerTransition(this, new BugState.Closed(), out transitionActionStatus, dto);
 		}
 	}
 
