@@ -22,9 +22,6 @@ namespace NState
             return s;
         }
 
-        /// <summary>
-        /// Not in constructor because SM tree may not be completely initialized by constructor in current implementation.
-        /// </summary>
         public static IStateMachine<TState, TTransitionActionStatus> InitializeFromJson<TState, TTransitionActionStatus>(this IStateMachine<TState, TTransitionActionStatus> stateMachine, string json) 
             where TState : State 
         {
@@ -32,7 +29,7 @@ namespace NState
         }
 
         /// <summary>
-        /// State machine to be hydrated must match the serialized DTO.
+        /// State machine to be initlialized must match the serialized DTO.
         /// </summary>
         private static IStateMachine<TState, TTransitionActionStatus> InitializeWithDto<TState, TTransitionActionStatus>(
             IStateMachine<TState, TTransitionActionStatus> stateMachine,

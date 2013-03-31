@@ -3,11 +3,10 @@
 namespace NState
 {
     /// <summary>
-    /// Responsible for defining the interface for types 
-    /// that may be used inside with the StateMachine type 
-    /// (akin to workflow.)
+    /// Implemented by types that have a 
+    /// corresponding StateMachine.
     /// </summary>
-    public interface IStateful<TState, TTransitionActionStatus> where TState : State
+    internal interface IStateful<TState, TTransitionActionStatus> where TState : State
     {
         /// <summary>
         /// The state machine governing transitions for this stateful object.

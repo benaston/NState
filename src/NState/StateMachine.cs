@@ -49,10 +49,6 @@ namespace NState
 
         public IStateMachine<TState, TTransitionActionStatus> Parent { get; set; }
 
-        public bool PermitSelfTransition { get; set; }
-
-        public bool BypassTransitionBehaviorForSelfTransition { get; set; }
-
         public Dictionary<string, IStateMachine<TState, TTransitionActionStatus>> Children
         {
             get { return _children; }
@@ -62,10 +58,14 @@ namespace NState
         public TState CurrentState { get; set; }
 
         public virtual TTransitionActionStatus TriggerTransition(TState targetState,
-                                              dynamic statefulObject,
-                                              dynamic args = default(dynamic))
+                                                                 dynamic statefulObject,
+                                                                 dynamic args = default(dynamic))
         {
             return StateMachineTransitionHelper.TriggerTransition(this, targetState, statefulObject, args);
         }
+
+        public bool PermitSelfTransition { get; set; }
+
+        public bool BypassTransitionBehaviorForSelfTransition { get; set; }
     }
 }

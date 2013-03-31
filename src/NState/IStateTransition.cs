@@ -2,10 +2,6 @@
 
 namespace NState
 {
-    /// <summary>
-    /// Defines the interface for a state transition for 
-    /// a type that supports "workflow".
-    /// </summary>
     public interface IStateTransition<TState, TTransitionActionStatus> where TState : State
     {
         TState[] StartStates { get; }
@@ -19,10 +15,10 @@ namespace NState
 
         /// <summary>
         /// A constraint which will permit the transition only 
-        /// when it evaluates to true after the trigger occurs.
-        /// Arg1 is the target state.
-        /// Arg2 is the stateful object.
-        /// Arg3 is a DTO object.
+        /// when it evaluates to true.
+        /// Arg1 is the state being transitioned to.
+        /// Arg2 is the stateful object undergoing the transition.
+        /// Arg3 is a DTO containing any additional data required to perform the transition.
         /// </summary>
         Func<TState, dynamic, dynamic, bool> Condition { get; }
     }

@@ -2,13 +2,7 @@
 
 namespace NState
 {
-    public interface IStateMachine {}
-
-    /// <summary>
-    /// Responsible for defining the interface for types 
-    /// that control the transitions between state machine states.
-    /// </summary>
-    public interface IStateMachine<TState, TTransitionActionStatus> : IStateMachine where TState : State
+    public interface IStateMachine<TState, TTransitionActionStatus> where TState : State
     {
         string Name { get; set; }
 
@@ -19,7 +13,7 @@ namespace NState
         IStateMachine<TState, TTransitionActionStatus> Parent { get; set; }
 
         /// <summary>
-        /// Key is SM name.
+        /// Key is state machine name.
         /// </summary>
         Dictionary<string, IStateMachine<TState, TTransitionActionStatus>> Children { get; set; }
 
