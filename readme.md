@@ -55,7 +55,7 @@ Features:
  - supports making domain objects stateful
  - trivial state machine tree persistence and retrieval to/from JSON
  - transition conditions, exit and entry actions
- - arbitrarily complex transition actions
+ - transition actions are fully-fledged types enabling use of dependency injection to maintain clean, testable code even for complex behavior
  - initial and final state specification
 
 
