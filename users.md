@@ -1,1 +1,4 @@
-Company Name            |                 Application Description
+```
+Company Name                          | Application Description
+
+```
