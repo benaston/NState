@@ -11,7 +11,7 @@
     <iconUrl>https://secure.gravatar.com/avatar/2a43432a33175c6bbe896da22dd6f6ee?s=140</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright 2012, Ben Aston</copyright>
+    <copyright>Copyright 2013, Ben Aston</copyright>
     <tags>state-machine,statemachine,state</tags>
   </metadata>
 </package>
