@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <licenseUrl>http://www.gnu.org/licenses/lgpl.txt</licenseUrl>
     <projectUrl>https://github.com/benaston/NState</projectUrl>
-    <iconUrl>https://secure.gravatar.com/avatar/2a43432a33175c6bbe896da22dd6f6ee?s=140</iconUrl>
+    <iconUrl>.\logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <copyright>Copyright 2013, Ben Aston</copyright>
