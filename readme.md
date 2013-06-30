@@ -46,7 +46,7 @@ Example:
 
 ```
 
-Features:
+Features
 --------
 
  - easy construction of trees of interdependent or orthogonal state machines
@@ -57,7 +57,7 @@ Features:
  - initial and final state specification
 
 
-How to use:
+How to use
 --------
 
 **0. Get it**
@@ -265,7 +265,7 @@ How to use:
 
 ```
 
-How to build and/or run the tests:
+How to build and/or run the tests
 --------
 
 1. Run `/build/build.bat`
