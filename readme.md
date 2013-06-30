@@ -3,11 +3,7 @@ NState
 
 A simple state machine for .NET.
 
-**If you like NState, please add an entry to the users.md file in this repo and open a pull request. Thank you! Knowing you find a use for NState is really motivational.**
-
-You can also let others know by <a href="https://twitter.com/share?text=Check%20out%20NState%2C%20a%20simple%20.NET%20state%20machine.%20%23nstate%20%40benastontweet&url=https%3A%2F%2Fgithub.com%2Fbenaston%2FNState" target="_blank">sending a tweet</a> (opens a form in a new window to send a tweet).
-
-Example of use:
+Example:
 
 ```C#
 
