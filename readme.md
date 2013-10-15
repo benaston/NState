@@ -1,7 +1,7 @@
 NState
 =====
 
-A state machine for .NET.
+A state machine for .NET, licensed under LGPL. I would love to know if you use NState in your application. I can be contacted on ben@bj.ma.
 
 Example:
 
