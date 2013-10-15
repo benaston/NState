@@ -1,7 +1,7 @@
 NState
 =====
 
-A simple state machine for .NET.
+A state machine for .NET.
 
 Example:
 
