@@ -6,7 +6,7 @@ namespace NState
     {
         string Name { get; set; }
 
-        IEnumerable<IStateTransition<TState, TTransitionActionStatus>> StateTransitions { get; }
+        IStateTransition<TState, TTransitionActionStatus>[] StateTransitions { get; }
 
         TState InitialState { get; set; }
 

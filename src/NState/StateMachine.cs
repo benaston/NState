@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NState
 {
@@ -24,7 +25,7 @@ namespace NState
             if (initialState == null) { throw new ArgumentNullException("initialState"); }
 
             Name = name;
-            StateTransitions = stateTransitions;
+            StateTransitions = stateTransitions.ToArray();
             InitialState = initialState;
             FinalState = finalState;
             Parent = parentStateMachine;
@@ -41,7 +42,7 @@ namespace NState
 
         public string Name { get; set; }
 
-        public IEnumerable<IStateTransition<TState, TTransitionActionStatus>> StateTransitions { get; protected set; }
+        public IStateTransition<TState, TTransitionActionStatus>[] StateTransitions { get; protected set; }
 
         public TState InitialState { get; set; }
 

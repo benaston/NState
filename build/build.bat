@@ -29,6 +29,11 @@ if %task% == "ft" goto fasttests
 if %task% == "st" goto slowtests
 if %task% == "npack" goto nugetpack
 if %task% == "npush" goto nugetpush
+if true  goto nugetpush
+
+:unrecognizedCommand
+echo "Unrecognized command."
+goto resume
 
 :resume
 echo.
@@ -51,7 +56,7 @@ goto resume
 
 :nugetpack
 cd %CD%\..
-nuget pack %CD%\src\!solutionAndMainProjectName!\!solutionAndMainProjectName!.csproj -Prop Configuration=Release -Symbols
+%CD%\build\nuget.exe pack %CD%\src\!solutionAndMainProjectName!\!solutionAndMainProjectName!.csproj -Prop Configuration=Debug -Symbols
 cd /d %0\.. 
 goto resume
 
